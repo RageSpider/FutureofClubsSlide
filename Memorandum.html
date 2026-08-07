@@ -9,9 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Instrument+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Noto+Serif+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ============ tokens ============ */
 :root{
-  --paper:#F5EFE2; --paper2:#EDE5D2; --ink:#15202B; --mut:#5A6875;
+  --paper:#F5EFE2; --ink:#15202B; --mut:#5A6875;
   --line:rgba(21,32,43,.18); --hair:rgba(21,32,43,.1);
   --red:#A93B2A; --red-soft:rgba(169,59,42,.07);
   --cream:#F2ECDF; --inkbg:#101B28;
@@ -22,144 +21,144 @@
   --ease:cubic-bezier(.22,.66,.2,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{background:var(--paper);color:var(--ink);font-family:var(--en);font-size:15.5px;line-height:1.7}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--en);font-size:clamp(14px,1.6vw,16px);line-height:1.7}
 ::selection{background:var(--red);color:var(--cream)}
-code{font-family:var(--mono);font-size:.86em;background:rgba(21,32,43,.06);padding:1px 5px;border:1px solid var(--hair)}
+code{font-family:var(--mono);font-size:.86em;background:rgba(21,32,43,.06);padding:1px 5px;border:1px solid var(--hair);word-break:break-all}
 
-/* grain + progress */
 .grain{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.05;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E")}
 #pbar{position:fixed;top:0;left:0;right:0;height:3px;z-index:70;background:transparent}
-#pbar i{display:block;height:100%;background:var(--red);transform:scaleX(0);transform-origin:left}
+#pbar i{display:block;height:100%;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .1s}
 
-/* ============ masthead ============ */
+/* Masthead */
 .mast{background:var(--inkbg);color:var(--cream);position:relative;overflow:hidden}
 .mast::before{content:"";position:absolute;inset:0;
   background-image:linear-gradient(rgba(242,236,223,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(242,236,223,.05) 1px,transparent 1px);
   background-size:44px 44px}
-.mast .wrap{position:relative;max-width:1180px;margin:0 auto;padding:0 32px}
+.mast .wrap{position:relative;max-width:1400px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
 .docbar{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid rgba(242,236,223,.2);
-  font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:rgba(242,236,223,.6)}
-.mastgrid{display:grid;grid-template-columns:auto 1fr auto;gap:30px;align-items:center;padding:44px 0 30px}
-.crest{width:86px;height:86px;color:var(--cream)}
-.kicker{font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:rgba(242,236,223,.6);text-transform:uppercase}
+  font-family:var(--mono);font-size:clamp(9px,1.2vw,10px);letter-spacing:.2em;color:rgba(242,236,223,.6)}
+.mastgrid{display:grid;grid-template-columns:auto 1fr;gap:clamp(16px,3vw,30px);align-items:center;padding:clamp(24px,4vw,44px) 0 clamp(20px,3vw,30px)}
+.crest{width:clamp(56px,8vw,86px);height:clamp(56px,8vw,86px);color:var(--cream)}
+.kicker{font-family:var(--mono);font-size:clamp(9px,1.2vw,10px);letter-spacing:.3em;color:rgba(242,236,223,.6);text-transform:uppercase}
 .kicker .b{font-family:var(--bn);letter-spacing:.05em}
-h1{font-family:var(--disp);font-weight:600;font-size:clamp(40px,6vw,72px);line-height:1.02;letter-spacing:-.015em;margin-top:12px}
+h1{font-family:var(--disp);font-weight:600;font-size:clamp(32px,6vw,72px);line-height:1.02;letter-spacing:-.015em;margin-top:12px}
 h1 .bnt{display:block;font-family:var(--bn);font-weight:700;font-size:.62em;color:#E9B44C;margin-top:6px;letter-spacing:0}
 .ln{display:block;overflow:hidden}
 .ln>span{display:block;transform:translateY(112%);transition:transform .9s var(--ease)}
 body.loaded .ln>span{transform:none}
 body.loaded .ln:nth-child(2)>span{transition-delay:.12s}
-.stamp{justify-self:end;transform:rotate(-6deg);border:2px solid var(--red);color:#E8836F;padding:14px 18px;text-align:center;
-  font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;line-height:1.9;text-transform:uppercase;
-  animation:stamp .5s cubic-bezier(.2,1.5,.4,1) .7s both}
-.stamp .b{font-family:var(--bn);letter-spacing:.02em;text-transform:none;font-size:12px}
+.stamp{grid-column:1/-1;transform:rotate(-6deg);border:2px solid var(--red);color:#E8836F;padding:clamp(10px,2vw,14px) clamp(12px,2vw,18px);text-align:center;
+  font-family:var(--mono);font-size:clamp(9px,1.2vw,10.5px);letter-spacing:.22em;line-height:1.9;text-transform:uppercase;
+  animation:stamp .5s cubic-bezier(.2,1.5,.4,1) .7s both;width:fit-content;justify-self:start}
+.stamp .b{font-family:var(--bn);letter-spacing:.02em;text-transform:none;font-size:clamp(11px,1.4vw,12px)}
 @keyframes stamp{from{opacity:0;transform:rotate(-6deg) scale(1.8)}to{opacity:1;transform:rotate(-6deg) scale(1)}}
-.metagrid{border-top:1px solid rgba(242,236,223,.2);padding:22px 0 30px;display:grid;gap:0}
-.mrow{display:grid;grid-template-columns:110px 1fr 1fr;gap:24px;padding:11px 0;border-bottom:1px solid rgba(242,236,223,.12)}
+.metagrid{border-top:1px solid rgba(242,236,223,.2);padding:clamp(16px,2.5vw,22px) 0 clamp(20px,3vw,30px);display:grid;gap:0}
+.mrow{display:grid;grid-template-columns:clamp(70px,12vw,110px) 1fr;gap:clamp(12px,2vw,24px);padding:11px 0;border-bottom:1px solid rgba(242,236,223,.12)}
 .mrow:last-child{border-bottom:none}
-.mrow .lab{font-family:var(--mono);font-size:9.5px;letter-spacing:.26em;color:rgba(242,236,223,.55);padding-top:4px}
-.mrow .en{font-size:14.5px}
-.mrow .bn{font-family:var(--bn);font-size:14.5px;line-height:1.9;color:rgba(242,236,223,.85)}
+.mrow .lab{font-family:var(--mono);font-size:clamp(8.5px,1.1vw,9.5px);letter-spacing:.26em;color:rgba(242,236,223,.55);padding-top:4px}
+.mrow .en{font-size:clamp(13px,1.5vw,14.5px)}
+.mrow .bn{font-family:var(--bn);font-size:clamp(13px,1.5vw,14.5px);line-height:1.9;color:rgba(242,236,223,.85)}
 
-/* ============ layout ============ */
-.layout{max-width:1180px;margin:0 auto;padding:44px 32px 90px;display:grid;grid-template-columns:230px 1fr;gap:56px;align-items:start}
-.toc{position:sticky;top:24px}
-.toc h5{font-family:var(--mono);font-size:9.5px;letter-spacing:.3em;color:var(--mut);margin-bottom:14px}
+/* Layout */
+.layout{max-width:1400px;margin:0 auto;padding:clamp(24px,4vw,44px) clamp(16px,4vw,40px) clamp(60px,8vw,90px);display:grid;grid-template-columns:1fr;gap:clamp(24px,4vw,56px)}
+@media (min-width:1081px){.layout{grid-template-columns:clamp(200px,18vw,240px) 1fr}}
+
+.toc{order:2}
+@media (min-width:1081px){.toc{order:1;position:sticky;top:24px}}
+.toc h5{font-family:var(--mono);font-size:clamp(8.5px,1.1vw,9.5px);letter-spacing:.3em;color:var(--mut);margin-bottom:14px}
 .toc h5 .b{font-family:var(--bn);letter-spacing:.05em}
-.toc a{display:flex;gap:10px;align-items:baseline;padding:8px 10px;border-left:2px solid var(--line);color:var(--mut);text-decoration:none;font-size:13px;font-weight:600;transition:.25s}
-.toc a .n{font-family:var(--mono);font-size:10px;font-weight:400}
-.toc a .b{font-family:var(--bn);font-weight:500;font-size:12.5px;color:var(--mut);margin-left:auto;transition:.25s}
+.toc a{display:flex;gap:10px;align-items:baseline;padding:8px 10px;border-left:2px solid var(--line);color:var(--mut);text-decoration:none;font-size:clamp(12px,1.4vw,13px);font-weight:600;transition:.25s}
+.toc a .n{font-family:var(--mono);font-size:clamp(9px,1.1vw,10px);font-weight:400}
+.toc a .b{font-family:var(--bn);font-weight:500;font-size:clamp(11.5px,1.3vw,12.5px);color:var(--mut);margin-left:auto;transition:.25s}
 .toc a:hover{color:var(--ink);border-color:var(--ink)}
 .toc a.on{color:var(--ink);border-color:var(--red);background:var(--red-soft)}
 .toc a.on .b{color:var(--red)}
-.toc .ref{margin-top:22px;font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--mut)}
+.toc .ref{margin-top:22px;font-family:var(--mono);font-size:clamp(8px,1vw,9px);letter-spacing:.2em;color:var(--mut)}
+@media (max-width:1080px){
+  .toc{display:flex;overflow-x:auto;padding:10px 0;gap:6px;margin-bottom:24px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .toc::-webkit-scrollbar{display:none}
+  .toc h5,.toc .ref,.toc a .b{display:none}
+  .toc a{border:1px solid var(--line);border-left:1px solid var(--line);white-space:nowrap;border-radius:999px;padding:7px 14px;flex-shrink:0}
+  .toc a.on{border-color:var(--red)}
+}
 
-/* bilingual blocks */
-.bi{display:grid;grid-template-columns:1fr 1fr;gap:32px}
-.bi .bn{border-left:1px solid var(--line);padding-left:28px}
-.bi .en::before,.bi .bn::before{display:block;font-family:var(--mono);font-size:8.5px;letter-spacing:.3em;color:var(--mut);margin-bottom:8px}
+main{order:3}
+@media (min-width:1081px){main{order:2}}
+
+/* Bilingual */
+.bi{display:grid;grid-template-columns:1fr;gap:clamp(20px,3vw,32px)}
+@media (min-width:761px){.bi{grid-template-columns:1fr 1fr}}
+.bi .bn{border-left:1px solid var(--line);padding-left:clamp(16px,2.5vw,28px)}
+@media (max-width:760px){.bi .bn{border-left:none;padding-left:0;border-top:1px solid var(--hair);padding-top:18px}}
+.bi .en::before,.bi .bn::before{display:block;font-family:var(--mono);font-size:clamp(7.5px,1vw,8.5px);letter-spacing:.3em;color:var(--mut);margin-bottom:8px}
 .bi .en::before{content:"ENGLISH"}
 .bi .bn::before{content:"বাংলা";font-family:var(--bn);letter-spacing:.1em}
-.bi .bn p,.bi .bn h4,.bi .bn li{font-family:var(--bn);font-size:15.5px;line-height:2}
+.bi .bn p,.bi .bn h4,.bi .bn li{font-family:var(--bn);font-size:clamp(14px,1.5vw,15.5px);line-height:2}
 .bi .en p{line-height:1.75}
 .bi p+p,.bi p+p{margin-top:12px}
 
-/* sections */
-section{margin-bottom:72px;scroll-margin-top:70px}
-.shead{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;border-top:3px solid var(--ink);box-shadow:0 5px 0 -4px var(--ink);padding-top:14px;margin-bottom:30px}
-.shead .pno{font-family:var(--mono);font-size:11px;letter-spacing:.24em;color:var(--red)}
-.shead h2{font-family:var(--disp);font-weight:600;font-size:30px;letter-spacing:-.01em}
-.shead .b{font-family:var(--bn);font-size:19px;font-weight:600;color:var(--mut);margin-left:auto}
+/* Sections */
+section{margin-bottom:clamp(40px,6vw,72px);scroll-margin-top:70px}
+.shead{display:flex;align-items:baseline;gap:clamp(10px,2vw,18px);flex-wrap:wrap;border-top:3px solid var(--ink);box-shadow:0 5px 0 -4px var(--ink);padding-top:14px;margin-bottom:clamp(20px,3vw,30px)}
+.shead .pno{font-family:var(--mono);font-size:clamp(10px,1.2vw,11px);letter-spacing:.24em;color:var(--red)}
+.shead h2{font-family:var(--disp);font-weight:600;font-size:clamp(22px,3vw,30px);letter-spacing:-.01em}
+.shead .b{font-family:var(--bn);font-size:clamp(15px,2vw,19px);font-weight:600;color:var(--mut);margin-left:auto}
+@media (max-width:760px){.shead .b{margin-left:0;width:100%}}
 
-/* slide rows */
-.srow{display:grid;grid-template-columns:56px 1fr;gap:20px;padding:20px 6px;border-bottom:1px solid var(--hair);transition:background .3s}
+/* Slide rows */
+.srow{display:grid;grid-template-columns:clamp(40px,6vw,56px) 1fr;gap:clamp(12px,2vw,20px);padding:clamp(14px,2vw,20px) clamp(4px,1vw,6px);border-bottom:1px solid var(--hair);transition:background .3s}
 .srow:hover{background:rgba(21,32,43,.035)}
-.snum{width:48px;height:48px;border:1px solid var(--line);display:grid;place-items:center;font-family:var(--mono);font-size:14px;transition:.3s}
+.snum{width:clamp(36px,5vw,48px);height:clamp(36px,5vw,48px);border:1px solid var(--line);display:grid;place-items:center;font-family:var(--mono);font-size:clamp(12px,1.4vw,14px);transition:.3s}
 .srow:hover .snum{background:var(--red);border-color:var(--red);color:var(--cream)}
-.sbody h4{font-family:var(--disp);font-size:19px;font-weight:600;margin-bottom:8px}
-.sbody .bn h4{font-family:var(--bn);font-size:17px}
+.sbody h4{font-family:var(--disp);font-size:clamp(16px,2vw,19px);font-weight:600;margin-bottom:8px}
+.sbody .bn h4{font-family:var(--bn);font-size:clamp(15px,1.8vw,17px)}
 .stacked span{display:block}
 .stacked .b span{font-family:var(--bn);line-height:1.95}
 
-/* guidelines */
-.rule{display:grid;grid-template-columns:56px 1fr;gap:20px;padding:20px 0;border-bottom:1px solid var(--hair)}
-.rule .rn{font-family:var(--disp);font-size:30px;font-weight:600;color:var(--red);line-height:1}
-.rule h4{font-size:16px;font-weight:700}
-.rule h4 .b{font-family:var(--bn);font-weight:600;color:var(--mut);font-size:15px}
-.rule .bi{margin-top:10px;grid-template-columns:1fr 1fr;gap:26px}
-.notice{margin-top:28px;border:2px solid var(--red);background:var(--red-soft);padding:22px 26px;display:grid;grid-template-columns:1fr 1fr;gap:28px;position:relative}
-.notice::before{content:"NOTICE · দ্রষ্টব্য";position:absolute;top:-11px;left:18px;background:var(--paper);padding:0 10px;font-family:var(--mono);font-size:9.5px;letter-spacing:.26em;color:var(--red)}
+/* Guidelines */
+.rule{display:grid;grid-template-columns:clamp(40px,6vw,56px) 1fr;gap:clamp(12px,2vw,20px);padding:clamp(14px,2vw,20px) 0;border-bottom:1px solid var(--hair)}
+.rule .rn{font-family:var(--disp);font-size:clamp(24px,3.5vw,30px);font-weight:600;color:var(--red);line-height:1}
+.rule h4{font-size:clamp(14.5px,1.7vw,16px);font-weight:700}
+.rule h4 .b{font-family:var(--bn);font-weight:600;color:var(--mut);font-size:clamp(13.5px,1.6vw,15px)}
+.rule .bi{margin-top:10px;grid-template-columns:1fr 1fr;gap:clamp(16px,2.5vw,26px)}
+.notice{margin-top:clamp(20px,3vw,28px);border:2px solid var(--red);background:var(--red-soft);padding:clamp(16px,2.5vw,22px) clamp(18px,3vw,26px);display:grid;grid-template-columns:1fr;gap:clamp(16px,2.5vw,28px);position:relative}
+@media (min-width:761px){.notice{grid-template-columns:1fr 1fr}}
+.notice::before{content:"NOTICE · দ্রষ্টব্য";position:absolute;top:-11px;left:18px;background:var(--paper);padding:0 10px;font-family:var(--mono);font-size:clamp(8.5px,1.1vw,9.5px);letter-spacing:.26em;color:var(--red)}
 .notice .en{font-weight:600}
 .notice .bn{font-family:var(--bn);line-height:2;font-weight:600}
 
-/* club cards */
-.club{border:1px solid var(--line);background:#FBF7EC;margin-bottom:22px;transition:transform .35s var(--ease),border-color .35s,box-shadow .35s}
+/* Club cards */
+.club{border:1px solid var(--line);background:#FBF7EC;margin-bottom:clamp(16px,2.5vw,22px);transition:transform .35s var(--ease),border-color .35s,box-shadow .35s}
 .club:hover{transform:translateY(-3px);border-color:var(--ink);box-shadow:0 14px 30px rgba(21,32,43,.08)}
-.club header{display:flex;align-items:center;gap:16px;padding:18px 22px;border-bottom:1px solid var(--hair)}
-.mono-ic{width:46px;height:46px;border:1px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-size:9.5px;flex:none;transition:.3s}
+.club header{display:flex;align-items:center;gap:clamp(10px,1.5vw,16px);padding:clamp(14px,2vw,18px) clamp(16px,2.5vw,22px);border-bottom:1px solid var(--hair);flex-wrap:wrap}
+.mono-ic{width:clamp(38px,5vw,46px);height:clamp(38px,5vw,46px);border:1px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-size:clamp(8.5px,1.1vw,9.5px);flex:none;transition:.3s}
 .club:hover .mono-ic{background:var(--ink);color:var(--cream)}
-.club h3{font-family:var(--disp);font-size:20px;font-weight:600;line-height:1.2}
-.club h3 .b{display:block;font-family:var(--bn);font-size:14.5px;font-weight:600;color:var(--mut)}
-.range{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--red);border:1px solid var(--red);padding:5px 10px;white-space:nowrap}
-.crow{display:grid;grid-template-columns:48px 1fr 1fr;gap:22px;padding:11px 22px;border-top:1px solid var(--hair);font-size:14px;transition:background .25s}
+.club h3{font-family:var(--disp);font-size:clamp(17px,2.2vw,20px);font-weight:600;line-height:1.2}
+.club h3 .b{display:block;font-family:var(--bn);font-size:clamp(13px,1.6vw,14.5px);font-weight:600;color:var(--mut)}
+.range{margin-left:auto;font-family:var(--mono);font-size:clamp(9px,1.1vw,10px);letter-spacing:.18em;color:var(--red);border:1px solid var(--red);padding:5px 10px;white-space:nowrap}
+.crow{display:grid;grid-template-columns:clamp(32px,5vw,48px) 1fr;gap:clamp(12px,2vw,22px);padding:11px clamp(16px,2.5vw,22px);border-top:1px solid var(--hair);font-size:clamp(12.5px,1.5vw,14px);transition:background .25s}
+@media (min-width:761px){.crow{grid-template-columns:clamp(32px,5vw,48px) 1fr 1fr}}
 .crow:first-of-type{border-top:none}
 .crow:hover{background:var(--red-soft)}
-.crow .n{font-family:var(--mono);font-size:11.5px;color:var(--mut);padding-top:2px}
-.crow .b{font-family:var(--bn);font-size:14px;line-height:1.9;color:#3C4A57}
+.crow .n{font-family:var(--mono);font-size:clamp(10.5px,1.3vw,11.5px);color:var(--mut);padding-top:2px}
+.crow .b{font-family:var(--bn);font-size:clamp(12.5px,1.5vw,14px);line-height:1.9;color:#3C4A57}
 
-/* action + footer */
-.actionbox{border-left:4px solid var(--red);background:#FBF7EC;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:28px 30px}
-footer{border-top:3px solid var(--ink);padding-top:34px;display:grid;grid-template-columns:1fr 1fr;gap:40px}
-.sig .line{height:1px;background:var(--ink);width:240px;margin:34px 0 10px}
-.sig .nm{font-family:var(--disp);font-style:italic;font-size:20px;font-weight:600}
-.sig .rl{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;color:var(--mut);margin-top:6px;text-transform:uppercase}
-.sig .rlb{font-family:var(--bn);font-size:12.5px;color:var(--mut);margin-top:4px}
-.colophon{grid-column:1/-1;margin-top:14px;padding-top:18px;border-top:1px solid var(--hair);font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;color:var(--mut);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+/* Action + footer */
+.actionbox{border-left:4px solid var(--red);background:#FBF7EC;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:clamp(18px,2.5vw,28px) clamp(20px,3vw,30px)}
+footer{border-top:3px solid var(--ink);padding-top:clamp(24px,3.5vw,34px);display:grid;grid-template-columns:1fr;gap:clamp(24px,4vw,40px)}
+@media (min-width:761px){footer{grid-template-columns:1fr 1fr}}
+.sig .line{height:1px;background:var(--ink);width:clamp(180px,30vw,240px);margin:clamp(24px,3.5vw,34px) 0 10px}
+.sig .nm{font-family:var(--disp);font-style:italic;font-size:clamp(17px,2.2vw,20px);font-weight:600}
+.sig .rl{font-family:var(--mono);font-size:clamp(8.5px,1.1vw,9.5px);letter-spacing:.22em;color:var(--mut);margin-top:6px;text-transform:uppercase}
+.sig .rlb{font-family:var(--bn);font-size:clamp(11.5px,1.4vw,12.5px);color:var(--mut);margin-top:4px}
+.colophon{grid-column:1/-1;margin-top:14px;padding-top:18px;border-top:1px solid var(--hair);font-family:var(--mono);font-size:clamp(8px,1vw,9.5px);letter-spacing:.18em;color:var(--mut);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
-/* reveal */
+/* Reveal */
 .rev{opacity:0;transform:translateY(16px);transition:opacity .7s var(--ease),transform .7s var(--ease);transition-delay:calc(var(--d,0)*70ms)}
 .rev.in{opacity:1;transform:none}
 
-/* responsive */
-@media (max-width:1080px){
-  .layout{grid-template-columns:1fr;gap:0;padding-top:0}
-  .toc{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1px solid var(--line);display:flex;overflow-x:auto;padding:10px 16px;gap:6px;margin:0 -32px 36px}
-  .toc h5,.toc .ref,.toc a .b{display:none}
-  .toc a{border:1px solid var(--line);border-left:1px solid var(--line);white-space:nowrap;border-radius:999px;padding:7px 14px}
-  .toc a.on{border-color:var(--red)}
-  .mastgrid{grid-template-columns:auto 1fr}
-  .stamp{grid-column:1/-1;justify-self:start}
-}
-@media (max-width:760px){
-  .bi,.notice,footer{grid-template-columns:1fr}
-  .bi .bn{border-left:none;padding-left:0;border-top:1px solid var(--hair);padding-top:18px}
-  .mrow{grid-template-columns:1fr;gap:6px}
-  .crow{grid-template-columns:40px 1fr}
-  .crow .b{grid-column:2}
-  .shead .b{margin-left:0;width:100%}
-}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
   html{scroll-behavior:auto}
@@ -182,7 +181,6 @@ footer{border-top:3px solid var(--ink);padding-top:34px;display:grid;grid-templa
   </symbol>
 </svg>
 
-<!-- ============ MASTHEAD ============ -->
 <header class="mast">
   <div class="wrap">
     <div class="docbar">
@@ -205,15 +203,14 @@ footer{border-top:3px solid var(--ink);padding-top:34px;display:grid;grid-templa
       </div>
     </div>
     <div class="metagrid">
-      <div class="mrow"><span class="lab">TO</span><span class="en">All Club Executives, University Laboratory School and College</span><span class="bn">সকল ক্লাব নির্বাহী সদস্য, ইউনিভার্সিটি ল্যাবরেটরি স্কুল অ্যান্ড কলেজ</span></div>
-      <div class="mrow"><span class="lab">FROM</span><span class="en">Sazidur Rahman, Project Lead and Developer</span><span class="bn">সাজিদুর রহমান, প্রজেক্ট লিড ও ডেভেলপার</span></div>
-      <div class="mrow"><span class="lab">SUBJECT</span><span class="en">Presentation Structure and Content Requirements for "The Future of Clubs"</span><span class="bn">"দ্য ফিউচার অব ক্লাবস" উপস্থাপনার কাঠামো ও বিষয়বস্তুর আবশ্যকতা</span></div>
+      <div class="mrow"><span class="lab">TO</span><div class="en">All Club Executives, University Laboratory School and College</div><div class="bn">সকল ক্লাব নির্বাহী সদস্য, ইউনিভার্সিটি ল্যাবরেটরি স্কুল অ্যান্ড কলেজ</div></div>
+      <div class="mrow"><span class="lab">FROM</span><div class="en">Sazidur Rahman, Project Lead and Developer</div><div class="bn">সাজিদুর রহমান, প্রজেক্ট লিড ও ডেভেলপার</div></div>
+      <div class="mrow"><span class="lab">SUBJECT</span><div class="en">Presentation Structure and Content Requirements for "The Future of Clubs"</div><div class="bn">"দ্য ফিউচার অব ক্লাবস" উপস্থাপনার কাঠামো ও বিষয়বস্তুর আবশ্যকতা</div></div>
     </div>
   </div>
 </header>
 
 <div class="layout">
-  <!-- ============ CONTENTS ============ -->
   <nav class="toc" id="toc">
     <h5>CONTENTS · <span class="b">সূচি</span></h5>
     <a href="#overview"><span class="n">01</span>Overview<span class="b">সারসংক্ষেপ</span></a>
@@ -226,7 +223,6 @@ footer{border-top:3px solid var(--ink);padding-top:34px;display:grid;grid-templa
   </nav>
 
   <main>
-    <!-- ============ 01 OVERVIEW ============ -->
     <section id="overview">
       <div class="shead rev"><span class="pno">01</span><h2>Project Overview and Technical Format</h2><span class="b">প্রকল্প সারসংক্ষেপ ও প্রযুক্তিগত ফরম্যাট</span></div>
       <div class="bi rev">
@@ -241,7 +237,6 @@ footer{border-top:3px solid var(--ink);padding-top:34px;display:grid;grid-templa
       </div>
     </section>
 
-    <!-- ============ 02 GUIDELINES ============ -->
     <section id="guidelines">
       <div class="shead rev"><span class="pno">02</span><h2>Guidelines for Executive Input</h2><span class="b">নির্বাহী মতামতের নির্দেশনা</span></div>
       <div class="bi rev" style="margin-bottom:22px">
@@ -283,7 +278,6 @@ footer{border-top:3px solid var(--ink);padding-top:34px;display:grid;grid-templa
       </div>
     </section>
 
-    <!-- ============ 03 PART 1 ============ -->
     <section id="part1">
       <div class="shead rev"><span class="pno">PART 1</span><h2>The Introduction, Slides 1 to 8</h2><span class="b">পর্ব ১: সূচনা (স্লাইড ১-৮)</span></div>
 
@@ -309,7 +303,7 @@ footer{border-top:3px solid var(--ink);padding-top:34px;display:grid;grid-templa
 
       <article class="srow rev"><div class="snum">05</div><div class="sbody bi">
         <div class="en"><h4>The Initiative</h4><p>January 2025. Our commitment to collaboration and structure led to a pivotal moment. The ICT Club took the initiative to establish the United Club Association, an organization designed to manage and unify all clubs within the institution, positioning our community as a leader in student governance and innovation.</p></div>
-        <div class="bn"><h4>উদ্যোগ</h4><p>জানুয়ারি ২০২। সহযোগিতা ও কাঠামোর প্রতি আমাদের অঙ্গীকারই নিয়ে আসে এক গুরুত্বপূর্ণ মুহূর্ত। আইসিটি ক্লাবের উদ্যোগে প্রতিষ্ঠিত হয় ইউনাইটেড ক্লাব অ্যাসোসিয়েশন; প্রতিষ্ঠানের সব ক্লাবকে পরিচালনা ও ঐক্যবদ্ধ করার লক্ষ্যে গঠিত এ সংগঠনটি শিক্ষার্থীদের নেতৃত্ব ও উদ্ভাবনে আমাদের কমিউনিটিকে অগ্রণী ভূমিকায় প্রতিষ্ঠিত করে।</p></div>
+        <div class="bn"><h4>উদ্যোগ</h4><p>জানুয়ারি ২০২৫। সহযোগিতা ও কাঠামোর প্রতি আমাদের অঙ্গীকারই নিয়ে আসে এক গুরুত্বপূর্ণ মুহূর্ত। আইসিটি ক্লাবের উদ্যোগে প্রতিষ্ঠিত হয় ইউনাইটেড ক্লাব অ্যাসোসিয়েশন; প্রতিষ্ঠানের সব ক্লাবকে পরিচালনা ও ঐক্যবদ্ধ করার লক্ষ্যে গঠিত এ সংগঠনটি শিক্ষার্থীদের নেতৃত্ব ও উদ্ভাবনে আমাদের কমিউনিটিকে অগ্রণী ভূমিকায় প্রতিষ্ঠিত করে।</p></div>
       </div></article>
 
       <article class="srow rev"><div class="snum">06</div><div class="sbody bi">
@@ -319,16 +313,15 @@ footer{border-top:3px solid var(--ink);padding-top:34px;display:grid;grid-templa
 
       <article class="srow rev"><div class="snum">07</div><div class="sbody bi">
         <div class="en"><h4>Evolution and Digital Era</h4><p>Mid-November 2024: The Foundation. The journey began as the United Club Organization with a focused mandate to serve as a unified central body supporting all campus clubs.</p><p>January 2025: The Rebirth. The organization rebranded to the United Club Association to reflect a more dynamic identity. Founder Sazidur Rahman architected and launched the comprehensive online infrastructure, marking the dawn of the digital era.</p></div>
-        <div class="bn"><h4>বিবর্তন ও ডিজিটাল যুগ</h4><p>নভেম্বর ২০২-এর মাঝামাঝি: ভিত্তি স্থাপন। ইউনাইটেড ক্লাব অর্গানাইজেশন নামে যাত্রা শুরু, যার সুনির্দিষ্ট দায়িত্ব ছিল ক্যাম্পাসের সব ক্লাবকে সহায়তা করা একটি ঐক্যবদ্ধ কেন্দ্রীয় সংগঠন হিসেবে কাজ করা।</p><p>জানুয়ারি ২০২: পুনর্জন্ম। আরও প্রাণবন্ত পরিচয়ের প্রতিফলনে সংগঠনটির নাম পরিবর্তন করে রাখা হয় ইউনাইটেড ক্লাব অ্যাসোসিয়েশন। প্রতিষ্ঠাতা সাজিদুর রহমান পূর্ণাঙ্গ অনলাইন অবকাঠামো পরিকল্পনা ও উদ্বোধন করেন, যা আমাদের ডিজিটাল যুগের সূচনা চিহ্নিত করে।</p></div>
+        <div class="bn"><h4>বিবর্তন ও ডিজিটাল যুগ</h4><p>নভেম্বর ২০২৪-এর মাঝামাঝি: ভিত্তি স্থাপন। ইউনাইটেড ক্লাব অর্গানাইজেশন নামে যাত্রা শুরু, যার সুনির্দিষ্ট দায়িত্ব ছিল ক্যাম্পাসের সব ক্লাবকে সহায়তা করা একটি ঐক্যবদ্ধ কেন্দ্রীয় সংগঠন হিসেবে কাজ করা।</p><p>জানুয়ারি ২০২৫: পুনর্জন্ম। আরও প্রাণবন্ত পরিচয়ের প্রতিফলনে সংগঠনটির নাম পরিবর্তন করে রাখা হয় ইউনাইটেড ক্লাব অ্যাসোসিয়েশন। প্রতিষ্ঠাতা সাজিদুর রহমান পূর্ণাঙ্গ অনলাইন অবকাঠামো পরিকল্পনা ও উদ্বোধন করেন, যা আমাদের ডিজিটাল যুগের সূচনা চিহ্নিত করে।</p></div>
       </div></article>
 
       <article class="srow rev"><div class="snum">08</div><div class="sbody bi">
-        <div class="en"><h4>Expansion and Archiving</h4><p>August 2025: The Nationwide Expansion. Driven by the goal to unify the student landscape, the association prepared to operate independently, shifting from a single campus entity to a nationwide platform connecting institutional clubs across Bangladesh.</p><p>Structural Archiving. The original association social media pages were rebranded as the ULAB Club Organization and placed under the administration of the Photography Club. The official website, email, and WhatsApp channels remain under the independent authority of the United Club Association. The rebranded social pages serve strictly as a historical archive managed solely by the Photography Club.</p></div>
-        <div class="bn"><h4>সম্প্রসারণ ও আর্কাইভিং</h4><p>আগস্ট ২০২: সারাদেশে সম্প্রসারণ। শিক্ষার্থীদের অঙ্গনকে ঐক্যবদ্ধ করার লক্ষ্যে অ্যাসোসিয়েশন স্বাধীনভাবে পরিচালনার প্রস্তুতি নেয়; এক ক্যাম্পাসের সত্তা থেকে রূপান্তরিত হয়ে সারাদেশের প্ল্যাটফর্মে পরিণত হওয়ার লক্ষ্যে বাংলাদেশের সব প্রতিষ্ঠানের ক্লাবকে সংযুক্ত করার উদ্যোগ নেয়।</p><p>কাঠামোগত আর্কাইভিং। অ্যাসোসিয়েশনের মূল সোশ্যাল মিডিয়া পেজগুলো ইউএলএবি ক্লাব অর্গানাইজেশন নামে পুনঃব্র্যান্ড করে ফটোগ্রাফি ক্লাবের ব্যবস্থাপনায় ন্যস্ত করা হয়। অফিসিয়াল ওয়েবসাইট, ইমেইল ও হোয়াটসঅ্যাপ চ্যানেল ইউনাইটেড ক্লাব অ্যাসোসিয়েশনের স্বাধীন এখতিয়ারেই থাকবে। পুনঃব্র্যান্ডকৃত সোশ্যাল পেজগুলো কেবল একটি ঐতিহাসিক আর্কাইভ হিসেবে কাজ করবে, যার ব্যবস্থাপনার একক দায়িত্বে থাকবে ফটোগ্রাফি ক্লাব।</p></div>
+        <div class="en"><h4>Expansion and Archiving</h4><p>August 2025: The Nationwide Expansion. Driven by the goal to unify the student landscape, the association prepared to operate independently, shifting from a single campus entity to a nationwide platform connecting institutional clubs across Bangladesh.</p><p>August 2026: Structural Archiving. The original association social media pages were rebranded as the ULAB Club Organization and placed under the administration of the Photography Club. The official website, email, and WhatsApp channels remain under the independent authority of the United Club Association. The rebranded social pages serve strictly as a historical archive managed solely by the Photography Club.</p></div>
+        <div class="bn"><h4>সম্প্রসারণ ও আর্কাইভিং</h4><p>আগস্ট ২০২৫: সারাদেশে সম্প্রসারণ। শিক্ষার্থীদের অঙ্গনকে ঐক্যবদ্ধ করার লক্ষ্যে অ্যাসোসিয়েশন স্বাধীনভাবে পরিচালনার প্রস্তুতি নেয়; এক ক্যাম্পাসের সত্তা থেকে রূপান্তরিত হয়ে সারাদেশের প্ল্যাটফর্মে পরিণত হওয়ার লক্ষ্যে বাংলাদেশের সব প্রতিষ্ঠানের ক্লাবকে সংযুক্ত করার উদ্যোগ নেয়।</p><p>আগস্ট ২০২৬: কাঠামোগত আর্কাইভিং। অ্যাসোসিয়েশনের মূল সোশ্যাল মিডিয়া পেজগুলো ইউল্যাব ক্লাব অর্গানাইজেশন নামে পুনঃব্র্যান্ড করে ফটোগ্রাফি ক্লাবের ব্যবস্থাপনায় ন্যস্ত করা হয়। অফিসিয়াল ওয়েবসাইট, ইমেইল ও হোয়াটসঅ্যাপ চ্যানেল ইউনাইটেড ক্লাব অ্যাসোসিয়েশনের স্বাধীন এখতিয়ারেই থাকবে। পুনঃব্র্যান্ডকৃত সোশ্যাল পেজগুলো কেবল একটি ঐতিহাসিক আর্কাইভ হিসেবে কাজ করবে, যার ব্যবস্থাপনার একক দায়িত্বে থাকবে ফটোগ্রাফি ক্লাব।</p></div>
       </div></article>
     </section>
 
-    <!-- ============ 04 PART 2 ============ -->
     <section id="part2">
       <div class="shead rev"><span class="pno">PART 2</span><h2>The Nine Clubs, Slides 9 to 42</h2><span class="b">পর্ব ২: নয় ক্লাব (স্লাইড ৯-৪২)</span></div>
 
@@ -402,7 +395,6 @@ footer{border-top:3px solid var(--ink);padding-top:34px;display:grid;grid-templa
       </article>
     </section>
 
-    <!-- ============ 05 PART 3 ============ -->
     <section id="part3">
       <div class="shead rev"><span class="pno">PART 3</span><h2>Institutional Leadership and Conclusion, Slides 43 to 46</h2><span class="b">পর্ব ৩: প্রাতিষ্ঠানিক নেতৃত্ব ও উপসংহার (স্লাইড ৪৩-৪৬)</span></div>
 
@@ -414,13 +406,12 @@ footer{border-top:3px solid var(--ink);padding-top:34px;display:grid;grid-templa
         <div class="en"><h4>Word from the Principal</h4><p>Text and portrait to be provided by the administration.</p></div>
         <div class="bn"><h4>অধ্যক্ষের বাণী</h4><p>লেখা ও ছবি প্রশাসনের পক্ষ থেকে প্রদান করা হবে।</p></div>
       </div></article>
-      <article class="srow rev"><div class="snum">45</div><div class="sbody bi">
-        <div class="en"><h4>Conclusion</h4><p>Ending words from the Head of Media Departments. Final acknowledgments, thank you message, and closing credits.</p></div>
-        <div class="bn"><h4>উপসংহার</h4><p>মিডিয়া বিভাগসমূহের প্রধানের সমাপনী বক্তব্য। সর্বশেষ কৃতজ্ঞতা স্বীকার, ধন্যবাদ বার্তা ও সমাপনী ক্রেডিট।</p></div>
+      <article class="srow rev"><div class="snum">45-46</div><div class="sbody bi">
+        <div class="en"><h4>Conclusion</h4><p>Ending words from the Head of Media Department, Sajid Islam Mahin, who will host the entire presentation. Final acknowledgments, thank you message, and closing credits.</p></div>
+        <div class="bn"><h4>উপসংহার</h4><p>মিডিয়া বিভাগের প্রধান সাজিদ ইসলাম মাহিনের সমাপনী বক্তব্য, যিনি সম্পূর্ণ উপস্থাপনাটি সঞ্চালনা করবেন। সর্বশেষ কৃতজ্ঞতা স্বীকার, ধন্যবাদ বার্তা ও সমাপনী ক্রেডিট।</p></div>
       </div></article>
     </section>
 
-    <!-- ============ 06 ACTION ============ -->
     <section id="action">
       <div class="shead rev"><span class="pno">06</span><h2>Action Required</h2><span class="b">করণীয়</span></div>
       <div class="actionbox rev"><div class="bi">
@@ -438,9 +429,9 @@ footer{border-top:3px solid var(--ink);padding-top:34px;display:grid;grid-templa
       </div>
       <div class="sig">
         <div class="line"></div>
-        <p class="nm" style="font-style:normal;font-family:var(--bn)">স্বাক্ষর ও তারিখ</p>
-        <p class="rl">SIGNATURE AND DATE</p>
-        <p class="rlb">নথিভুক্তির জন্য সংরক্ষিত কপি</p>
+        <p class="nm">Sajid Islam Mahin</p>
+        <p class="rl">HOST AND HEAD OF MEDIA DEPARTMENT</p>
+        <p class="rlb">সাজিদ ইসলাম মাহিন · উপস্থাপক ও মিডিয়া বিভাগের প্রধান</p>
       </div>
       <div class="colophon">
         <span>ULSC/UCA/2026-08 · MEMORANDUM · SINGLE PAGE</span>
@@ -455,7 +446,6 @@ footer{border-top:3px solid var(--ink);padding-top:34px;display:grid;grid-templa
   var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
   requestAnimationFrame(function(){ document.body.classList.add('loaded'); });
 
-  /* scroll reveals */
   var revs = document.querySelectorAll('.rev');
   if(RM || !('IntersectionObserver' in window)){
     revs.forEach(function(el){ el.classList.add('in'); });
@@ -466,7 +456,6 @@ footer{border-top:3px solid var(--ink);padding-top:34px;display:grid;grid-templa
     revs.forEach(function(el){ io.observe(el); });
   }
 
-  /* reading progress */
   var bar = document.querySelector('#pbar i');
   function prog(){
     var h = document.documentElement;
@@ -475,7 +464,6 @@ footer{border-top:3px solid var(--ink);padding-top:34px;display:grid;grid-templa
   }
   addEventListener('scroll', prog, {passive:true}); prog();
 
-  /* contents scrollspy */
   var links = [].slice.call(document.querySelectorAll('.toc a'));
   var secs = [].slice.call(document.querySelectorAll('main section[id]'));
   if('IntersectionObserver' in window){
