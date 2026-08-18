@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>University Laboratory Sports Club</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin>
+  <link href="https://fonts.cdnfonts.com/css/final-front" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/imperfecta" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/figure-things" rel="stylesheet">
+
+  <style>
+    :root {
+      --paper: #f7f4ee;
+      --paper-2: #ece7db;
+      --white: #ffffff;
+
+      --ink: #221531;
+      --ink-2: #37244f;
+      --muted: #6f6382;
+      --line: rgba(34, 21, 49, 0.16);
+
+      --iris: #6d4aa0;
+      --gold: #d7a83f;
+      --lavender: #b8a2da;
+      --deep: #281441;
+      --deep-2: #190c2a;
+
+      --font-main: 'Final Front', 'Imperfecta', sans-serif;
+      --font-sub: 'Imperfecta', 'Figure Things', sans-serif;
+      --font-body: 'Figure Things', 'Imperfecta', sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    *::-webkit-scrollbar {
+      display: none;
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+      background: var(--iris);
+      color: #fff;
+    }
+
+    button {
+      font-family: var(--font-sub);
+    }
+
+    .ui {
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    body.ui-hidden .ui,
+    body.focus-mode .ui {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+    }
+
+    .progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      z-index: 45;
+      background: rgba(34, 21, 49, 0.08);
+    }
+
+    #progressBar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--iris), var(--gold));
+    }
+
+    .deck {
+      position: fixed;
+      inset: 0;
+      background: var(--paper);
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      background:
+        radial-gradient(circle at top right, rgba(109, 74, 160, 0.07), transparent 26%),
+        radial-gradient(circle at bottom left, rgba(215, 168, 63, 0.06), transparent 22%),
+        var(--paper);
+    }
+
+    .slide.active {
+      visibility: visible;
+      z-index: 2;
+    }
+
+    .slide.dark {
+      background:
+        radial-gradient(circle at 18% 20%, rgba(109, 74, 160, 0.24), transparent 28%),
+        radial-gradient(circle at 82% 78%, rgba(215, 168, 63, 0.14), transparent 24%),
+        linear-gradient(135deg, var(--deep-2), var(--deep) 55%, var(--deep-2));
+      color: #f4f1e8;
+    }
+
+    .frame {
+      position: relative;
+      width: min(1560px, 94vw);
+      height: 100vh;
+      height: 100dvh;
+      margin: 0 auto;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      padding: clamp(18px, 3vh, 36px) 0 clamp(14px, 2.4vh, 26px);
+    }
+
+    .slide-top {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: clamp(10px, 1.6vh, 16px);
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .dark .slide-top {
+      border-bottom-color: rgba(244, 241, 232, 0.88);
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      font-size: min(1.5vh, 13px);
+      color: var(--ink);
+    }
+
+    .dark .section-label {
+      color: #f4f1e8;
+    }
+
+    .accent-square {
+      width: 8px;
+      height: 8px;
+      background: var(--iris);
+      transform: rotate(45deg);
+      flex: 0 0 auto;
+    }
+
+    .slide-count {
+      font-family: var(--font-body);
+      color: var(--muted);
+      font-size: min(1.8vh, 15px);
+      letter-spacing: 0.08em;
+    }
+
+    .dark .slide-count {
+      color: rgba(244, 241, 232, 0.58);
+    }
+
+    .slide-body {
+      position: relative;
+      z-index: 1;
+      min-height: 0;
+      display: grid;
+      align-content: center;
+      gap: clamp(14px, 2.8vh, 30px);
+      padding: clamp(12px, 3vh, 28px) 0;
+    }
+
+    .heading {
+      margin: 0;
+      max-width: 20ch;
+      font-family: var(--font-main);
+      font-size: min(5.2vw, 6.5vh, 4.2rem);
+      line-height: 1;
+      color: var(--deep);
+      text-wrap: balance;
+    }
+
+    .dark .heading {
+      color: #fff;
+    }
+
+    .subheading {
+      margin: 0;
+      max-width: 72ch;
+      font-family: var(--font-sub);
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: min(1.9vw, 2.5vh, 1.22rem);
+    }
+
+    .dark .subheading {
+      color: rgba(244, 241, 232, 0.72);
+    }
+
+    .rule {
+      width: min(220px, 24vw);
+      height: 2px;
+      background: linear-gradient(90deg, var(--iris), var(--gold));
+      transform-origin: left center;
+    }
+
+    .anim-line {
+      transform: scaleX(0);
+    }
+
+    .mini-label {
+      font-family: var(--font-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: min(1.7vh, 12px);
+      color: var(--iris);
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: clamp(22px, 3vw, 48px);
+      align-items: start;
+    }
+
+    .stack {
+      min-width: 0;
+      display: grid;
+      gap: clamp(12px, 2vh, 18px);
+      align-content: start;
+    }
+
+    .statement {
+      margin: 0;
+      max-width: 24ch;
+      font-family: var(--font-sub);
+      font-size: min(3.2vw, 4.4vh, 2.4rem);
+      line-height: 1.28;
+      color: var(--deep);
+      text-wrap: balance;
+    }
+
+    .rows {
+      display: grid;
+      gap: clamp(8px, 1.7vh, 18px);
+      min-height: 0;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: clamp(56px, 6vw, 88px) minmax(0, 1fr);
+      gap: clamp(14px, 2vw, 28px);
+      align-items: start;
+      padding: clamp(10px, 1.7vh, 16px) 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .row:last-child {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .row-num,
+    .future-index,
+    .roster-index {
+      font-family: var(--font-body);
+      color: var(--iris);
+      font-size: min(2.4vh, 24px);
+      line-height: 1;
+    }
+
+    .row h3,
+    .future-item h3,
+    .roster-name {
+      margin: 0 0 6px;
+      font-family: var(--font-sub);
+      font-size: min(2.7vh, 1.5rem);
+      line-height: 1.18;
+      color: var(--ink);
+    }
+
+    .dark .row h3,
+    .dark .future-item h3,
+    .dark .roster-name {
+      color: #fff;
+    }
+
+    .row p,
+    .future-item p,
+    .roster-role,
+    .roster-note {
+      margin: 0;
+      color: var(--muted);
+      font-family: var(--font-body);
+      line-height: 1.7;
+      font-size: min(2.1vh, 1.04rem);
+    }
+
+    .dark .row p,
+    .dark .future-item p,
+    .dark .roster-role,
+    .dark .roster-note {
+      color: rgba(244, 241, 232, 0.74);
+    }
+
+    .future-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(16px, 2.4vw, 30px);
+      align-items: start;
+    }
+
+    .future-item {
+      padding-top: clamp(12px, 2vh, 18px);
+      border-top: 2px solid rgba(34, 21, 49, 0.18);
+    }
+
+    .roster-grid {
+      display: grid;
+      gap: clamp(12px, 2vh, 18px);
+    }
+
+    .roster-grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .roster-grid.five {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .roster-item {
+      padding-top: clamp(12px, 2vh, 18px);
+      border-top: 2px solid rgba(34, 21, 49, 0.18);
+    }
+
+    .roster-role {
+      margin-bottom: 8px;
+      font-family: var(--font-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: min(1.7vh, 12px);
+      color: var(--iris);
+    }
+
+    .roster-note {
+      display: block;
+      margin-top: 6px;
+      font-size: min(1.8vh, 0.92rem);
+      color: var(--muted);
+    }
+
+    .slide-foot {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-top: clamp(8px, 1.4vh, 12px);
+      border-top: 1px solid rgba(34, 21, 49, 0.12);
+      font-family: var(--font-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      font-size: min(1.4vh, 10.5px);
+    }
+
+    .dark .slide-foot {
+      border-top-color: rgba(244, 241, 232, 0.12);
+      color: rgba(244, 241, 232, 0.56);
+    }
+
+    /* Title + Ending background */
+    .slide.title {
+      background:
+        radial-gradient(circle at 18% 22%, rgba(109, 74, 160, 0.26), transparent 30%),
+        radial-gradient(circle at 82% 78%, rgba(215, 168, 63, 0.16), transparent 24%),
+        linear-gradient(135deg, var(--deep-2), var(--deep) 55%, var(--deep-2));
+      color: #f4f1e8;
+    }
+
+    .slide.title::before,
+    .slide.end::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(215, 168, 63, 0.14), transparent 34%),
+        repeating-linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.035) 0 2px,
+          transparent 2px 88px
+        );
+      pointer-events: none;
+    }
+
+    .slide.title::after,
+    .slide.end::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -24vh;
+      width: 130vw;
+      height: 58vh;
+      transform: translateX(-50%);
+      border-radius: 50% 50% 0 0;
+      border-top: 1px solid rgba(215, 168, 63, 0.18);
+      background: radial-gradient(circle at 50% 0%, rgba(109, 74, 160, 0.22), transparent 62%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .slide.title .frame,
+    .slide.end .frame {
+      grid-template-rows: 1fr;
+      place-items: center;
+      padding: 0;
+      z-index: 1;
+    }
+
+    .title-stage,
+    .end-stage {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      justify-items: center;
+      gap: clamp(20px, 4.5vh, 42px);
+      text-align: center;
+      width: min(92vw, 1200px);
+    }
+
+    .logo-badge {
+      position: relative;
+      width: min(22vh, 20vw, 220px);
+      aspect-ratio: 1 / 1;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #fff;
+      padding: 14px;
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.18),
+        0 0 0 1px rgba(255, 255, 255, 0.14);
+    }
+
+    .logo-badge img {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+
+    .logo-ring,
+    .logo-ring-dashed {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .logo-ring {
+      inset: -12px;
+      border: 1px solid rgba(184, 162, 218, 0.48);
+    }
+
+    .logo-ring-dashed {
+      inset: -24px;
+      border: 1px dashed rgba(215, 168, 63, 0.38);
+      animation: slowSpin 18s linear infinite;
+    }
+
+    @keyframes slowSpin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .title-name {
+      margin: 0;
+      font-family: var(--font-main);
+      font-size: min(8vw, 9.5vh, 6.6rem);
+      line-height: 0.96;
+      color: #fff;
+      text-wrap: balance;
+    }
+
+    .title-name .line {
+      display: block;
+      overflow: hidden;
+      padding-bottom: 0.06em;
+    }
+
+    .title-name .line > span {
+      display: block;
+    }
+
+    .tagline {
+      margin: 0;
+      font-family: var(--font-sub);
+      font-size: min(2.2vw, 3vh, 1.4rem);
+      letter-spacing: 0.12em;
+      color: rgba(244, 241, 232, 0.82);
+    }
+
+    .title-line,
+    .end-line {
+      width: min(62vw, 720px);
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      transform-origin: center center;
+    }
+
+    .end-title {
+      margin: 0;
+      font-family: var(--font-main);
+      font-size: min(7vw, 8.8vh, 6rem);
+      line-height: 1;
+      color: #fff;
+      text-wrap: balance;
+    }
+
+    .end-sub {
+      margin: 0;
+      font-family: var(--font-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-size: min(2vh, 1rem);
+      color: rgba(244, 241, 232, 0.8);
+    }
+
+    /* Controls */
+    .controls {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 12px;
+      background: rgba(247, 244, 238, 0.98);
+      border-top: 3px solid var(--iris);
+    }
+
+    .controls-left,
+    .controls-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .controls button {
+      border: 1px solid rgba(34, 21, 49, 0.16);
+      background: var(--white);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 7px 11px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .controls button:hover {
+      background: var(--deep);
+      border-color: var(--deep);
+      color: #fff;
+    }
+
+    .counter {
+      min-width: 72px;
+      text-align: center;
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--ink);
+    }
+
+    /* Overview */
+    .overview {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      opacity: 0;
+      pointer-events: none;
+      background: var(--paper);
+    }
+
+    .overview.open {
+      pointer-events: auto;
+    }
+
+    .overview-head {
+      height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(20px, 4vw, 54px);
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .overview-head h2 {
+      margin: 0;
+      font-family: var(--font-main);
+      font-size: min(5vw, 4vh, 2.2rem);
+      color: var(--deep);
+    }
+
+    .overview-close,
+    #pclose {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid rgba(34, 21, 49, 0.18);
+      background: var(--white);
+      color: var(--ink);
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .overview-grid {
+      width: min(1560px, 94vw);
+      height: calc(100vh - 82px);
+      height: calc(100dvh - 82px);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      align-content: stretch;
+      padding: clamp(16px, 3vh, 34px) 0;
+    }
+
+    .ov-item {
+      position: relative;
+      border: 0;
+      background: transparent;
+      text-align: left;
+      padding: 14px 8px;
+      border-top: 3px solid rgba(34, 21, 49, 0.14);
+      cursor: pointer;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .ov-item.active {
+      border-top-color: var(--iris);
+    }
+
+    .ov-key {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(34, 21, 49, 0.18);
+      color: var(--iris);
+      font-family: var(--font-body);
+      font-size: 13px;
+    }
+
+    .ov-title {
+      font-family: var(--font-sub);
+      color: var(--ink);
+      font-size: min(2.2vh, 1.02rem);
+      line-height: 1.25;
+    }
+
+    .ov-section {
+      color: var(--muted);
+      font-size: min(1.8vh, 0.85rem);
+    }
+
+    .ov-item:hover .ov-title {
+      color: var(--iris);
+    }
+
+    /* Help */
+    .panel {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 70;
+      width: min(370px, calc(100vw - 20px));
+      padding: 16px;
+      background: var(--paper);
+      color: var(--ink);
+      border: 1px solid rgba(34, 21, 49, 0.14);
+      border-top: 4px solid var(--iris);
+      border-radius: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+    }
+
+    .panel.open {
+      pointer-events: auto;
+    }
+
+    .panel-h {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-family: var(--font-sub);
+      font-size: 12px;
+      letter-spacing: 0.16em;
+    }
+
+    .krow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(34, 21, 49, 0.08);
+      font-size: min(2vh, 13px);
+      color: var(--ink);
+    }
+
+    .krow:last-child {
+      border-bottom: 0;
+    }
+
+    kbd {
+      padding: 3px 6px;
+      border-radius: 7px;
+      background: #fff;
+      border: 1px solid rgba(34, 21, 49, 0.12);
+      font-family: var(--font-sub);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    #blackout {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    #blackout.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    @media (max-width: 1180px) {
+      .overview-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .roster-grid.three,
+      .roster-grid.five,
+      .future-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .split,
+      .row,
+      .future-grid,
+      .roster-grid.three,
+      .roster-grid.five {
+        grid-template-columns: 1fr;
+      }
+
+      .overview-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .controls {
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-height: 720px) {
+      .heading {
+        font-size: min(5vw, 5.8vh, 3.2rem);
+      }
+
+      .statement {
+        font-size: min(3vw, 3.8vh, 2rem);
+      }
+
+      .row p,
+      .future-item p,
+      .subheading {
+        font-size: min(1.9vh, 0.98rem);
+      }
+
+      .rows,
+      .roster-grid,
+      .future-grid {
+        gap: 8px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="progress ui" aria-hidden="true">
+    <div id="progressBar"></div>
+  </div>
+
+  <main class="deck" id="deck">
+    <!-- Slide 1: Title -->
+    <section class="slide title" data-title="Title" data-section="Opening">
+      <div class="frame">
+        <div class="title-stage">
+          <div class="logo-badge anim">
+            <span class="logo-ring" aria-hidden="true"></span>
+            <span class="logo-ring-dashed" aria-hidden="true"></span>
+            <img
+              src="../images/ulspc_logo.jpeg"
+              alt="University Laboratory Sports Club logo"
+              decoding="async"
+              onerror="this.style.visibility='hidden'"
+            >
+          </div>
+
+          <h1 class="title-name" aria-label="University Laboratory Sports Club">
+            <span class="line" aria-hidden="true"><span class="anim">University Laboratory</span></span>
+            <span class="line" aria-hidden="true"><span class="anim">Sports Club</span></span>
+          </h1>
+
+          <p class="tagline anim">Creating Champions, Building Character</p>
+
+          <div class="title-line anim-line" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 2: Foundation -->
+    <section class="slide" data-title="Foundation" data-section="Foundation">
+      <div class="frame">
+        <header class="slide-top">
+          <div class="section-label"><span class="accent-square"></span> Foundation</div>
+          <div class="slide-count"></div>
+        </header>
+
+        <div class="slide-body">
+          <h2 class="heading anim">Foundation</h2>
+          <div class="rule anim-line"></div>
+          <p class="subheading anim">
+            The principles that shaped the club from the beginning.
+          </p>
+
+          <div class="split">
+            <div class="stack">
+              <div class="mini-label anim">Objective</div>
+              <p class="statement anim">
+                To encourage students’ physical and mental development and to discover promising sporting talent.
+              </p>
+            </div>
+
+            <div class="stack">
+              <div class="mini-label anim">Key Milestones</div>
+
+              <div class="rows">
+                <div class="row anim">
+                  <div class="row-num">01</div>
+                  <div>
+                    <h3>Early Foundations</h3>
+                    <p>
+                      Since the school’s earliest days, regular inter-house and inter-school competitions have been organized.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="row anim">
+                  <div class="row-num">02</div>
+                  <div>
+                    <h3>Club-Based Training</h3>
+                    <p>
+                      Structured training has been provided in football, cricket, badminton, and table tennis.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="slide-foot">
+          <div>University Laboratory Sports Club</div>
+          <div>Creating Champions, Building Character</div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- Slide 3: History & Current Operations -->
+    <section class="slide" data-title="History & Current Operations" data-section="History & Operations">
+      <div class="frame">
+        <header class="slide-top">
+          <div class="section-label"><span class="accent-square"></span> History &amp; Current Operations</div>
+          <div class="slide-count"></div>
+        </header>
+
+        <div class="slide-body">
+          <h2 class="heading anim">A Tradition of Competition</h2>
+          <div class="rule anim-line"></div>
+          <p class="subheading anim">
+            The club continues to grow through achievement, training, and active participation.
+          </p>
+
+          <div class="split">
+            <div class="stack">
+              <div class="mini-label anim">History</div>
+              <p class="statement anim">
+                Across its journey, the club has achieved success at regional and national school-level competitions.
+              </p>
+            </div>
+
+            <div class="stack">
+              <div class="mini-label anim">Current Operations</div>
+
+              <div class="rows">
+                <div class="row anim">
+                  <div class="row-num">01</div>
+                  <div>
+                    <h3>Annual Sports Meet</h3>
+                    <p>
+                      Athletics and sports meets are held every year as a central tradition of the club.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="row anim">
+                  <div class="row-num">02</div>
+                  <div>
+                    <h3>Tournaments</h3>
+                    <p>
+                      Cricket, football, badminton, chess, and carrom tournaments are regularly conducted.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="row anim">
+                  <div class="row-num">03</div>
+                  <div>
+                    <h3>Special Training</h3>
+                    <p>
+                      Experienced teachers lead regular practice and athlete development sessions.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="slide-foot">
+          <div>University Laboratory Sports Club</div>
+          <div>Creating Champions, Building Character</div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- Slide 4: Future Initiatives 1 -->
+    <section class="slide" data-title="Future — Facilities & Competition" data-section="Future Initiatives">
+      <div class="frame">
+        <header class="slide-top">
+          <div class="section-label"><span class="accent-square"></span> Future Initiatives</div>
+          <div class="slide-count"></div>
+        </header>
+
+        <div class="slide-body">
+          <h2 class="heading anim">Expanding the Field</h2>
+          <div class="rule anim-line"></div>
+          <p class="subheading anim">
+            The next phase focuses on stronger facilities and broader competitive opportunities.
+          </p>
+
+          <div class="future-grid">
+            <div class="future-item anim">
+              <div class="future-index">01</div>
+              <h3>Modern Training Facilities</h3>
+              <p>
+                Introduce modern sports equipment and digital training support to improve athlete preparation and performance.
+              </p>
+            </div>
+
+            <div class="future-item anim">
+              <div class="future-index">02</div>
+              <h3>Inter-School League</h3>
+              <p>
+                Organize friendly matches and league tournaments with other reputable schools to build experience and sportsmanship.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <footer class="slide-foot">
+          <div>University Laboratory Sports Club</div>
+          <div>Creating Champions, Building Character</div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- Slide 5: Future Initiatives 2 -->
+    <section class="slide" data-title="Future — Learning & Talent" data-section="Future Initiatives">
+      <div class="frame">
+        <header class="slide-top">
+          <div class="section-label"><span class="accent-square"></span> Future Initiatives</div>
+          <div class="slide-count"></div>
+        </header>
+
+        <div class="slide-body">
+          <h2 class="heading anim">Supporting Athletes Beyond the Field</h2>
+          <div class="rule anim-line"></div>
+          <p class="subheading anim">
+            Development is not limited to practice — it includes learning, wellbeing, and opportunity.
+          </p>
+
+          <div class="future-grid">
+            <div class="future-item anim">
+              <div class="future-index">03</div>
+              <h3>Sports Workshops</h3>
+              <p>
+                Arrange expert-led workshops on nutrition, physical fitness, and sports mindset.
+              </p>
+            </div>
+
+            <div class="future-item anim">
+              <div class="future-index">04</div>
+              <h3>Talent Development</h3>
+              <p>
+                Provide scholarships and sports support for promising and underprivileged students.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <footer class="slide-foot">
+          <div>University Laboratory Sports Club</div>
+          <div>Creating Champions, Building Character</div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- Slide 6: Panel 2024-25 -->
+    <section class="slide" data-title="Executive Panel 2024–25" data-section="Executive Panel">
+      <div class="frame">
+        <header class="slide-top">
+          <div class="section-label"><span class="accent-square"></span> Executive Panel · 2024–25</div>
+          <div class="slide-count"></div>
+        </header>
+
+        <div class="slide-body">
+          <h2 class="heading anim">The 2024–25 Panel</h2>
+          <div class="rule anim-line"></div>
+          <p class="subheading anim">
+            The team that led the club forward.
+          </p>
+
+          <div class="roster-grid three">
+            <div class="roster-item anim">
+              <div class="roster-role">President</div>
+              <h3 class="roster-name">Arafat Azim Antu</h3>
+            </div>
+
+            <div class="roster-item anim">
+              <div class="roster-role">Vice President</div>
+              <h3 class="roster-name">Araf</h3>
+            </div>
+
+            <div class="roster-item anim">
+              <div class="roster-role">General Secretary</div>
+              <h3 class="roster-name">Anisha</h3>
+            </div>
+          </div>
+        </div>
+
+        <footer class="slide-foot">
+          <div>University Laboratory Sports Club</div>
+          <div>Creating Champions, Building Character</div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- Slide 7: Panel 2025-26 -->
+    <section class="slide" data-title="Executive Panel 2025–26" data-section="Executive Panel">
+      <div class="frame">
+        <header class="slide-top">
+          <div class="section-label"><span class="accent-square"></span> Executive Panel · 2025–26</div>
+          <div class="slide-count"></div>
+        </header>
+
+        <div class="slide-body">
+          <h2 class="heading anim">The 2025–26 Panel</h2>
+          <div class="rule anim-line"></div>
+          <p class="subheading anim">
+            The next leadership takes the field.
+          </p>
+
+          <div class="roster-grid five">
+            <div class="roster-item anim">
+              <div class="roster-role">President</div>
+              <h3 class="roster-name">Nahid</h3>
+            </div>
+
+            <div class="roster-item anim">
+              <div class="roster-role">Vice President</div>
+              <h3 class="roster-name">Araf</h3>
+              <span class="roster-note">Continued from 2024–25</span>
+            </div>
+
+            <div class="roster-item anim">
+              <div class="roster-role">General Secretary</div>
+              <h3 class="roster-name">Sanim</h3>
+            </div>
+
+            <div class="roster-item anim">
+              <div class="roster-role">Coordinator</div>
+              <h3 class="roster-name">Ayesha</h3>
+            </div>
+
+            <div class="roster-item anim">
+              <div class="roster-role">Media Secretary</div>
+              <h3 class="roster-name">Mahfuz</h3>
+            </div>
+          </div>
+        </div>
+
+        <footer class="slide-foot">
+          <div>University Laboratory Sports Club</div>
+          <div>Creating Champions, Building Character</div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- Slide 8: Ending -->
+    <section class="slide dark end" data-title="Ending" data-section="Closing">
+      <div class="frame">
+        <div class="end-stage">
+          <h2 class="end-title anim">
+            Creating Champions,<br>Building Character
+          </h2>
+
+          <div class="end-line anim-line"></div>
+
+          <p class="end-sub anim">University Laboratory Sports Club</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Controls -->
+  <div class="controls ui" id="controls" role="toolbar" aria-label="Slide controls">
+    <div class="controls-left">
+      <button data-action="prev" title="Previous slide">← Prev</button>
+      <div class="counter"><span id="currentSlide">01</span> / <span id="totalSlides">08</span></div>
+      <button data-action="next" title="Next slide">Next →</button>
+    </div>
+
+    <div class="controls-right">
+      <button data-action="overview" title="Overview (G)">Overview</button>
+      <button data-action="fullscreen" title="Fullscreen (F)">Fullscreen</button>
+      <button data-action="blackout" title="Blackout (B)">Blackout</button>
+      <button data-action="focus" title="Focus mode (H)">Focus</button>
+      <button data-action="help" title="Shortcuts (?)">?</button>
+    </div>
+  </div>
+
+  <!-- Overview -->
+  <div class="overview" id="overview" aria-hidden="true" role="dialog" aria-label="Slide overview">
+    <div class="overview-head">
+      <h2>Overview</h2>
+      <button class="overview-close" id="overviewClose" title="Close overview">×</button>
+    </div>
+
+    <div class="overview-grid" id="overviewGrid"></div>
+  </div>
+
+  <!-- Help panel -->
+  <div class="panel" id="panel" role="dialog" aria-label="Keyboard shortcuts" aria-hidden="true">
+    <div class="panel-h">CONTROLS <button id="pclose" title="Close">×</button></div>
+    <div class="krow"><kbd>→ / SPACE</kbd><span>Next slide</span></div>
+    <div class="krow"><kbd>←</kbd><span>Previous slide</span></div>
+    <div class="krow"><kbd>HOME / END</kbd><span>First / last slide</span></div>
+    <div class="krow"><kbd>G</kbd><span>Overview — all slides, click to jump</span></div>
+    <div class="krow"><kbd>1–8</kbd><span>Inside Overview, jump directly to slide</span></div>
+    <div class="krow"><kbd>F</kbd><span>Fullscreen</span></div>
+    <div class="krow"><kbd>B</kbd><span>Blackout the screen</span></div>
+    <div class="krow"><kbd>H</kbd><span>Focus mode — hide everything, slide only. Press H again to restore.</span></div>
+    <div class="krow"><kbd>?</kbd><span>This panel</span></div>
+    <div class="krow"><kbd>ESC</kbd><span>Close panels</span></div>
+  </div>
+
+  <div id="blackout" aria-hidden="true"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <script>
+    (() => {
+      gsap.defaults({ overwrite: "auto" });
+      gsap.ticker.fps(60);
+      gsap.ticker.lagSmoothing(0);
+
+      const slides = gsap.utils.toArray(".slide");
+
+      const currentSlideEl = document.getElementById("currentSlide");
+      const totalSlidesEl = document.getElementById("totalSlides");
+      const progressBar = document.getElementById("progressBar");
+
+      const overview = document.getElementById("overview");
+      const overviewGrid = document.getElementById("overviewGrid");
+      const overviewClose = document.getElementById("overviewClose");
+
+      const panel = document.getElementById("panel");
+      const pclose = document.getElementById("pclose");
+
+      const blackout = document.getElementById("blackout");
+      const deck = document.getElementById("deck");
+
+      let current = 0;
+      let isAnimating = false;
+
+      let overviewOpen = false;
+      let helpOpen = false;
+      let idleTimer = null;
+
+      function pad(n) {
+        return String(n).padStart(2, "0");
+      }
+
+      slides.forEach((slide, i) => {
+        const count = slide.querySelector(".slide-count");
+        if (count) count.textContent = `${pad(i + 1)} / ${pad(slides.length)}`;
+      });
+
+      function updateUI() {
+        currentSlideEl.textContent = pad(current + 1);
+        totalSlidesEl.textContent = pad(slides.length);
+        progressBar.style.width = `${((current + 1) / slides.length) * 100}%`;
+
+        document.querySelectorAll(".ov-item").forEach((item, i) => {
+          item.classList.toggle("active", i === current);
+        });
+      }
+
+      function animateSlideContent(slide) {
+        const items = slide.querySelectorAll(".anim");
+        const lines = slide.querySelectorAll(".anim-line");
+
+        gsap.killTweensOf(items);
+        gsap.killTweensOf(lines);
+
+        gsap.fromTo(
+          items,
+          { autoAlpha: 0, y: 24 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.55,
+            ease: "power3.out",
+            stagger: 0.045,
+            delay: 0.06
+          }
+        );
+
+        if (lines.length) {
+          gsap.fromTo(
+            lines,
+            { scaleX: 0 },
+            {
+              scaleX: 1,
+              duration: 0.65,
+              ease: "power3.out",
+              stagger: 0.06,
+              delay: 0.1
+            }
+          );
+        }
+      }
+
+      function goTo(index) {
+        index = Math.max(0, Math.min(slides.length - 1, index));
+
+        if (index === current || isAnimating) return;
+
+        isAnimating = true;
+
+        const outgoing = slides[current];
+        const incoming = slides[index];
+        const direction = index > current ? 1 : -1;
+
+        current = index;
+        updateUI();
+
+        gsap.killTweensOf([outgoing, incoming]);
+
+        gsap.timeline({
+          onComplete: () => {
+            isAnimating = false;
+          }
+        })
+          .to(outgoing, {
+            autoAlpha: 0,
+            x: -28 * direction,
+            duration: 0.32,
+            ease: "power2.in"
+          })
+          .add(() => {
+            outgoing.classList.remove("active");
+            incoming.classList.add("active");
+
+            gsap.set(outgoing, { x: 0 });
+            gsap.set(incoming, { autoAlpha: 0, x: 28 * direction });
+
+            animateSlideContent(incoming);
+          })
+          .to(incoming, {
+            autoAlpha: 1,
+            x: 0,
+            duration: 0.48,
+            ease: "power3.out"
+          }, "<0.03");
+      }
+
+      function next() {
+        goTo(current + 1);
+      }
+
+      function prev() {
+        goTo(current - 1);
+      }
+
+      function buildOverview() {
+        slides.forEach((slide, i) => {
+          const item = document.createElement("button");
+
+          item.type = "button";
+          item.className = "ov-item";
+
+          item.innerHTML = `
+            <span class="ov-key">${i + 1}</span>
+            <span class="ov-title">${slide.dataset.title || `Slide ${i + 1}`}</span>
+            <span class="ov-section">${slide.dataset.section || ""}</span>
+          `;
+
+          item.addEventListener("click", () => {
+            item.blur();
+            closeOverview();
+            goTo(i);
+          });
+
+          overviewGrid.appendChild(item);
+        });
+      }
+
+      function openOverview() {
+        if (overviewOpen) return;
+
+        closeHelp();
+
+        if (document.body.classList.contains("focus-mode")) {
+          document.body.classList.remove("focus-mode");
+        }
+
+        overviewOpen = true;
+        overview.classList.add("open");
+        overview.setAttribute("aria-hidden", "false");
+
+        gsap.killTweensOf(overview);
+
+        gsap.fromTo(
+          overview,
+          { autoAlpha: 0 },
+          { autoAlpha: 1, duration: 0.25, ease: "power2.out" }
+        );
+
+        const items = overviewGrid.querySelectorAll(".ov-item");
+
+        gsap.killTweensOf(items);
+
+        gsap.fromTo(
+          items,
+          { autoAlpha: 0, y: 16 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.4,
+            stagger: 0.02,
+            ease: "power3.out",
+            delay: 0.03
+          }
+        );
+      }
+
+      function closeOverview() {
+        if (!overviewOpen) return;
+
+        overviewOpen = false;
+
+        gsap.killTweensOf(overview);
+
+        gsap.to(overview, {
+          autoAlpha: 0,
+          duration: 0.18,
+          ease: "power2.in",
+          onComplete: () => {
+            overview.classList.remove("open");
+            overview.setAttribute("aria-hidden", "true");
+          }
+        });
+      }
+
+      function toggleOverview(force) {
+        const open = typeof force === "boolean" ? force : !overviewOpen;
+        open ? openOverview() : closeOverview();
+      }
+
+      function openHelp() {
+        if (helpOpen) return;
+
+        closeOverview();
+
+        if (document.body.classList.contains("focus-mode")) {
+          document.body.classList.remove("focus-mode");
+        }
+
+        helpOpen = true;
+        panel.classList.add("open");
+        panel.setAttribute("aria-hidden", "false");
+
+        gsap.killTweensOf(panel);
+
+        gsap.fromTo(
+          panel,
+          { autoAlpha: 0, y: 12 },
+          { autoAlpha: 1, y: 0, duration: 0.3, ease: "power3.out" }
+        );
+      }
+
+      function closeHelp() {
+        if (!helpOpen) return;
+
+        helpOpen = false;
+
+        gsap.killTweensOf(panel);
+
+        gsap.to(panel, {
+          autoAlpha: 0,
+          y: 12,
+          duration: 0.18,
+          ease: "power2.in",
+          onComplete: () => {
+            panel.classList.remove("open");
+            panel.setAttribute("aria-hidden", "true");
+          }
+        });
+      }
+
+      function toggleHelp(force) {
+        const open = typeof force === "boolean" ? force : !helpOpen;
+        open ? openHelp() : closeHelp();
+      }
+
+      function closePanels() {
+        closeOverview();
+        closeHelp();
+      }
+
+      async function toggleFullscreen() {
+        try {
+          if (document.fullscreenElement) {
+            await document.exitFullscreen();
+          } else {
+            await document.documentElement.requestFullscreen();
+          }
+        } catch (error) {
+          console.warn("Fullscreen is not available here.");
+        }
+      }
+
+      function toggleBlackout() {
+        blackout.classList.toggle("active");
+      }
+
+      function toggleFocus(force) {
+        const on = typeof force === "boolean" ? force : !document.body.classList.contains("focus-mode");
+
+        if (on) closePanels();
+
+        document.body.classList.toggle("focus-mode", on);
+      }
+
+      function showUI() {
+        document.body.classList.remove("ui-hidden");
+        clearTimeout(idleTimer);
+
+        idleTimer = setTimeout(() => {
+          if (!overviewOpen && !helpOpen && !document.body.classList.contains("focus-mode")) {
+            document.body.classList.add("ui-hidden");
+          }
+        }, 2600);
+      }
+
+      ["pointermove", "pointerdown", "keydown", "touchstart"].forEach((eventName) => {
+        window.addEventListener(eventName, showUI, { passive: true });
+      });
+
+      document.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-action]");
+        if (!button) return;
+
+        button.blur();
+
+        const action = button.dataset.action;
+
+        if (action === "prev") prev();
+        if (action === "next") next();
+        if (action === "overview") toggleOverview();
+        if (action === "fullscreen") toggleFullscreen();
+        if (action === "blackout") toggleBlackout();
+        if (action === "focus") toggleFocus();
+        if (action === "help") toggleHelp();
+      });
+
+      overviewClose.addEventListener("click", () => {
+        overviewClose.blur();
+        closeOverview();
+      });
+
+      pclose.addEventListener("click", () => {
+        pclose.blur();
+        closeHelp();
+      });
+
+      blackout.addEventListener("click", toggleBlackout);
+
+      document.addEventListener("keydown", (event) => {
+        if (event.target.closest('input, textarea, select, [contenteditable="true"]')) return;
+        if (event.ctrlKey || event.metaKey || event.altKey) return;
+
+        const key = event.key;
+
+        if (overviewOpen && /^[1-8]$/.test(key)) {
+          event.preventDefault();
+
+          const index = Number(key) - 1;
+
+          if (index < slides.length) {
+            closeOverview();
+            goTo(index);
+          }
+
+          return;
+        }
+
+        if (key === "ArrowRight" || key === " ") {
+          event.preventDefault();
+          closePanels();
+          next();
+        }
+
+        if (key === "ArrowLeft") {
+          event.preventDefault();
+          closePanels();
+          prev();
+        }
+
+        if (key === "Home") {
+          event.preventDefault();
+          closePanels();
+          goTo(0);
+        }
+
+        if (key === "End") {
+          event.preventDefault();
+          closePanels();
+          goTo(slides.length - 1);
+        }
+
+        if (key === "g" || key === "G") toggleOverview();
+        if (key === "f" || key === "F") toggleFullscreen();
+        if (key === "b" || key === "B") toggleBlackout();
+        if (key === "h" || key === "H") toggleFocus();
+        if (key === "?") toggleHelp();
+        if (key === "Escape") closePanels();
+      });
+
+      // Touch swipe
+      let touchX = null;
+      let touchY = null;
+
+      deck.addEventListener("touchstart", (event) => {
+        if (overviewOpen || helpOpen) return;
+
+        touchX = event.touches[0].clientX;
+        touchY = event.touches[0].clientY;
+      }, { passive: true });
+
+      deck.addEventListener("touchend", (event) => {
+        if (overviewOpen || helpOpen) return;
+        if (touchX === null || touchY === null) return;
+
+        const dx = event.changedTouches[0].clientX - touchX;
+        const dy = event.changedTouches[0].clientY - touchY;
+
+        if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy)) {
+          if (dx < 0) next();
+          else prev();
+        }
+
+        touchX = null;
+        touchY = null;
+      }, { passive: true });
+
+      buildOverview();
+
+      gsap.set(slides, {
+        autoAlpha: 0,
+        x: 0
+      });
+
+      slides[0].classList.add("active");
+
+      function startDeck() {
+        gsap.set(slides[0], {
+          autoAlpha: 1
+        });
+
+        animateSlideContent(slides[0]);
+        updateUI();
+        showUI();
+      }
+
+      if (document.fonts && document.fonts.ready) {
+        Promise.race([
+          document.fonts.ready,
+          new Promise((resolve) => setTimeout(resolve, 2000))
+        ]).then(() => {
+          requestAnimationFrame(startDeck);
+        });
+      } else {
+        requestAnimationFrame(startDeck);
+      }
+    })();
+  </script>
+</body>
+</html>
