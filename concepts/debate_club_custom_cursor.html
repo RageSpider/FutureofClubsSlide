@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Forum — Debate Club Cursor Lab</title>
+<style>
+  :root{
+    --bg:#101018; --panel:#191926; --panel2:#1e1e2e;
+    --line:#2b2b3d; --gold:#c9a961; --ink:#e9e5da; --mut:#8b8b98;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:radial-gradient(1200px 600px at 50% -10%, #1a1a2b, var(--bg));
+    color:var(--ink); font-family:Georgia,'Times New Roman',serif;
+    min-height:100vh; padding:34px 20px 60px; line-height:1.6;
+  }
+  .wrap{max-width:1080px;margin:0 auto}
+  header{text-align:center;margin-bottom:30px}
+  header .eyebrow{letter-spacing:4px;font-size:.72rem;color:var(--gold);text-transform:uppercase}
+  header h1{font-size:2.4rem;color:var(--ink);margin:6px 0 4px;letter-spacing:1px}
+  header h1 span{color:var(--gold)}
+  header p{color:var(--mut);font-style:italic;font-size:.95rem}
+  .rule{height:2px;width:120px;margin:16px auto 0;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:26px}
+  .card h2{font-size:1.05rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+  .card .sub{color:var(--mut);font-size:.85rem;margin-bottom:18px;font-style:italic}
+
+  /* set picker */
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{
+    display:flex;align-items:center;gap:9px;background:var(--panel2);
+    border:1px solid var(--line);color:var(--ink);padding:8px 14px;border-radius:999px;
+    font-family:inherit;font-size:.9rem;cursor:pointer;transition:.18s;
+  }
+  .chip img{width:22px;height:22px}
+  .chip:hover{border-color:var(--gold);transform:translateY(-2px)}
+  .chip.active{background:var(--gold);color:#1c1408;border-color:var(--gold);font-weight:bold}
+  .chip.active img{filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+
+  .current{text-align:center;margin:18px 0 0;color:var(--mut);font-size:.9rem}
+  .current b{color:var(--gold)}
+
+  /* preview grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px 10px;text-align:center;transition:.18s}
+  .tile:hover{border-color:var(--gold);transform:translateY(-2px)}
+  .tile img{width:44px;height:44px;display:block;margin:0 auto 8px}
+  .tile .nm{font-size:.85rem;color:var(--ink);font-weight:bold}
+  .tile .cp{font-size:.7rem;color:var(--mut)}
+
+  /* demo stage */
+  .stage{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+  .zone{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px}
+  .zone .tag{font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+  .zone p{font-size:.9rem;color:#c9c5ba}
+  button{
+    background:#232336;color:var(--ink);border:1px solid var(--gold);
+    padding:10px 16px;border-radius:7px;font-family:inherit;font-size:.92rem;transition:.15s;
+  }
+  button:hover{background:#2e2e46}
+  button.ghost{border-color:#3a3a52;color:#bdb9ae}
+  button.deny{opacity:.55;border-color:#5a3a3a;color:#c9a0a0}
+  button.info{border-color:#3b82f6;color:#cfe0ff;background:#1c2740}
+  button.busy{border-color:#e2a04a;color:#f3d9b0;background:#2c2417}
+  a{color:var(--gold)}
+  input[type=text],textarea{
+    background:#101019;border:1px solid #3a3a52;color:var(--ink);
+    padding:9px 12px;border-radius:6px;font-family:inherit;font-size:.9rem;width:100%;
+  }
+  textarea{resize:vertical;min-height:64px}
+  .aimbox{height:90px;border:1px dashed #4a4a66;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:.85rem;background:repeating-linear-gradient(45deg,#171724,#171724 8px,#1a1a2a 8px,#1a1a2a 16px)}
+  .dragcard{border:1px dashed var(--gold);border-radius:8px;padding:14px;text-align:center;color:#d9cdb0;font-size:.88rem;background:#1d1a12}
+  footer{text-align:center;color:#5c5c6e;font-size:.8rem;margin-top:10px}
+  footer b{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Debate Club · Cursor Lab</div>
+    <h1>⚖ The <span>Forum</span></h1>
+    <p>Ten themed cursor sets — pick one, then hover everything below.</p>
+    <div class="rule"></div>
+  </header>
+
+  <!-- 1. PICK A SET -->
+  <div class="card">
+    <h2>1 · Choose a cursor set</h2>
+    <div class="sub">Each chip previews that set's default cursor.</div>
+    <div class="chips" id="chips"></div>
+    <div class="current">Active set: <b id="curName">—</b></div>
+  </div>
+
+  <!-- 2. ALL FORMS -->
+  <div class="card">
+    <h2>2 · Every cursor form, at a glance</h2>
+    <div class="sub">All 9 states rendered for the active set.</div>
+    <div class="grid" id="preview"></div>
+  </div>
+
+  <!-- 3. LIVE TEST -->
+  <div class="card">
+    <h2>3 · Test them live</h2>
+    <div class="sub">A mock debate panel — hover each labelled zone to feel the cursor.</div>
+    <div class="stage" id="stage">
+
+      <div class="zone">
+        <div class="tag">Default</div>
+        <p data-state="default"><b>Tonight's Motion:</b> “This house believes social media strengthens democracy.” Hover this text to read the brief.</p>
+      </div>
+
+      <div class="zone">
+        <div class="tag">Pointer</div>
+        <button data-state="pointer">Speak For</button>
+        <button data-state="pointer" class="ghost">Speak Against</button>
+        <a href="#" data-state="pointer">View past debates →</a>
+      </div>
+
+      <div class="zone">
+        <div class="tag">Text</div>
+        <input type="text" data-state="text" placeholder="Your name…">
+        <textarea data-state="text" placeholder="Your opening statement…"></textarea>
+      </div>
+
+      <div class="zone">
+        <div class="tag">Crosshair</div>
+        <div class="aimbox" data-state="crosshair">Aim your argument here</div>
+      </div>
+
+      <div class="zone">
+        <div class="tag">Move</div>
+        <div class="dragcard" data-state="move">☰ Drag to reorder speaking slots</div>
+      </div>
+
+      <div class="zone">
+        <div class="tag">Not Allowed</div>
+        <button class="deny" data-state="notAllowed">Motion Closed</button>
+      </div>
+
+      <div class="zone">
+        <div class="tag">Wait</div>
+        <button class="ghost" data-state="wait">Judges deliberating…</button>
+      </div>
+
+      <div class="zone">
+        <div class="tag">Help</div>
+        <button class="info" data-state="help">?  What is a rebuttal?</button>
+      </div>
+
+      <div class="zone">
+        <div class="tag">Progress</div>
+        <button class="busy" data-state="progress">Tallying votes…</button>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>Cursors are inline <b>SVG data-URIs</b> encoded at runtime · hotspot <b>16,16</b> · each falls back to the native cursor.</footer>
+</div>
+
+<script>
+/* ---------------- cursor geometry helpers ---------------- */
+const W  = inner => `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">${inner}</svg>`;
+const sc = (icon,s)=> `<g transform="translate(16,16) scale(${s}) translate(-16,-16)">${icon}</g>`;
+const ARROW = `<path d="M16 15 L16 27 L18.7 24.5 L20.4 28.3 L22.2 27.5 L20.5 23.8 L24.2 23.7 Z" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.3"/>`;
+
+const FB = {default:'default',pointer:'pointer',text:'text',crosshair:'crosshair',
+            move:'move',notAllowed:'not-allowed',wait:'wait',help:'help',progress:'progress'};
+const STATES   = Object.keys(FB);
+const LABEL    = {default:'Default',pointer:'Pointer',text:'Text',crosshair:'Crosshair',
+                  move:'Move',notAllowed:'Not Allowed',wait:'Wait',help:'Help',progress:'Progress'};
+const CAPTION  = {default:'Normal browsing',pointer:'Links & buttons',text:'Text fields',
+                  crosshair:'Precision aim',move:'Drag elements',notAllowed:'Blocked action',
+                  wait:'Busy / loading',help:'Help available',progress:'Working…'};
+
+/* ---------------- the 10 themed icons ---------------- */
+const SETS = {
+  podium:{name:'The Podium', accent:'#a0642f', icon:
+    `<path d="M9 5 h14 l-1.4 9 h-11.2 z" fill="#a0642f" stroke="#5b3a1a" stroke-width="1.5"/>
+     <rect x="6" y="14" width="20" height="3.5" rx="1" fill="#7a4a22" stroke="#5b3a1a" stroke-width="1"/>
+     <rect x="12" y="17.5" width="8" height="8" fill="#7a4a22" stroke="#5b3a1a" stroke-width="1"/>
+     <rect x="9" y="25.5" width="14" height="2.5" rx="1" fill="#5b3a1a"/>`},
+  mic:{name:'Microphone', accent:'#c9a961', icon:
+    `<rect x="13" y="3" width="6" height="11" rx="3" fill="#444" stroke="#c9a961" stroke-width="1.5"/>
+     <path d="M9 12 a7 7 0 0 0 14 0" fill="none" stroke="#c9a961" stroke-width="1.8"/>
+     <line x1="16" y1="19" x2="16" y2="25" stroke="#c9a961" stroke-width="2"/>
+     <line x1="11" y1="26" x2="21" y2="26" stroke="#c9a961" stroke-width="2"/>`},
+  bubble:{name:'Speech Bubble', accent:'#d8c9a3', icon:
+    `<path d="M7 5 h18 a3 3 0 0 1 3 3 v10 a3 3 0 0 1 -3 3 h-10 l-6 5 v-5 h-2 a3 3 0 0 1 -3 -3 v-10 a3 3 0 0 1 3 -3 z" fill="#f1ede2" stroke="#c9a961" stroke-width="1.5"/>
+     <circle cx="11" cy="13" r="1.6" fill="#8b5a2b"/><circle cx="16" cy="13" r="1.6" fill="#8b5a2b"/><circle cx="21" cy="13" r="1.6" fill="#8b5a2b"/>`},
+  scales:{name:'Scales of Justice', accent:'#c9a961', icon:
+    `<line x1="16" y1="4" x2="16" y2="26" stroke="#c9a961" stroke-width="2"/>
+     <line x1="6" y1="8" x2="26" y2="8" stroke="#c9a961" stroke-width="2"/>
+     <path d="M6 8 l-3.5 8 h7 z" fill="#c9a961" stroke="#8b6a2f" stroke-width="1"/>
+     <path d="M26 8 l-3.5 8 h7 z" fill="#c9a961" stroke="#8b6a2f" stroke-width="1"/>
+     <line x1="11" y1="26" x2="21" y2="26" stroke="#c9a961" stroke-width="2.5"/>`},
+  quill:{name:'The Quill', accent:'#c9a961', icon:
+    `<path d="M26 4 C18 6 10 14 8 22 L7 27 L12 26 C20 24 26 14 26 4 Z" fill="#f1ede2" stroke="#8b5a2b" stroke-width="1.5"/>
+     <line x1="24" y1="6" x2="9" y2="25" stroke="#c9a961" stroke-width="1.2"/>
+     <path d="M7 27 L4 30" stroke="#8b5a2b" stroke-width="1.5" stroke-linecap="round"/>`},
+  bolt:{name:'Lightning', accent:'#f4d03f', icon:
+    `<path d="M18 2 L7 18 L13 18 L11 30 L24 12 L17 12 L21 2 Z" fill="#f4d03f" stroke="#b8860b" stroke-width="1.5"/>`},
+  brain:{name:'The Brain', accent:'#e8a0b8', icon:
+    `<path d="M16 5 C13 3 8 4 7 8 C4 9 4 13 6 15 C4 17 5 21 8 22 C9 26 13 27 16 25 C19 27 23 26 24 22 C27 21 28 17 26 15 C28 13 28 9 25 8 C24 4 19 3 16 5 Z" fill="#e8a0b8" stroke="#a04060" stroke-width="1.5"/>
+     <path d="M16 5 L16 25" stroke="#a04060" stroke-width="1" fill="none"/>
+     <path d="M9 10 Q13 12 16 10 M23 10 Q19 12 16 10 M8 17 Q12 19 16 17 M24 17 Q20 19 16 17" stroke="#a04060" stroke-width="1" fill="none"/>`},
+  trophy:{name:'The Trophy', accent:'#f4d03f', icon:
+    `<path d="M10 4 h12 v8 a6 6 0 0 1 -12 0 z" fill="#f4d03f" stroke="#b8860b" stroke-width="1.5"/>
+     <path d="M10 6 H6 a4 4 0 0 0 4 6 M22 6 h4 a4 4 0 0 1 -4 6" fill="none" stroke="#b8860b" stroke-width="1.5"/>
+     <rect x="14" y="18" width="4" height="4" fill="#b8860b"/>
+     <rect x="10" y="22" width="12" height="3" rx="1" fill="#b8860b"/>
+     <rect x="8" y="25" width="16" height="3" rx="1" fill="#8b6a2f"/>`},
+  hourglass:{name:'Hourglass', accent:'#e0b040', icon:
+    `<rect x="7" y="3" width="18" height="3" rx="1" fill="#c9a961"/>
+     <rect x="7" y="26" width="18" height="3" rx="1" fill="#c9a961"/>
+     <path d="M9 6 h14 l-7 9 z" fill="#fdf6e3" stroke="#8b6a2f" stroke-width="1.5"/>
+     <path d="M9 26 h14 l-7 -9 z" fill="#fdf6e3" stroke="#8b6a2f" stroke-width="1.5"/>
+     <path d="M11 8 h10 l-5 6 z" fill="#e0b040"/>
+     <path d="M13 26 h6 l-3 -4 z" fill="#e0b040"/>
+     <line x1="16" y1="15" x2="16" y2="17" stroke="#e0b040" stroke-width="1.5"/>`},
+  megaphone:{name:'Megaphone', accent:'#c9a961', icon:
+    `<path d="M4 13 h5 l13 -7 v18 l-13 -7 h-5 z" fill="#c9a961" stroke="#8b6a2f" stroke-width="1.5"/>
+     <rect x="2" y="15" width="3" height="4" rx="1" fill="#8b6a2f"/>
+     <path d="M24 11 q4 5 0 10 M27 9 q6 7 0 14" fill="none" stroke="#c9a961" stroke-width="1.5" stroke-linecap="round"/>`}
+};
+
+/* ---------------- build the 9 states for a set ---------------- */
+function buildStates(set){
+  const {icon,accent} = set;
+  return {
+    default:   W(icon),
+    pointer:   W(sc(icon,0.82)+ARROW),
+    text:      W(`<rect x="15" y="11" width="2" height="17" fill="${accent}"/>
+                  <rect x="9" y="9" width="14" height="2.4" fill="${accent}"/>
+                  <rect x="9" y="26.6" width="14" height="2.4" fill="${accent}"/>
+                  <g transform="translate(16,4.5) scale(0.28) translate(-16,-16)">${icon}</g>`),
+    crosshair: W(`<line x1="16" y1="2" x2="16" y2="30" stroke="${accent}" stroke-width="2"/>
+                  <line x1="2" y1="16" x2="30" y2="16" stroke="${accent}" stroke-width="2"/>`+sc(icon,0.42)),
+    move:      W(`<path d="M16 2.5 L19.5 7 L12.5 7 Z" fill="${accent}"/>
+                  <path d="M16 29.5 L12.5 25 L19.5 25 Z" fill="${accent}"/>
+                  <path d="M2.5 16 L7 12.5 L7 19.5 Z" fill="${accent}"/>
+                  <path d="M29.5 16 L25 19.5 L25 12.5 Z" fill="${accent}"/>
+                  <rect x="14.6" y="14.6" width="2.8" height="2.8" fill="${accent}"/>`+sc(icon,0.34)),
+    notAllowed:W(sc(icon,0.9)+`<circle cx="16" cy="16" r="14" fill="none" stroke="#e74c3c" stroke-width="2.6"/>
+                  <line x1="6.5" y1="6.5" x2="25.5" y2="25.5" stroke="#e74c3c" stroke-width="2.6"/>`),
+    wait:      W(sc(icon,0.6)+`<circle cx="16" cy="16" r="14" fill="none" stroke="${accent}" stroke-width="2.6" stroke-dasharray="10 6" stroke-linecap="round"/>`),
+    help:      W(sc(icon,0.8)+`<circle cx="24.5" cy="24.5" r="7" fill="#3b82f6" stroke="#ffffff" stroke-width="1.6"/>
+                  <text x="24.5" y="28.6" font-size="11.5" font-weight="bold" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif">?</text>`),
+    progress:  W(sc(icon,0.6)+`<circle cx="16" cy="16" r="14" fill="none" stroke="${accent}" stroke-width="2.6" stroke-dasharray="66 22" stroke-linecap="round" transform="rotate(-90 16 16)"/>`)
+  };
+}
+
+const dataURI = svg => 'data:image/svg+xml,'+encodeURIComponent(svg);
+const cursorVal = (svg,st)=>`url("${dataURI(svg)}") 16 16, ${FB[st]}`;
+
+/* ---------------- build UI ---------------- */
+const chipsEl   = document.getElementById('chips');
+const previewEl = document.getElementById('preview');
+const stageEl   = document.getElementById('stage');
+const curNameEl = document.getElementById('curName');
+let activeKey = null;
+
+// chips
+Object.keys(SETS).forEach(key=>{
+  const b=document.createElement('button');
+  b.className='chip'; b.type='button'; b.dataset.key=key;
+  b.innerHTML=`<img alt=""> <span>${SETS[key].name}</span>`;
+  b.querySelector('img').src=dataURI(W(SETS[key].icon));
+  b.addEventListener('click',()=>applySet(key));
+  chipsEl.appendChild(b);
+});
+
+// preview tiles (one per state)
+STATES.forEach(st=>{
+  const t=document.createElement('div');
+  t.className='tile';
+  t.innerHTML=`<img id="pv-${st}" alt=""> <div class="nm">${LABEL[st]}</div> <div class="cp">${CAPTION[st]}</div>`;
+  previewEl.appendChild(t);
+});
+
+function applySet(key){
+  activeKey=key;
+  const states=buildStates(SETS[key]);
+
+  // highlight chip
+  chipsEl.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active',c.dataset.key===key));
+  curNameEl.textContent=SETS[key].name;
+
+  // preview images
+  STATES.forEach(st=>{ document.getElementById('pv-'+st).src=dataURI(states[st]); });
+
+  // live cursors on demo elements
+  stageEl.querySelectorAll('[data-state]').forEach(el=>{
+    el.style.cursor=cursorVal(states[el.dataset.state], el.dataset.state);
+  });
+  // whole stage uses the default emblem
+  stageEl.style.cursor=cursorVal(states.default,'default');
+}
+
+applySet('podium'); // start with the first set
+</script>
+</body>
+</html>

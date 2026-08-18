@@ -1,719 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Future of Clubs — University Laboratory School & College</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧪</text></svg>">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Future of Clubs · University Laboratory School and College</title>
+  <meta
+    name="description"
+    content="The Future of Clubs — a custom, data-driven HTML/CSS/JS slide deck. Doc ref ULSC/UCA/2026-08. Presentation date: 20 August 2026."
+  />
 
-<!--
-  ═══════════════════════════════════════════════════════════════
-  CLUB FUTURES — presentation engine v2
-  HOW TO SCALE THIS DECK TO 50+ SLIDES:
-  • A slide = <div class="slide-wrap"><section class="slide" data-theme="..."> ... </section></div>
-  • Themes live in the THEMES block below. Copy one, rename, change values.
-  • The logo is ONE svg <symbol id="ulsc-mark"> — replace its contents once
-    and every occurrence updates (chrome, title, dividers, watermark, closing).
-  • Club chapters: duplicate a DIVIDER slide block, change data-theme,
-    number, name, tagline and stats.
-  ═══════════════════════════════════════════════════════════════
--->
+  <!-- ============================================================
+       The Future of Clubs · ULSC/UCA/2026-08
+       No frameworks. No npm. No build step.
+       ============================================================ -->
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Instrument+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Instrument+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
 
-<style>
-/* ════════════════ TOKENS ════════════════ */
-:root{
-  --ease:  cubic-bezier(.24,.62,.22,1);
-  --easeO: cubic-bezier(.16,.66,.22,1);
-  --dur: .55s;
-  --mono:'Space Mono',ui-monospace,monospace;
-  --body:'Instrument Sans',system-ui,sans-serif;
-}
+  <!-- Design system -->
+  <link rel="stylesheet" href="css/foundation.css" />
+  <link rel="stylesheet" href="css/deck.css" />
 
-/* ════════════════ THEMES ════════════════
-   Every slide reads these vars. Add new themes by copying a block. */
-.slide,
-.slide[data-theme="core"]{
-  --t-bg:#0C1723; --t-fg:#F2ECDF; --t-acc:#D5F44E;
-  --t-dim:#8CA1B2; --t-line:rgba(242,236,223,.16);
-  --t-grid:rgba(242,236,223,.045); --t-glow:rgba(213,244,78,.07);
-  --t-soft:rgba(242,236,223,.045);
-  --t-disp:'Fraunces',Georgia,serif; --t-body:'Instrument Sans',system-ui,sans-serif;
-}
-.slide[data-theme="paper"]{
-  --t-bg:#F2ECDF; --t-fg:#0D1824; --t-acc:#E4572E;
-  --t-dim:rgba(13,24,36,.58); --t-line:rgba(13,24,36,.18);
-  --t-grid:rgba(13,24,36,.055); --t-glow:rgba(228,87,46,.06);
-  --t-soft:rgba(13,24,36,.05);
-}
-.slide[data-theme="debate"]{
-  --t-bg:#2A1119; --t-fg:#F5E9D7; --t-acc:#E9B44C;
-  --t-dim:#C0A396; --t-line:rgba(245,233,215,.2);
-  --t-grid:rgba(245,233,215,.05); --t-glow:rgba(233,180,76,.1);
-  --t-soft:rgba(245,233,215,.05);
-  --t-disp:'Fraunces',Georgia,serif;
-}
-.slide[data-theme="robotics"]{
-  --t-bg:#0A0F16; --t-fg:#E8F2F6; --t-acc:#52D6E8;
-  --t-dim:#7C93A3; --t-line:rgba(232,242,246,.16);
-  --t-grid:rgba(232,242,246,.05); --t-glow:rgba(82,214,232,.09);
-  --t-soft:rgba(232,242,246,.05);
-  --t-disp:'Syne',sans-serif;
-}
-[data-theme="robotics"] .disp em{font-style:normal}
-
-/* ════════════════ BASE / STAGE ════════════════ */
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%}
-body{background:#05090E;overflow:hidden;font-family:var(--body)}
-::selection{background:#D5F44E;color:#0C1723}
-
-#stage{
-  position:absolute;left:50%;top:50%;
-  width:1280px;height:720px;
-  transform:translate(-50%,-50%);
-  background:#0C1723;overflow:hidden;
-}
-
-/* ════════════════ SLIDE ENGINE ════════════════ */
-#deck{position:absolute;inset:0;transition:opacity .18s ease}
-#deck.fading{opacity:0}
-.slide-wrap{position:absolute;inset:0}
-#deck.overview .slide-wrap{cursor:pointer}
-
-.slide{
-  position:absolute;inset:0;overflow:hidden;contain:content;
-  background:var(--t-bg);color:var(--t-fg);font-family:var(--t-body);
-  opacity:0;visibility:hidden;transform:scale(1.015);
-  transition:opacity var(--dur) var(--ease),transform .7s var(--ease),visibility 0s linear .7s;
-}
-.slide.active{opacity:1;visibility:visible;transform:scale(1);
-  transition:opacity var(--dur) var(--ease),transform .7s var(--ease)}
-.slide.was{opacity:0;transform:scale(.993)}
-
-/* themed graph-paper + glow, painted once, never animated */
-.slide::before{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  background-image:
-    radial-gradient(880px 480px at 84% -8%,var(--t-glow),transparent 70%),
-    linear-gradient(var(--t-grid) 1px,transparent 1px),
-    linear-gradient(90deg,var(--t-grid) 1px,transparent 1px);
-  background-size:auto,44px 44px,44px 44px;
-}
-
-.inner{position:relative;z-index:1;height:100%;padding:56px 80px 84px;display:flex;flex-direction:column}
-
-/* entrance choreography (replays on every visit, frozen during exit) */
-[data-a]{opacity:0;transform:translateY(20px)}
-.slide.active [data-a]{animation:up .6s var(--easeO) both;animation-delay:calc(var(--d,0)*80ms + 120ms)}
-.slide.was [data-a]{animation:none;opacity:1;transform:none}
-@keyframes up{to{opacity:1;transform:none}}
-
-.ln{display:block;overflow:hidden;padding-bottom:.06em}
-.ln>span{display:block;transform:translateY(112%)}
-.slide.active .ln>span{animation:lnup .8s var(--easeO) both;animation-delay:calc(var(--d,0)*130ms + 150ms)}
-.slide.was .ln>span{animation:none;transform:none}
-@keyframes lnup{to{transform:none}}
-
-.bar i,.lane .tr i{transform:scaleX(0);transform-origin:left}
-.slide.active .bar i{animation:grow .9s var(--easeO) both;animation-delay:calc(var(--d,0)*140ms + 350ms)}
-.slide.active .lane .tr i{animation:grow .9s var(--easeO) both;animation-delay:calc(var(--d,0)*160ms + 300ms)}
-.slide.was .bar i,.slide.was .lane .tr i{animation:none;transform:scaleX(1)}
-@keyframes grow{to{transform:scaleX(1)}}
-
-/* everything on hidden slides is paused — this is the perf fix */
-.slide:not(.active):not(.was) *,
-#deck.overview *{animation-play-state:paused!important}
-
-/* ════════════════ COMPONENTS (all theme-aware) ════════════════ */
-.headrow{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:34px}
-.eyebrow{font:400 11px/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--t-dim)}
-.eyebrow b{color:var(--t-acc);font-weight:400}
-.headrow .no{font:400 12px var(--mono);letter-spacing:.2em;color:var(--t-dim)}
-
-.disp{font-family:var(--t-disp);font-weight:600;line-height:1.03;letter-spacing:-.015em}
-.disp em{font-style:italic;font-weight:500;color:var(--t-acc)}
-.lede{margin-top:20px;font-size:18px;line-height:1.55;color:var(--t-dim);max-width:640px}
-.lede b{color:var(--t-fg);font-weight:600}
-.foot{margin-top:auto;padding-top:18px;font:400 9.5px var(--mono);letter-spacing:.16em;color:var(--t-dim)}
-
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
-
-/* rows with hairlines — signals / asks / club plans */
-.rows{border-top:1px solid var(--t-line)}
-.rw{display:grid;grid-template-columns:64px 1fr;gap:18px;padding:16px 8px;border-bottom:1px solid var(--t-line);transition:background .3s,padding-left .3s}
-.rw:hover{background:var(--t-soft);padding-left:18px}
-.rw .k{font:400 12px/1.6 var(--mono);color:var(--t-acc)}
-.rw h4{font-size:17px;font-weight:700;letter-spacing:.01em}
-.rw p{font-size:13.5px;color:var(--t-dim);margin-top:4px;line-height:1.55}
-.rw .dd{grid-column:2;font:400 10px var(--mono);letter-spacing:.18em;color:var(--t-dim);text-transform:uppercase;margin-top:-14px;text-align:right}
-
-/* stats */
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.stat{border:1px solid var(--t-line);padding:20px 22px;transition:border-color .3s,transform .3s var(--ease)}
-.stat:hover{border-color:var(--t-acc);transform:translateY(-3px)}
-.stat b{display:block;font-family:var(--t-disp);font-size:50px;font-weight:600;line-height:1}
-.stat b i{font-style:normal;font-size:.55em;color:var(--t-acc)}
-.stat span{display:block;margin-top:10px;font:400 9.5px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--t-dim)}
-
-/* figure + gentle ken burns (transform only, active slide only) */
-.fig{border:1px solid var(--t-line);overflow:hidden;background:var(--t-soft)}
-.fig img{display:block;width:100%;height:322px;object-fit:cover;filter:saturate(.85)}
-.slide.active .fig img{animation:kb 20s linear infinite alternate}
-@keyframes kb{from{transform:scale(1)}to{transform:scale(1.07)}}
-.fig figcaption{padding:9px 14px;border-top:1px solid var(--t-line);font:400 9px var(--mono);letter-spacing:.22em;color:var(--t-acc)}
-
-/* cards */
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.card{border:1px solid var(--t-line);background:var(--t-soft);display:flex;flex-direction:column;transition:transform .35s var(--ease),border-color .35s}
-.card:hover{transform:translateY(-6px);border-color:var(--t-acc)}
-.card .im{height:150px;overflow:hidden;background:var(--t-glow)}
-.card img{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.85);transform:scale(1.02);transition:transform .8s var(--ease)}
-.card:hover img{transform:scale(1.08)}
-.card .bd{padding:18px 20px 20px}
-.card .tag{font:400 9.5px var(--mono);letter-spacing:.2em;color:var(--t-acc)}
-.card h4{font-family:var(--t-disp);font-size:23px;font-weight:600;margin:9px 0 6px}
-.card p{font-size:13px;color:var(--t-dim);line-height:1.55}
-
-/* season rows */
-.srow{display:grid;grid-template-columns:120px 1fr 240px;gap:24px;align-items:center;padding:18px 8px;border-bottom:1px solid var(--t-line);transition:background .3s}
-.srow:hover{background:var(--t-soft)}
-.srow .mo{font:400 12px var(--mono);letter-spacing:.2em;color:var(--t-acc)}
-.srow .ev{font-family:var(--t-disp);font-size:24px;font-weight:600}
-.srow .ev small{display:block;font-family:var(--body);font-weight:400;font-size:12.5px;color:var(--t-dim);margin-top:4px}
-.bar{height:4px;background:var(--t-line);overflow:hidden}
-.bar i{display:block;height:100%;background:var(--t-acc)}
-
-/* roadmap lanes */
-.lanes{display:flex;flex-direction:column;gap:20px;justify-content:center;flex:1}
-.lane{display:grid;grid-template-columns:130px 1fr;gap:20px;align-items:center}
-.lane .q{font:400 11px var(--mono);letter-spacing:.18em;color:var(--t-acc)}
-.lane .q small{display:block;margin-top:4px;letter-spacing:.1em;color:var(--t-dim)}
-.lane .tr{height:46px;background:var(--t-soft);overflow:hidden;position:relative}
-.lane .tr i{position:absolute;inset:0;background:var(--t-acc);color:var(--t-bg);display:flex;align-items:center;padding-left:16px;font-size:13px;font-weight:600}
-.lane .tr i b{font:400 10px var(--mono);letter-spacing:.18em;margin-right:14px;opacity:.65}
-
-/* nine-grid */
-.nine{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;flex:1;align-content:stretch}
-.cell{border:1px solid var(--t-line);display:flex;flex-direction:column;justify-content:space-between;gap:14px;padding:16px 18px;transition:.3s}
-.cell:hover{border-color:var(--t-acc);background:var(--t-soft)}
-.cell .ic{width:42px;height:42px;border:1px solid var(--t-line);border-radius:50%;display:grid;place-items:center;font:700 11px var(--mono);color:var(--t-acc)}
-.cell h4{font-family:var(--t-disp);font-size:19px;font-weight:600}
-.cell span{font:400 9px var(--mono);letter-spacing:.2em;color:var(--t-dim);text-transform:uppercase}
-
-/* club divider */
-.club{flex:1;display:flex;flex-direction:column;justify-content:center;position:relative}
-.cname{font-family:var(--t-disp);font-weight:700;font-size:108px;line-height:.98;letter-spacing:-.02em}
-.ctag{margin-top:20px;font-size:19px;line-height:1.5;color:var(--t-dim);max-width:580px}
-.cmeta{display:flex;gap:56px;margin-top:46px;border-top:1px solid var(--t-line);padding-top:20px}
-.cmeta span{display:block;font:400 9px var(--mono);letter-spacing:.24em;color:var(--t-dim);margin-bottom:7px}
-.cmeta b{font-family:var(--t-disp);font-size:27px;font-weight:600}
-.wmark{position:absolute;right:64px;bottom:48px;width:190px;height:190px;opacity:.1;color:var(--t-fg)}
-
-.pull{border:1px solid var(--t-line);padding:28px;background:var(--t-soft);align-self:start}
-.pull p{font-family:var(--t-disp);font-style:italic;font-size:26px;line-height:1.4}
-.pull span{display:block;margin-top:16px;font:400 9.5px var(--mono);letter-spacing:.2em;color:var(--t-dim)}
-
-/* title slide */
-.brandrow{display:flex;align-items:center;gap:20px}
-.brandrow .logo{width:72px;height:72px;color:var(--t-acc);flex:none}
-.brandrow .bw{display:block;font:400 12px var(--mono);letter-spacing:.3em}
-.brandrow .bs{display:block;margin-top:8px;font:400 9px var(--mono);letter-spacing:.26em;color:var(--t-dim)}
-.s-title h1{font-size:112px;margin-top:44px}
-.meta3{margin-top:auto;display:grid;grid-template-columns:repeat(3,auto);gap:56px;justify-content:start}
-.meta3 span{display:block;font:400 9px var(--mono);letter-spacing:.24em;color:var(--t-dim);margin-bottom:7px}
-.meta3 b{font-weight:600;font-size:15px}
-.tick{position:absolute;left:0;right:0;bottom:52px;height:34px;border-top:1px solid var(--t-line);border-bottom:1px solid var(--t-line);overflow:hidden;display:flex;align-items:center;z-index:1}
-.tick-in{display:flex;white-space:nowrap;font:400 10.5px var(--mono);letter-spacing:.26em;color:var(--t-dim);animation:tick 34s linear infinite}
-.tick-in b{color:var(--t-acc);font-weight:400;margin:0 22px}
-@keyframes tick{to{transform:translateX(-50%)}}
-.ring{position:absolute;width:560px;height:560px;right:-160px;top:-140px;border:1px dashed var(--t-line);border-radius:50%;animation:spin 80s linear infinite;pointer-events:none}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* closing */
-.s-close .inner{align-items:flex-start;justify-content:center}
-.s-close .logo{width:96px;height:96px;color:var(--t-acc)}
-.s-close h2{font-size:96px;margin-top:34px}
-.s-close .sub{margin-top:22px;font-size:19px;color:var(--t-dim)}
-.s-close .sign{margin-top:52px;font:400 10.5px var(--mono);letter-spacing:.24em;color:var(--t-dim)}
-
-/* ════════════════ CHROME (hideable UI) ════════════════ */
-.chrome{
-  --ch-fg:#F2ECDF;--ch-dim:#7E94A6;--ch-line:rgba(242,236,223,.25);--ch-acc:#D5F44E;
-  position:absolute;inset:0;z-index:20;pointer-events:none;
-  font-family:var(--mono);color:var(--ch-fg);
-  transition:opacity .4s var(--ease),color .5s;
-}
-.stage[data-theme="paper"]    .chrome{--ch-fg:#0D1824;--ch-dim:rgba(13,24,36,.5);--ch-line:rgba(13,24,36,.28);--ch-acc:#E4572E}
-.stage[data-theme="debate"]   .chrome{--ch-acc:#E9B44C}
-.stage[data-theme="robotics"] .chrome{--ch-acc:#52D6E8}
-.stage.zen .chrome{opacity:0;pointer-events:none!important}
-
-.c-top{position:absolute;top:18px;left:30px;right:30px;display:flex;justify-content:space-between;align-items:center}
-.brand{display:flex;align-items:center;gap:9px;font-size:9px;letter-spacing:.26em;color:var(--ch-dim)}
-.brand .logo{width:20px;height:20px;color:var(--ch-acc);transition:color .5s}
-.c-right{font-size:9px;letter-spacing:.26em;color:var(--ch-dim)}
-
-.c-bot{position:absolute;left:30px;right:30px;bottom:16px;display:flex;justify-content:space-between;align-items:center}
-.count{font-size:11px;letter-spacing:.22em;display:flex;align-items:center;gap:14px}
-.count small{color:var(--ch-dim)}
-.prog{width:140px;height:2px;background:var(--ch-line);overflow:hidden;transition:background .5s}
-.prog i{display:block;height:100%;background:var(--ch-acc);transform:scaleX(0);transform-origin:left;transition:transform .6s var(--ease),background .5s}
-#help{pointer-events:auto;width:30px;height:30px;border-radius:50%;border:1px solid var(--ch-line);background:transparent;color:var(--ch-fg);font:400 13px var(--mono);cursor:pointer;transition:.3s}
-#help:hover{border-color:var(--ch-acc);color:var(--ch-acc);transform:translateY(-2px)}
-
-/* shortcuts panel */
-.panel{
-  position:absolute;right:30px;bottom:58px;width:330px;pointer-events:none;
-  background:#0B141F;border:1px solid rgba(242,236,223,.18);color:#F2ECDF;
-  padding:16px 18px 12px;opacity:0;transform:translateY(10px);
-  transition:opacity .3s var(--ease),transform .3s var(--ease);
-  box-shadow:0 24px 60px rgba(0,0,0,.5);
-}
-.panel.on{opacity:1;transform:none;pointer-events:auto}
-.panel-h{display:flex;justify-content:space-between;align-items:center;font-size:9.5px;letter-spacing:.26em;color:#8CA1B2;padding-bottom:10px;border-bottom:1px solid rgba(242,236,223,.12)}
-.panel-h button{background:none;border:none;color:#F2ECDF;font:400 15px var(--mono);cursor:pointer}
-.panel-h button:hover{color:#D5F44E}
-.krow{display:grid;grid-template-columns:86px 1fr;gap:12px;align-items:center;padding:7.5px 0;border-bottom:1px solid rgba(242,236,223,.07);font-family:var(--body)}
-.krow:last-child{border:none}
-.krow kbd{font:400 10px var(--mono);letter-spacing:.08em;border:1px solid rgba(242,236,223,.25);padding:3px 7px;text-align:center;color:#D5F44E}
-.krow span{font-size:12px;color:rgba(242,236,223,.75);line-height:1.4}
-
-/* blackout + grain */
-#black{position:absolute;inset:0;background:#04070B;z-index:40;opacity:0;visibility:hidden;transition:.35s}
-#black.on{opacity:1;visibility:visible}
-.grain{position:absolute;inset:0;z-index:30;pointer-events:none;opacity:.04;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E")}
-
-/* ════════════════ OVERVIEW ════════════════ */
-#deck.overview{display:grid;grid-template-columns:repeat(5,1fr);gap:26px 16px;padding:56px 44px 60px;overflow:auto;align-content:start}
-#deck.overview .slide-wrap{position:relative;width:calc(1280px*var(--os));height:calc(720px*var(--os));outline:1px solid rgba(242,236,223,.16);transition:outline-color .25s,translate .25s var(--ease)}
-#deck.overview .slide-wrap:hover{outline:2px solid #D5F44E;translate:0 -4px}
-#deck.overview .slide-wrap.cur{outline:2px solid #D5F44E}
-#deck.overview .slide-wrap::after{content:attr(data-n);position:absolute;left:0;bottom:-19px;font:400 9px var(--mono);letter-spacing:.22em;color:#7E94A6}
-#deck.overview .slide{opacity:1!important;visibility:visible!important;transform:scale(var(--os))!important;transform-origin:0 0;transition:none;pointer-events:none}
-#deck.overview [data-a],#deck.overview .ln>span{animation:none!important;opacity:1!important;transform:none!important}
-#deck.overview::-webkit-scrollbar{width:5px}
-#deck.overview::-webkit-scrollbar-thumb{background:rgba(242,236,223,.25)}
-
-.logo{color:inherit}
-
-@media (prefers-reduced-motion: reduce){
-  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
-}
-</style>
+  <!-- Deck engine -->
+  <script type="module" src="js/engine.js"></script>
 </head>
 <body>
+  <!-- The ULSC mark (SVG symbol) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ulsc-mark" viewBox="0 0 96 96">
+      <circle cx="48" cy="48" r="43" fill="none" stroke="currentColor" stroke-width="2.5"/>
+      <circle cx="48" cy="48" r="36" fill="none" stroke="currentColor" stroke-width="1" opacity=".45"/>
+      <path d="M48 10.5 l2.4 5.1 5.1 2.4 -5.1 2.4 -2.4 5.1 -2.4 -5.1 -5.1 -2.4 5.1 -2.4 z" fill="currentColor"/>
+      <path d="M41 30 h14 M44 30 v13 L31.5 65 q-2.2 5 2.6 5 h27.8 q4.8 0 2.6 -5 L52 43 V30" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M37 58 h22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="45" cy="50" r="2.2" fill="currentColor"/>
+      <circle cx="52" cy="46" r="1.6" fill="currentColor"/>
+    </symbol>
+  </svg>
 
-<!-- ═══ THE LOGO — replace this symbol's contents once with your real logo ═══ -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="ulsc-mark" viewBox="0 0 96 96">
-    <circle cx="48" cy="48" r="43" fill="none" stroke="currentColor" stroke-width="2.5"/>
-    <circle cx="48" cy="48" r="36" fill="none" stroke="currentColor" stroke-width="1" opacity=".45"/>
-    <path d="M48 10.5 l2.4 5.1 5.1 2.4 -5.1 2.4 -2.4 5.1 -2.4 -5.1 -5.1 -2.4 5.1 -2.4 z" fill="currentColor"/>
-    <path d="M41 30 h14 M44 30 v13 L31.5 65 q-2.2 5 2.6 5 h27.8 q4.8 0 2.6 -5 L52 43 V30"
-          fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M37 58 h22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-    <circle cx="45" cy="50" r="2.2" fill="currentColor"/>
-    <circle cx="52" cy="46" r="1.6" fill="currentColor"/>
-  </symbol>
-</svg>
+  <!-- Deck stage -->
+  <div id="stage" data-theme="core">
+    <div id="deck" role="main" aria-live="polite">
+      <noscript>
+        <p>
+          This presentation requires JavaScript. Please enable JavaScript and
+          reload the page.
+        </p>
+      </noscript>
+    </div>
 
-<div id="stage" data-theme="core">
-  <div id="deck">
-
-    <!-- ══════════ 01 · TITLE ══════════ -->
-    <div class="slide-wrap"><section class="slide s-title active" data-theme="core">
-      <div class="ring"></div>
-      <div class="inner">
-        <div class="brandrow" data-a style="--d:0">
+    <!-- Hideable chrome -->
+    <div class="chrome">
+      <div class="c-top">
+        <div class="brand">
           <svg class="logo"><use href="#ulsc-mark"/></svg>
-          <div>
-            <span class="bw">UNIVERSITY LABORATORY SCHOOL &amp; COLLEGE</span>
-            <span class="bs">A STUDENT PRESENTATION · AUGUST 2026</span>
-          </div>
+          ULSC · THE FUTURE OF CLUBS
         </div>
-        <h1 class="disp" data-a style="--d:1">The Future<br><em data-scramble>of Clubs</em></h1>
-        <p class="lede" data-a style="--d:2">Nine clubs. One campus. A plan to turn student life into <b>the best classroom we never scheduled.</b></p>
-        <div class="meta3" data-a style="--d:3">
-          <div><span>PRESENTED BY</span><b>Your Name</b></div>   <!-- EDIT -->
-          <div><span>CLASS</span><b>Your Class / Year</b></div>   <!-- EDIT -->
-          <div><span>SECTIONS</span><b>6 parts · 9 clubs</b></div>
+        <div class="c-right">A STUDENT PRESENTATION · 20 AUGUST 2026</div>
+      </div>
+      <div class="c-bot">
+        <div class="count">
+          <span><b id="cur">01</b><small> / <span id="tot">46</span></small></span>
+          <span class="prog"><i id="prog"></i></span>
         </div>
+        <button id="help" title="Shortcuts ( ? )">?</button>
       </div>
-      <div class="tick"><div class="tick-in">
-        <span>DEBATE<b>✦</b>SCIENCE<b>✦</b>ROBOTICS<b>✦</b>COMPUTER<b>✦</b>ECO<b>✦</b>DRAMA &amp; FILM<b>✦</b>MATH CIRCLE<b>✦</b>PHOTOGRAPHY<b>✦</b>CHESS<b>✦</b></span>
-        <span>DEBATE<b>✦</b>SCIENCE<b>✦</b>ROBOTICS<b>✦</b>COMPUTER<b>✦</b>ECO<b>✦</b>DRAMA &amp; FILM<b>✦</b>MATH CIRCLE<b>✦</b>PHOTOGRAPHY<b>✦</b>CHESS<b>✦</b></span>
-      </div></div>
-    </section></div>
-
-    <!-- ══════════ 02 · INDEX ══════════ -->
-    <div class="slide-wrap"><section class="slide" data-theme="paper">
-      <div class="inner">
-        <div class="headrow"><p class="eyebrow" data-a style="--d:0"><b>Index</b> — the route ahead</p><span class="no" data-a style="--d:0">02</span></div>
-        <h2 class="disp" data-a style="--d:1" style="font-size:66px">Six stops,<br>then <em>nine clubs.</em></h2>
-        <div class="grid2" style="margin-top:36px;grid-template-columns:1fr 1.4fr;flex:1">
-          <p class="lede" data-a style="--d:2" style="margin-top:0">Not a wish list — a working plan. Every part ends with something we can actually do next term.</p>
-          <div class="rows">
-            <div class="rw" data-a style="--d:2"><span class="k">01</span><div><h4>Where we stand</h4></div></div>
-            <div class="rw" data-a style="--d:3"><span class="k">02</span><div><h4>What's changing</h4></div></div>
-            <div class="rw" data-a style="--d:4"><span class="k">03</span><div><h4>The nine clubs</h4><p>A chapter for each — where they are, where they go.</p></div></div>
-            <div class="rw" data-a style="--d:5"><span class="k">04</span><div><h4>Proposals</h4><p>Fusion clubs · seasons &amp; showcases.</p></div></div>
-            <div class="rw" data-a style="--d:6"><span class="k">05</span><div><h4>The roadmap</h4></div></div>
-            <div class="rw" data-a style="--d:7"><span class="k">06</span><div><h4>The ask</h4></div></div>
-          </div>
-        </div>
+      <div class="panel" id="panel" role="dialog" aria-label="Keyboard shortcuts">
+        <div class="panel-h">CONTROLS <button id="pclose" title="Close">×</button></div>
+        <div class="krow"><kbd>→ / SPACE</kbd><span>Next slide</span></div>
+        <div class="krow"><kbd>←</kbd><span>Previous slide</span></div>
+        <div class="krow"><kbd>HOME / END</kbd><span>First / last slide</span></div>
+        <div class="krow"><kbd>G</kbd><span>Overview — all slides, click to jump</span></div>
+        <div class="krow"><kbd>F</kbd><span>Fullscreen</span></div>
+        <div class="krow"><kbd>B</kbd><span>Blackout the screen</span></div>
+        <div class="krow"><kbd>H</kbd><span>Focus mode — hide everything, slide only</span></div>
+        <div class="krow"><kbd>?</kbd><span>This panel</span></div>
+        <div class="krow"><kbd>ESC</kbd><span>Close panels</span></div>
       </div>
-    </section></div>
+    </div>
 
-    <!-- ══════════ 03 · WHERE WE STAND ══════════ -->
-    <div class="slide-wrap"><section class="slide" data-theme="core">
-      <div class="inner">
-        <div class="headrow"><p class="eyebrow" data-a style="--d:0"><b>01</b> · Where we stand</p><span class="no" data-a style="--d:0">03</span></div>
-        <h2 class="disp" data-a style="--d:1" style="font-size:60px">A living campus, <em>already in motion.</em></h2>
-        <div class="grid2" style="margin-top:36px;flex:1">
-          <div class="stats">
-            <div class="stat" data-a style="--d:2"><b><span data-count="18">0</span></b><span>Active clubs &amp; societies</span></div>
-            <div class="stat" data-a style="--d:3"><b><span data-count="640" data-suffix="+">0</span></b><span>Students involved</span></div>
-            <div class="stat" data-a style="--d:4"><b><span data-count="45" data-suffix="+">0</span></b><span>Events hosted last year</span></div>
-            <div class="stat" data-a style="--d:5"><b><span data-count="12">0</span></b><span>External trophies &amp; honors</span></div>
-          </div>
-          <figure class="fig" data-a style="--d:4">
-            <img src="https://picsum.photos/seed/ulsc-campus-life/700/460" alt="Campus life" decoding="async">
-            <figcaption>FIG. 01 — OUR CAMPUS, OUR FIRST LAB</figcaption>
-          </figure>
-        </div>
-        <p class="foot" data-a style="--d:6">* FIGURES ARE ESTIMATES — REPLACE WITH REAL RECORDS BEFORE PRESENTING</p>
-      </div>
-    </section></div>
-
-    <!-- ══════════ 04 · WHAT'S CHANGING ══════════ -->
-    <div class="slide-wrap"><section class="slide" data-theme="paper">
-      <div class="inner">
-        <div class="headrow"><p class="eyebrow" data-a style="--d:0"><b>02</b> · What's changing</p><span class="no" data-a style="--d:0">04</span></div>
-        <div class="grid2" style="flex:1;align-items:center">
-          <h2 class="disp" style="font-size:76px">
-            <span class="ln" style="--d:1"><span>Students</span></span>
-            <span class="ln" style="--d:2"><span><em>changed.</em></span></span>
-            <span class="ln" style="--d:3"><span>Clubs didn't.</span></span>
-          </h2>
-          <div class="rows">
-            <div class="rw" data-a style="--d:3"><span class="k">Δ01</span><div><h4>Attention is digital</h4><p>Students live in feeds; clubs still announce on noticeboards.</p></div></div>
-            <div class="rw" data-a style="--d:4"><span class="k">Δ02</span><div><h4>Interests are blended</h4><p>Coders paint. Poets build robots. Categories feel outdated.</p></div></div>
-            <div class="rw" data-a style="--d:5"><span class="k">Δ03</span><div><h4>Learning is project-first</h4><p>Students join missions, not meetings.</p></div></div>
-            <div class="rw" data-a style="--d:6"><span class="k">Δ04</span><div><h4>Community has competition</h4><p>Online spaces are open 24/7. Clubs get one hour a week.</p></div></div>
-          </div>
-        </div>
-      </div>
-    </section></div>
-
-    <!-- ══════════ 05 · THE NINE ══════════ -->
-    <div class="slide-wrap"><section class="slide" data-theme="core">
-      <div class="inner">
-        <div class="headrow"><p class="eyebrow" data-a style="--d:0"><b>03</b> · The nine</p><span class="no" data-a style="--d:0">05</span></div>
-        <h2 class="disp" data-a style="--d:1" style="font-size:60px">Nine clubs. <em>One campus.</em></h2>
-        <p class="lede" data-a style="--d:2">From here, each club gets its own chapter — its own colors, its own story, its own plan.</p>
-        <div class="nine" style="margin-top:28px">
-          <div class="cell" data-a style="--d:2"><span class="ic">DB</span><div><h4>Debate</h4><span>Chapter 01</span></div></div>
-          <div class="cell" data-a style="--d:3"><span class="ic">SC</span><div><h4>Science</h4><span>Chapter 02</span></div></div>
-          <div class="cell" data-a style="--d:3"><span class="ic">RB</span><div><h4>Robotics</h4><span>Chapter 03</span></div></div>
-          <div class="cell" data-a style="--d:4"><span class="ic">CP</span><div><h4>Computer</h4><span>Chapter 04</span></div></div>
-          <div class="cell" data-a style="--d:4"><span class="ic">EC</span><div><h4>Eco Club</h4><span>Chapter 05</span></div></div>
-          <div class="cell" data-a style="--d:5"><span class="ic">DF</span><div><h4>Drama &amp; Film</h4><span>Chapter 06</span></div></div>
-          <div class="cell" data-a style="--d:5"><span class="ic">MC</span><div><h4>Math Circle</h4><span>Chapter 07</span></div></div>
-          <div class="cell" data-a style="--d:6"><span class="ic">PH</span><div><h4>Photography</h4><span>Chapter 08</span></div></div>
-          <div class="cell" data-a style="--d:6"><span class="ic">CH</span><div><h4>Chess</h4><span>Chapter 09</span></div></div>
-        </div>
-      </div>
-    </section></div>
-
-    <!-- ══════════ 06 · CLUB DIVIDER TEMPLATE — DEBATE ══════════
-         To add a club: duplicate this slide-wrap, change data-theme,
-         CLUB n / 09, the name, tagline and the three stats. -->
-    <div class="slide-wrap"><section class="slide" data-theme="debate">
-      <div class="inner">
-        <div class="headrow"><p class="eyebrow" data-a style="--d:0"><b>Club 01 / 09</b> · chapter one</p><span class="no" data-a style="--d:0">06</span></div>
-        <div class="club">
-          <h2 class="cname" data-a style="--d:1">Debate</h2>
-          <p class="ctag" data-a style="--d:2">Where every argument begins — and where every future leader learns to lose gracefully.</p>
-          <div class="cmeta" data-a style="--d:3">
-            <div><span>MEMBERS</span><b>120+</b></div>   <!-- EDIT stats -->
-            <div><span>ROUNDS WON</span><b>340</b></div>
-            <div><span>TROPHIES</span><b>12</b></div>
-          </div>
-          <svg class="wmark"><use href="#ulsc-mark"/></svg>
-        </div>
-      </div>
-    </section></div>
-
-    <!-- ══════════ 07 · CLUB DETAIL — DEBATE ══════════ -->
-    <div class="slide-wrap"><section class="slide" data-theme="debate">
-      <div class="inner">
-        <div class="headrow"><p class="eyebrow" data-a style="--d:0"><b>Club 01</b> · the next chapter</p><span class="no" data-a style="--d:0">07</span></div>
-        <h2 class="disp" data-a style="--d:1" style="font-size:58px">Sharpening <em>the sword.</em></h2>
-        <div class="grid2" style="margin-top:32px;flex:1;grid-template-columns:1.35fr 1fr">
-          <div class="rows">
-            <div class="rw" data-a style="--d:2"><span class="k">A.</span><div><h4>Junior academy</h4><p>Class 6–8 training ladder, so talent is grown — not discovered by accident.</p></div></div>
-            <div class="rw" data-a style="--d:3"><span class="k">B.</span><div><h4>Host the circuit</h4><p>Invite other schools to our campus. Home advantage, twice a year.</p></div></div>
-            <div class="rw" data-a style="--d:4"><span class="k">C.</span><div><h4>The archive</h4><p>Every final round recorded and published. History that trains the next team.</p></div></div>
-          </div>
-          <div class="pull" data-a style="--d:4">
-            <p>"The best argument we ever won started as our weakest one."</p>
-            <span>— DEBATE CLUB MOTTO</span>
-          </div>
-        </div>
-      </div>
-    </section></div>
-
-    <!-- ══════════ 08 · CLUB DIVIDER — ROBOTICS (different theme + font) ══════════ -->
-    <div class="slide-wrap"><section class="slide" data-theme="robotics">
-      <div class="inner">
-        <div class="headrow"><p class="eyebrow" data-a style="--d:0"><b>Club 03 / 09</b> · chapter three</p><span class="no" data-a style="--d:0">08</span></div>
-        <div class="club">
-          <h2 class="cname" data-a style="--d:1" data-scramble>Robotics</h2>
-          <p class="ctag" data-a style="--d:2">We build the things that move — and the people who will move what comes next.</p>
-          <div class="cmeta" data-a style="--d:3">
-            <div><span>MEMBERS</span><b>84</b></div>
-            <div><span>PROJECTS</span><b>31</b></div>
-            <div><span>AWARDS</span><b>09</b></div>
-          </div>
-          <svg class="wmark"><use href="#ulsc-mark"/></svg>
-        </div>
-      </div>
-    </section></div>
-
-    <!-- ══════════ 09 · PROPOSAL: FUSION ══════════ -->
-    <div class="slide-wrap"><section class="slide" data-theme="core">
-      <div class="inner">
-        <div class="headrow"><p class="eyebrow" data-a style="--d:0"><b>04</b> · Proposal one</p><span class="no" data-a style="--d:0">09</span></div>
-        <h2 class="disp" data-a style="--d:1" style="font-size:60px"><em>Fusion</em> clubs</h2>
-        <p class="lede" data-a style="--d:2">Pair two societies for one term and get a brand-new discipline. No new budget — just permission to collide.</p>
-        <div class="cards" style="margin-top:30px;flex:1">
-          <div class="card" data-a style="--d:3">
-            <div class="im"><img src="https://picsum.photos/seed/ulsc-fusion-machines/640/400" alt="" decoding="async"></div>
-            <div class="bd"><span class="tag">ROBOTICS × ART</span><h4>Creative Machines</h4><p>Kinetic sculptures and stage props — machines that perform, not just compute.</p></div>
-          </div>
-          <div class="card" data-a style="--d:4">
-            <div class="im"><img src="https://picsum.photos/seed/ulsc-fusion-forum/640/400" alt="" decoding="async"></div>
-            <div class="bd"><span class="tag">DEBATE × SCIENCE</span><h4>The Ethics Forum</h4><p>Debating the questions technology can't answer on its own.</p></div>
-          </div>
-          <div class="card" data-a style="--d:5">
-            <div class="im"><img src="https://picsum.photos/seed/ulsc-fusion-lens/640/400" alt="" decoding="async"></div>
-            <div class="bd"><span class="tag">ECO × PHOTOGRAPHY</span><h4>Climate Lens</h4><p>A year of documenting our city, ending in a public exhibition.</p></div>
-          </div>
-        </div>
-      </div>
-    </section></div>
-
-    <!-- ══════════ 10 · PROPOSAL: SEASONS ══════════ -->
-    <div class="slide-wrap"><section class="slide" data-theme="paper">
-      <div class="inner">
-        <div class="headrow"><p class="eyebrow" data-a style="--d:0"><b>04</b> · Proposal two</p><span class="no" data-a style="--d:0">10</span></div>
-        <h2 class="disp" data-a style="--d:1" style="font-size:60px"><em>Seasons</em> &amp; showcases</h2>
-        <div style="margin-top:34px;border-top:1px solid var(--t-line);flex:1;align-content:center;display:flex;flex-direction:column;justify-content:center">
-          <div class="srow" data-a style="--d:2"><span class="mo">OCT →</span><span class="ev">Winter League<small>Tournaments, quizzes and weekly fixtures across every club</small></span><span class="bar"><i style="--d:0"></i></span></div>
-          <div class="srow" data-a style="--d:3"><span class="mo">FEB →</span><span class="ev">Spring Showcase<small>Exhibitions, performances and live demos — parents invited</small></span><span class="bar"><i style="--d:1"></i></span></div>
-          <div class="srow" data-a style="--d:4"><span class="mo">APR →</span><span class="ev">Lab Fest<small>One week. Every club. One stage. The whole school shows up.</small></span><span class="bar"><i style="--d:2"></i></span></div>
-        </div>
-      </div>
-    </section></div>
-
-    <!-- ══════════ 11 · ROADMAP ══════════ -->
-    <div class="slide-wrap"><section class="slide" data-theme="core">
-      <div class="inner">
-        <div class="headrow"><p class="eyebrow" data-a style="--d:0"><b>05</b> · The roadmap</p><span class="no" data-a style="--d:0">11</span></div>
-        <h2 class="disp" data-a style="--d:1" style="font-size:60px">Twelve months, <em>four moves.</em></h2>
-        <div class="lanes">
-          <div class="lane" data-a style="--d:2"><span class="q">Q1<small>SEP–NOV</small></span><span class="tr"><i style="--d:0"><b>M1</b>Charters signed · club fair · portal v1</i></span></div>
-          <div class="lane" data-a style="--d:3"><span class="q">Q2<small>DEC–FEB</small></span><span class="tr"><i style="--d:1"><b>M2</b>Winter League begins · first micro-grants</i></span></div>
-          <div class="lane" data-a style="--d:4"><span class="q">Q3<small>MAR–MAY</small></span><span class="tr"><i style="--d:2"><b>M3</b>Spring Showcase · badges go live</i></span></div>
-          <div class="lane" data-a style="--d:5"><span class="q">Q4<small>JUN–AUG</small></span><span class="tr"><i style="--d:3"><b>M4</b>Lab Fest · year-one review</i></span></div>
-        </div>
-      </div>
-    </section></div>
-
-    <!-- ══════════ 12 · THE ASK ══════════ -->
-    <div class="slide-wrap"><section class="slide" data-theme="paper">
-      <div class="inner">
-        <div class="headrow"><p class="eyebrow" data-a style="--d:0"><b>06</b> · The ask</p><span class="no" data-a style="--d:0">12</span></div>
-        <h2 class="disp" data-a style="--d:1" style="font-size:66px">Four things.<br><em>That's all it takes.</em></h2>
-        <div class="rows" style="margin-top:34px">
-          <div class="rw" data-a style="--d:2"><span class="k">A.</span><div><h4>A room</h4><p>One shared club room, open after hours.</p></div></div>
-          <div class="rw" data-a style="--d:3"><span class="k">B.</span><div><h4>A budget</h4><p>A small annual fund, managed transparently by students.</p></div></div>
-          <div class="rw" data-a style="--d:4"><span class="k">C.</span><div><h4>An hour</h4><p>One weekly club period on the timetable.</p></div></div>
-          <div class="rw" data-a style="--d:5"><span class="k">D.</span><div><h4>Trust</h4><p>Students to run it. Teachers to guide it.</p></div></div>
-        </div>
-      </div>
-    </section></div>
-
-    <!-- ══════════ 13 · CLOSING ══════════ -->
-    <div class="slide-wrap"><section class="slide s-close" data-theme="core">
-      <div class="ring"></div>
-      <div class="inner">
-        <svg class="logo" data-a style="--d:0"><use href="#ulsc-mark"/></svg>
-        <h2 class="disp" data-a style="--d:1" data-scramble>Thank you.</h2>
-        <p class="sub" data-a style="--d:2">Questions welcome — let's build this together.</p>
-        <p class="sign" data-a style="--d:3">YOUR NAME · UNIVERSITY LABORATORY SCHOOL &amp; COLLEGE · AUGUST 2026</p>
-      </div>
-    </section></div>
-
+    <div class="grain"></div>
+    <div id="black"></div>
   </div>
 
-  <!-- ═══ hideable chrome ═══ -->
-  <div class="chrome">
-    <div class="c-top">
-      <div class="brand"><svg class="logo"><use href="#ulsc-mark"/></svg>ULSC · CLUB FUTURES</div>
-      <div class="c-right">A STUDENT PRESENTATION · 2026</div>
-    </div>
-    <div class="c-bot">
-      <div class="count"><span id="segs"></span><span><b id="cur">01</b><small> / <span id="tot">13</span></small></span><span class="prog"><i id="prog"></i></span></div>
-      <button id="help" title="Shortcuts ( ? )">?</button>
-    </div>
-    <div class="panel" id="panel" role="dialog" aria-label="Keyboard shortcuts">
-      <div class="panel-h">CONTROLS <button id="pclose" title="Close">×</button></div>
-      <div class="krow"><kbd>→ / SPACE</kbd><span>Next slide</span></div>
-      <div class="krow"><kbd>←</kbd><span>Previous slide</span></div>
-      <div class="krow"><kbd>HOME / END</kbd><span>First / last slide</span></div>
-      <div class="krow"><kbd>G</kbd><span>Overview — all slides, click to jump</span></div>
-      <div class="krow"><kbd>F</kbd><span>Fullscreen</span></div>
-      <div class="krow"><kbd>B</kbd><span>Blackout the screen</span></div>
-      <div class="krow"><kbd>H</kbd><span>Focus mode — hide everything, slide only. Press H again to restore.</span></div>
-      <div class="krow"><kbd>?</kbd><span>This panel</span></div>
-      <div class="krow"><kbd>ESC</kbd><span>Close panels</span></div>
-    </div>
-  </div>
-
-  <div class="grain"></div>
-  <div id="black"></div>
-</div>
-
-<script>
-(function(){
-  const stage  = document.getElementById('stage');
-  const deck   = document.getElementById('deck');
-  const slides = [...document.querySelectorAll('.slide')];
-  const wraps  = [...document.querySelectorAll('.slide-wrap')];
-  const prog   = document.getElementById('prog');
-  const curEl  = document.getElementById('cur');
-  const panel  = document.getElementById('panel');
-  const N = slides.length, RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let cur = -1, lock = false, ovOpen = false;
-
-  document.getElementById('tot').textContent = String(N).padStart(2,'0');
-  wraps.forEach((w,i)=> w.dataset.n = String(i+1).padStart(2,'0'));
-
-  /* fit 16:9 canvas to any screen */
-  function fit(){
-    const s = Math.min(innerWidth/1280, innerHeight/720);
-    stage.style.transform = `translate(-50%,-50%) scale(${s})`;
-  }
-  addEventListener('resize', fit); fit();
-
-  /* scramble-decode */
-  function scramble(el){
-    const txt = el.dataset.txt || (el.dataset.txt = el.textContent);
-    if(RM){ el.textContent = txt; return; }
-    const g = '#/\\+*<>01▌', t0 = performance.now(), dur = 950;
-    cancelAnimationFrame(el._sc);
-    (function tick(now){
-      const p = Math.min(1,(now-t0)/dur), r = Math.floor(p*txt.length);
-      let out = '';
-      for(let k=0;k<txt.length;k++) out += (k<r||txt[k]===' ') ? txt[k] : g[(Math.random()*g.length)|0];
-      el.textContent = out;
-      el._sc = p<1 ? requestAnimationFrame(tick) : (el.textContent = txt, 0);
-    })(t0);
-  }
-  /* count-up */
-  function countUp(el){
-    const t = parseFloat(el.dataset.count), s = el.dataset.suffix||'';
-    if(RM){ el.textContent = t+s; return; }
-    const t0 = performance.now(), dur = 1150;
-    cancelAnimationFrame(el._cu);
-    (function tick(now){
-      const p = Math.min(1,(now-t0)/dur), e = 1-Math.pow(1-p,3);
-      el.textContent = Math.round(t*e)+s;
-      if(p<1) el._cu = requestAnimationFrame(tick);
-    })(t0);
-  }
-
-  /* navigation — debounced, no mid-flight jank */
-  function go(i){
-    i = Math.max(0, Math.min(N-1, i));
-    if(i===cur || lock) return;
-    lock = true; setTimeout(()=>lock=false, 330);
-    const old = cur>=0 ? slides[cur] : null;
-    cur = i;
-    if(old){
-      old.classList.remove('active');
-      old.classList.add('was');                    /* keeps content frozen during exit */
-      clearTimeout(old._wt);
-      old._wt = setTimeout(()=>old.classList.remove('was'), 700);
-    }
-    const s = slides[i];
-    s.classList.remove('was');
-    s.classList.add('active');
-    stage.dataset.theme = s.dataset.theme || 'core'; /* chrome recolors with the theme */
-    curEl.textContent = String(i+1).padStart(2,'0');
-    prog.style.transform = `scaleX(${(i+1)/N})`;
-    wraps.forEach((w,k)=>w.classList.toggle('cur', k===i));
-    history.replaceState(null,'','#'+(i+1));
-    s.querySelectorAll('[data-scramble]').forEach(scramble);
-    s.querySelectorAll('[data-count]').forEach(countUp);
-  }
-  const next = ()=>go(cur+1), prev = ()=>go(cur-1);
-
-  /* overview */
-  function fadeSwap(fn){ deck.classList.add('fading'); setTimeout(()=>{ fn(); deck.classList.remove('fading'); },190); }
-  function openOv(){
-    if(ovOpen) return; ovOpen = true;
-    const w = (1280-88-4*16)/5;                    /* 5 columns */
-    deck.style.setProperty('--os', w/1280);
-    fadeSwap(()=>deck.classList.add('overview'));
-  }
-  function closeOv(){ if(!ovOpen) return; ovOpen = false; fadeSwap(()=>deck.classList.remove('overview')); }
-  wraps.forEach((w,i)=>w.addEventListener('click', ()=>{ if(!ovOpen) return; closeOv(); go(i); }));
-
-  /* shortcuts panel */
-  function setPanel(on){ panel.classList.toggle('on', on); }
-  document.getElementById('help').onclick  = e=>{ e.stopPropagation(); setPanel(!panel.classList.contains('on')); };
-  document.getElementById('pclose').onclick = ()=>setPanel(false);
-  document.addEventListener('pointerdown', e=>{
-    if(panel.classList.contains('on') && !panel.contains(e.target)) setPanel(false);
-  });
-
-  /* keys */
-  addEventListener('keydown', e=>{
-    const k = e.key;
-    if(k==='ArrowRight'||k===' '||k==='PageDown'||k==='Enter'){ e.preventDefault(); if(ovOpen)closeOv(); next(); }
-    else if(k==='ArrowLeft'||k==='PageUp'){ e.preventDefault(); if(ovOpen)closeOv(); prev(); }
-    else if(k==='Home'){ go(0); }
-    else if(k==='End'){ go(N-1); }
-    else if(k==='g'||k==='G'){ ovOpen ? closeOv() : openOv(); }
-    else if(k==='Escape'){ setPanel(false); closeOv(); }
-    else if(k==='?'){ setPanel(!panel.classList.contains('on')); }
-    else if(k==='h'||k==='H'){ setPanel(false); stage.classList.toggle('zen'); }
-    else if(k==='b'||k==='B'){ document.getElementById('black').classList.toggle('on'); }
-    else if(k==='f'||k==='F'){ document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); }
-  });
-  document.getElementById('black').addEventListener('click', e=>e.target.classList.remove('on'));
-
-  /* swipe */
-  let tx = null;
-  stage.addEventListener('touchstart', e=>{ tx = e.touches[0].clientX; }, {passive:true});
-  stage.addEventListener('touchend', e=>{
-    if(tx===null) return;
-    const dx = e.changedTouches[0].clientX - tx;
-    if(Math.abs(dx)>40){ if(ovOpen) closeOv(); dx<0 ? next() : prev(); }
-    tx = null;
-  }, {passive:true});
-
-  /* init */
-  const h = parseInt(location.hash.slice(1));
-  go(h>=1 && h<=N ? h-1 : 0);
-})();
-</script>
+  <!-- Dynamic slide counter -->
+  <div id="slide-counter" class="slide-counter" aria-live="polite"></div>
 </body>
 </html>

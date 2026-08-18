@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICT Club — Cursor Foundry</title>
+<style>
+  :root{
+    --bg:#0b1120; --panel:#111a2e; --panel2:#16213a; --line:#24304d;
+    --cyan:#22d3ee; --violet:#a78bfa; --txt:#e6edf7; --mut:#93a4c0;
+    --mono:ui-monospace,'Cascadia Code','Fira Code',Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(1100px 500px at 70% -10%,#16224a,var(--bg));color:var(--txt);
+    font-family:'Segoe UI',system-ui,Arial,sans-serif;padding:34px 20px 70px;line-height:1.55}
+  .wrap{max-width:1160px;margin:0 auto}
+  header{margin-bottom:28px}
+  .kicker{font-family:var(--mono);font-size:.72rem;letter-spacing:4px;color:var(--cyan);text-transform:uppercase}
+  header h1{font-size:2.4rem;margin:6px 0 2px;letter-spacing:.5px}
+  header h1 span{color:var(--cyan)}
+  header p{color:var(--mut);font-size:.95rem;max-width:760px}
+  header .stat{font-family:var(--mono);font-size:.75rem;color:var(--violet);margin-top:8px}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:26px}
+  .card h2{font-size:1rem;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:3px;font-family:var(--mono)}
+  .card .sub{color:var(--mut);font-size:.86rem;margin-bottom:16px}
+
+  /* set chips */
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);
+    color:var(--txt);padding:8px 16px 8px 9px;border-radius:12px;font-family:inherit;font-size:.9rem;cursor:pointer;transition:.16s;text-align:left}
+  .chip img{width:34px;height:34px;border-radius:8px}
+  .chip small{display:block;color:var(--mut);font-size:.68rem;font-weight:normal}
+  .chip:hover{transform:translateY(-2px);border-color:var(--cyan)}
+  .chip.active{border-color:var(--cyan);background:#12304a;box-shadow:0 0 0 1px var(--cyan)}
+
+  /* form grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:11px}
+  .tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px 10px 12px;
+    text-align:center;transition:.15s}
+  .tile:hover{border-color:var(--cyan);transform:translateY(-2px)}
+  .tile img{width:44px;height:44px;display:block;margin:0 auto 8px}
+  .tile .nm{font-size:.82rem;font-weight:bold}
+  .tile .cp{font-size:.66rem;color:var(--mut);min-height:2.6em}
+  .tile code{font-family:var(--mono);font-size:.6rem;color:var(--violet)}
+
+  /* mock slide editor */
+  .editor{background:#eef1f6;border:1px solid #cdd5e2;border-radius:12px;overflow:hidden;color:#22304a}
+  .ebar{display:flex;gap:10px;align-items:center;padding:10px 14px;background:#e1e6ef;border-bottom:1px solid #ccd4e2;
+    font-size:.84rem;flex-wrap:wrap}
+  .ebar b{color:#17233b}
+  .dots{color:#ff5f57;text-shadow:14px 0 #febc2e,28px 0 #28c840;letter-spacing:-1px;margin-right:22px}
+  .tools{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+  .tbtn{background:#fff;border:1px solid #c4cede;border-radius:6px;padding:5px 10px;font-size:.76rem;
+    color:#2b3a55;font-family:inherit;transition:.13s}
+  .tbtn:hover{border-color:#2563eb;color:#2563eb}
+  .emain{display:grid;grid-template-columns:1fr 215px;gap:14px;padding:16px}
+  .slide{background:#fff;border:1px solid #d3dae6;border-radius:8px;position:relative;min-height:330px;
+    padding:16px;box-shadow:0 6px 18px rgba(23,35,59,.10)}
+  .tbox{border:1px dashed transparent;border-radius:4px;padding:5px 7px}
+  .tbox:hover{border-color:#9db2d8;background:#f4f8ff}
+  .title{position:absolute;top:14px;left:16px;width:52%;font-size:1.35rem;font-weight:bold;color:#17233b}
+  .bodytx{position:absolute;top:66px;left:16px;width:40%;font-size:.82rem;color:#43536f}
+  .imgbox{position:absolute;top:56px;right:16px;width:36%;height:46%;border:1.5px solid #7d93bb;border-radius:6px;
+    background:linear-gradient(135deg,#dbe7ff,#eef3fb 55%,#d4e2fb);display:flex;align-items:center;justify-content:center;
+    color:#5b7098;font-size:.8rem;font-weight:bold;letter-spacing:1px}
+  .hd{position:absolute;width:11px;height:11px;background:#2563eb;border:2px solid #fff;border-radius:2px;
+    box-shadow:0 1px 3px rgba(0,0,0,.35)}
+  .tl{top:-6px;left:-6px}.tr{top:-6px;right:-6px}.bl{bottom:-6px;left:-6px}.br{bottom:-6px;right:-6px}
+  table{position:absolute;bottom:16px;left:16px;border-collapse:collapse;font-size:.7rem}
+  td{border:1px solid #aab8d2;padding:5px 12px;color:#3c4d6d;background:#f7f9fd}
+  tr:first-child td{background:#e4ecfa;font-weight:bold}
+  .slink{position:absolute;bottom:20px;right:18px;color:#1d4ed8;font-size:.85rem;font-weight:bold}
+  .eside{display:flex;flex-direction:column;gap:10px}
+  .tray{border:2px dashed #d08383;background:#fdf0f0;color:#b04a4a;padding:20px 10px;text-align:center;
+    border-radius:8px;font-size:.78rem;font-weight:bold}
+  .busybtn{background:#fff;border:1px solid #c4cede;border-radius:7px;padding:11px;font-size:.8rem;color:#2b3a55;font-family:inherit}
+  .pan{background:#dde7f7;border:1px solid #b6c6e6;border-radius:8px;padding:26px 10px;text-align:center;
+    font-size:.78rem;color:#38507c;user-select:none;font-weight:bold;flex:1;display:flex;align-items:center;justify-content:center}
+  .estatus{display:flex;gap:8px;align-items:center;padding:9px 14px;background:#e1e6ef;border-top:1px solid #ccd4e2;font-size:.8rem}
+  .estatus button{background:#fff;border:1px solid #c4cede;border-radius:5px;padding:4px 12px;font-family:inherit;color:#2b3a55}
+  .estatus .count{font-family:var(--mono);color:#5b6b88;margin-left:4px}
+  .estatus .spr{flex:1}
+
+  /* presentation panel */
+  .pres{background:#0a0f1e;border:1px solid #22304d;border-radius:12px;padding:16px;margin-top:14px}
+  .pres .plbl{font-family:var(--mono);font-size:.66rem;letter-spacing:2px;color:#5f7bb0;text-transform:uppercase;margin-bottom:10px}
+  .pslide{background:linear-gradient(135deg,#0d1526,#111d3a);border:1px solid #26365a;border-radius:8px;
+    min-height:170px;display:flex;align-items:center;justify-content:center;text-align:center;padding:22px;
+    color:#8fa3cc;font-size:.95rem}
+  .pslide b{color:#dce8ff}
+  .pnav{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .pnav button{background:#16233f;color:#cfe0ff;border:1px solid #2c4370;padding:7px 16px;border-radius:6px;
+    font-size:.8rem;font-family:inherit}
+  .pnav button:hover{border-color:var(--cyan)}
+
+  footer{text-align:center;color:#5c6b8a;font-size:.78rem;border-top:1px solid var(--line);padding-top:20px;margin-top:8px}
+  footer b{color:var(--cyan)}
+  @media(max-width:820px){.emain{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">ICT Club · Cursor Foundry</div>
+    <h1>Slideshow <span>Cursor Lab</span></h1>
+    <p>Six themed sets covering every cursor a slide editor needs — from the standard arrow to the laser pointer.
+    Pick a set, scan all forms, then test-drive them inside the mock editor below.</p>
+    <div class="stat" id="stat"></div>
+  </header>
+
+  <div class="card">
+    <h2>01 · Pick a set</h2>
+    <div class="sub">Each set re-skins all 23 cursor forms below.</div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="card">
+    <h2>02 · Every cursor form</h2>
+    <div class="sub">The 15 slideshow essentials, plus 8 extras (marked ✚). Hover a tile to feel that cursor.</div>
+    <div class="grid" id="preview"></div>
+  </div>
+
+  <div class="card">
+    <h2>03 · Test drive — mock slide editor</h2>
+    <div class="sub">Title &amp; body boxes → Text · image &amp; corner handles → Move/Resize · table → Cell · tray → Unavailable · pan box → Grab (hold to Grabbing).</div>
+
+    <div class="editor" data-stage>
+      <div class="ebar">
+        <span class="dots">●●●</span><b>ICT Slides</b>&nbsp;— editor mock
+        <div class="tools">
+          <button class="tbtn" data-cursor="crosshair">⌖ Crop</button>
+          <button class="tbtn" data-cursor="pen">✎ Pen</button>
+          <button class="tbtn" data-cursor="highlighter">▬ Highlight</button>
+          <button class="tbtn" data-cursor="eraser">◻ Eraser</button>
+          <button class="tbtn" data-cursor="laser">● Laser</button>
+          <button class="tbtn" data-cursor="eyedropper">💧 Pick color</button>
+          <button class="tbtn" data-cursor="rotate">⟳ Rotate</button>
+          <button class="tbtn" data-cursor="cell">▦ Table</button>
+          <button class="tbtn" data-cursor="zoomOut">−</button>
+          <button class="tbtn" data-cursor="zoomIn">＋</button>
+          <button class="tbtn" data-cursor="help">? Help</button>
+        </div>
+      </div>
+
+      <div class="emain">
+        <div class="slide" data-cursor="default">
+          <div class="tbox title" data-cursor="text">Click to edit title</div>
+          <div class="tbox bodytx" data-cursor="text">Hover here to edit body copy. This text box uses the Text Select I-beam.</div>
+          <div class="imgbox" data-cursor="move">IMAGE
+            <i class="hd tl" data-cursor="nwse"></i><i class="hd tr" data-cursor="nesw"></i>
+            <i class="hd bl" data-cursor="nesw"></i><i class="hd br" data-cursor="nwse"></i>
+          </div>
+          <table data-cursor="cell">
+            <tr><td>Term</td><td>Meaning</td><td>Example</td></tr>
+            <tr><td>RAM</td><td>Fast memory</td><td>16 GB</td></tr>
+            <tr><td>SSD</td><td>Storage</td><td>1 TB</td></tr>
+          </table>
+          <a class="slink" href="#" data-cursor="pointer">ict.club/join ↗</a>
+        </div>
+
+        <div class="eside">
+          <div class="tray" data-cursor="notAllowed">🚫 MEDIA TRAY<br>locked during presentation</div>
+          <button class="busybtn" data-cursor="busy">⟳ Rendering video… please wait</button>
+          <div class="pan" id="pan" data-cursor="grab">✋ PAN ZONE<br><span style="font-weight:normal;font-size:.7rem">press &amp; hold → closed fist</span></div>
+        </div>
+      </div>
+
+      <div class="estatus">
+        <button data-cursor="pointer">◀</button>
+        <button data-cursor="pointer">▶</button>
+        <span class="count">Slide 3 / 12</span>
+        <span class="spr"></span>
+        <button data-cursor="grabbing">✊ Drag preview</button>
+        <button data-cursor="help">? Shortcuts</button>
+      </div>
+    </div>
+
+    <div class="pres">
+      <div class="plbl">Presentation mode — dark screen · laser shines here</div>
+      <div class="pslide" data-cursor="laser"><span><b>“The best way to predict the future is to invent it.”</b><br>
+        Hover this slide with the Laser Pointer active ↑</span></div>
+      <div class="pnav">
+        <button data-cursor="pointer">◀ Prev</button>
+        <button data-cursor="pointer">Next ▶</button>
+        <button data-cursor="zoomIn">🔍＋ Zoom</button>
+        <button data-cursor="zoomOut">🔍− Fit</button>
+        <button data-cursor="grab">✋ Pan view</button>
+        <button data-cursor="default">⎋ Exit</button>
+      </div>
+    </div>
+  </div>
+
+  <footer><b>138 cursors</b> · inline SVG data-URIs encoded at runtime · native CSS fallbacks on every state · hotspots tuned per tool (pen nib, arrow tip, lens center…)</footer>
+</div>
+
+<script>
+/* ============ STATE CATALOG (the 15 slideshow cursors + 8 extras) ============ */
+const STATES=[
+ {k:'default',   n:'Standard Select',   d:'Default arrow — click nav buttons',            hs:[6,3],  fb:'default'},
+ {k:'pointer',   n:'Link Select',       d:'Pointing hand — hyperlinks & buttons',         hs:[14,3], fb:'pointer'},
+ {k:'text',      n:'Text Select',       d:'I-beam — edit text in slide boxes',            hs:[16,16],fb:'text'},
+ {k:'move',      n:'Move',              d:'Four-way arrow — reposition objects',          hs:[16,16],fb:'move'},
+ {k:'crosshair', n:'Precision Select',  d:'Crosshair — draw & crop precisely',            hs:[16,16],fb:'crosshair'},
+ {k:'nwse',      n:'Diagonal Resize ↘', d:'Angled double-arrow — NW/SE corners',          hs:[16,16],fb:'nwse-resize'},
+ {k:'nesw',      n:'Diagonal Resize ↗', d:'Angled double-arrow — NE/SW corners',          hs:[16,16],fb:'nesw-resize'},
+ {k:'ew',        n:'H-Resize ↔ ✚',      d:'Extra — stretch shapes sideways',              hs:[16,16],fb:'ew-resize'},
+ {k:'ns',        n:'V-Resize ↕ ✚',      d:'Extra — stretch shapes vertically',            hs:[16,16],fb:'ns-resize'},
+ {k:'busy',      n:'Busy',              d:'Spinning wheel — heavy media loading',         hs:[16,16],fb:'wait'},
+ {k:'notAllowed',n:'Unavailable',       d:'Slashed circle — cannot drop or edit',         hs:[16,16],fb:'not-allowed'},
+ {k:'grab',      n:'Grab',              d:'Open hand — pan zoomed slide areas',           hs:[16,19],fb:'grab'},
+ {k:'grabbing',  n:'Grabbing',          d:'Closed fist — dragging across the slide',      hs:[16,17],fb:'grabbing'},
+ {k:'cell',      n:'Cell',              d:'Thick plus — select table cells',              hs:[16,16],fb:'cell'},
+ {k:'zoomIn',    n:'Zoom In',           d:'Magnifier ＋ — enlarge details',               hs:[13,13],fb:'zoom-in'},
+ {k:'zoomOut',   n:'Zoom Out',          d:'Magnifier − — shrink the view',                hs:[13,13],fb:'zoom-out'},
+ {k:'pen',       n:'Pen',               d:'Ink tool — annotate during the talk',          hs:[5,27], fb:'crosshair'},
+ {k:'laser',     n:'Laser Pointer',     d:'Bright red dot — highlight key points',        hs:[16,16],fb:'default'},
+ {k:'eraser',    n:'Eraser ✚',          d:'Extra — wipe annotations away',                hs:[10,22],fb:'crosshair'},
+ {k:'highlighter',n:'Highlighter ✚',    d:'Extra — mark important lines',                 hs:[5,27], fb:'crosshair'},
+ {k:'eyedropper',n:'Color Picker ✚',    d:'Extra — sample a color from the slide',        hs:[6,26], fb:'crosshair'},
+ {k:'rotate',    n:'Rotate ✚',          d:'Extra — spin shapes & images',                 hs:[16,16],fb:'move'},
+ {k:'help',      n:'Help ✚',            d:'Extra — shortcuts & guidance',                 hs:[16,16],fb:'help'}
+];
+
+/* ============ SIX THEMED SETS ============ */
+const SETS=[
+ {key:'circuit',name:'Circuit Board',tag:'PCB green · silicon core',join:'round',cap:'round',text:'ibeam',chipBg:'#04231b',
+  pal:{ink:'#06301f',halo:'#ffffff',a:'#22c55e',b:'#0f7a43',acc:'#7cfcd0'},
+  emblem:P=>`<g stroke="${P.a}" stroke-width="1.6" stroke-linecap="round"><line x1="13" y1="9.6" x2="13" y2="6.4"/><line x1="19" y1="9.6" x2="19" y2="6.4"/><line x1="13" y1="22.4" x2="13" y2="25.6"/><line x1="19" y1="22.4" x2="19" y2="25.6"/><line x1="9.6" y1="13" x2="6.4" y2="13"/><line x1="9.6" y1="19" x2="6.4" y2="19"/><line x1="22.4" y1="13" x2="25.6" y2="13"/><line x1="22.4" y1="19" x2="25.6" y2="19"/></g><rect x="9.6" y="9.6" width="12.8" height="12.8" rx="2" fill="${P.b}"/><rect x="13" y="13" width="6" height="6" rx="1" fill="${P.acc}"/>`},
+
+ {key:'terminal',name:'Neon Terminal',tag:'Hacker console · block caret',join:'round',cap:'round',text:'block',chipBg:'#0b1220',
+  pal:{ink:'#0b1220',halo:'#ffffff',a:'#111827',b:'#243252',acc:'#3ef08b'},
+  emblem:P=>`<rect x="4.6" y="6" width="22.8" height="20" rx="3.4" fill="#0b1220" stroke="${P.acc}" stroke-width="1.6"/><path d="M9.6 12 l4.6 4.2 -4.6 4.2" fill="none" stroke="${P.acc}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="16.6" y1="20.4" x2="22.6" y2="20.4" stroke="${P.acc}" stroke-width="2.5" stroke-linecap="round"/>`},
+
+ {key:'pixel',name:'Pixel Arcade',tag:'8-bit blocky · hard joints',join:'miter',cap:'square',text:'ibeam',chipBg:'#171a2b',
+  pal:{ink:'#16182d',halo:'#ffffff',a:'#ffd23f',b:'#3b82f6',acc:'#ff4d8d'},
+  emblem:P=>`<rect x="4.6" y="11" width="22.8" height="12.4" rx="6.2" fill="${P.a}" stroke="${P.ink}" stroke-width="1.6"/><path d="M10.8 14.2 h2.2 v2 h2 v2.2 h-2 v2 h-2.2 v-2 h-2 v-2.2 h2 z" fill="${P.ink}"/><circle cx="20.6" cy="19.6" r="1.6" fill="${P.ink}"/><circle cx="23.6" cy="16.4" r="1.6" fill="#ffffff"/>`},
+
+ {key:'robo',name:'Robo Buddy',tag:'Friendly bot · steel & orange',join:'round',cap:'round',text:'ibeam',chipBg:'#1f2937',
+  pal:{ink:'#1e293b',halo:'#ffffff',a:'#f97316',b:'#64748b',acc:'#38bdf8'},
+  emblem:P=>`<line x1="16" y1="4.4" x2="16" y2="7.8" stroke="${P.b}" stroke-width="1.8"/><circle cx="16" cy="4" r="1.8" fill="${P.acc}"/><rect x="7.8" y="7.8" width="16.4" height="13.4" rx="3.6" fill="${P.b}" stroke="${P.ink}" stroke-width="1.5"/><circle cx="12.5" cy="13.6" r="2.1" fill="#fff"/><circle cx="19.5" cy="13.6" r="2.1" fill="#fff"/><circle cx="12.5" cy="13.6" r=".9" fill="${P.ink}"/><circle cx="19.5" cy="13.6" r=".9" fill="${P.ink}"/><path d="M12.6 17.8 h6.8" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/><rect x="12.8" y="21.4" width="6.4" height="3.4" rx="1.4" fill="${P.a}"/>`},
+
+ {key:'binary',name:'Binary Blue',tag:'Clean code · pro blue',join:'round',cap:'round',text:'ibeam',chipBg:'#0b1b3a',
+  pal:{ink:'#0b1b3a',halo:'#ffffff',a:'#2563eb',b:'#1e40af',acc:'#06b6d4'},
+  emblem:P=>`<path d="M11.2 10.4 L5.6 16 l5.6 5.6" fill="none" stroke="${P.a}" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.8 10.4 L26.4 16 l-5.6 5.6" fill="none" stroke="${P.a}" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/><line x1="17.9" y1="8.4" x2="14.1" y2="23.6" stroke="${P.acc}" stroke-width="2.5" stroke-linecap="round"/>`},
+
+ {key:'synth',name:'Synthwave',tag:'Retro sunset · neon violet',join:'round',cap:'round',text:'ibeam',chipBg:'#1e1038',
+  pal:{ink:'#2e1065',halo:'#ffffff',a:'#e879f9',b:'#7c3aed',acc:'#22d3ee'},
+  emblem:P=>`<circle cx="16" cy="13.4" r="8.2" fill="${P.a}"/><g stroke="#2e1065" stroke-width="1.7"><line x1="8" y1="14.6" x2="24" y2="14.6"/><line x1="8.6" y1="17.4" x2="23.4" y2="17.4"/><line x1="9.9" y1="20.1" x2="22.1" y2="20.1"/></g><path d="M5 25 h22 M8.4 27.6 h15.2" stroke="${P.acc}" stroke-width="1.6" stroke-linecap="round"/>`}
+];
+
+/* ============ CURSOR GEOMETRY ============ */
+const ARROW=`M6 3 L6 24.6 L11.4 19.9 L14.7 27.6 L18.4 26 L15.1 18.5 L22.2 18.3 Z`;
+const HAND=`<rect x="11.7" y="2.6" width="4.5" height="14.5" rx="2.25"/><rect x="16" y="10.4" width="4.3" height="8" rx="2.15"/><rect x="20" y="11.2" width="4.3" height="8" rx="2.15"/><path d="M10.6 16.5 L6.3 13.4 a2.3 2.3 0 0 0 -2.9 3.4 l4.7 4.6 Z"/><rect x="8.6" y="12.8" width="15.9" height="13.6" rx="5.6"/>`;
+const IBEAM=`M11.8 4.2 C14.6 5.4 17.4 5.4 20.2 4.2 L20.2 7.3 C18.3 6.8 17.4 7 17.4 8.6 L17.4 23.4 C17.4 25 18.3 25.2 20.2 24.7 L20.2 27.8 C17.4 26.6 14.6 26.6 11.8 27.8 L11.8 24.7 C13.7 25.2 14.6 25 14.6 23.4 L14.6 8.6 C14.6 7 13.7 6.8 11.8 7.3 Z`;
+const MOVE=`M16 3 L20 7.6 L17.5 7.6 L17.5 14.5 L24.4 14.5 L24.4 12 L29 16 L24.4 20 L24.4 17.5 L17.5 17.5 L17.5 24.4 L20 24.4 L16 29 L12 24.4 L14.5 24.4 L14.5 17.5 L7.6 17.5 L7.6 20 L3 16 L7.6 12 L7.6 14.5 L14.5 14.5 L14.5 7.6 L12 7.6 Z`;
+const GRAB=`<rect x="8.7" y="5.2" width="3.5" height="12.5" rx="1.75"/><rect x="12.7" y="3" width="3.5" height="14.5" rx="1.75"/><rect x="16.7" y="4" width="3.5" height="13.5" rx="1.75"/><rect x="20.6" y="6.4" width="3.3" height="11.5" rx="1.65"/><rect x="3.6" y="11.4" width="3.5" height="10.5" rx="1.75" transform="rotate(-38 5.35 16.65)"/><rect x="8" y="13.8" width="16.8" height="12.8" rx="5.8"/>`;
+const GRABB=`<circle cx="10.7" cy="11.6" r="2.6"/><circle cx="15" cy="10.3" r="2.7"/><circle cx="19.3" cy="10.5" r="2.7"/><circle cx="23.2" cy="12.1" r="2.5"/><rect x="7.4" y="11.4" width="17.8" height="13.8" rx="5.6"/><rect x="8.6" y="17.2" width="10.8" height="5" rx="2.5"/>`;
+const CELL=`M13.3 3.6 h5.4 v9.7 h9.7 v5.4 h-9.7 v9.7 h-5.4 v-9.7 H3.6 v-5.4 h9.7 Z`;
+const PENSH=`<path d="M4.6 27.4 L7 21.3 L10.7 25 Z"/><path d="M7 21.3 L16.9 11.4 L20.6 15.1 L10.7 25 Z"/><path d="M16.9 11.4 L18.9 9.4 L22.6 13.1 L20.6 15.1 Z"/>`;
+const HLSH=`<path d="M5.4 26.6 L8.6 20.5 L11.8 23.7 Z"/><path d="M8.6 20.5 L17.8 11.3 L21.6 15.1 L11.8 23.7 Z"/><path d="M17.8 11.3 L19.9 9.2 L23.7 13 L21.6 15.1 Z"/>`;
+const EYESH=`<circle cx="23.4" cy="8.6" r="3.7"/><path d="M19.9 8.9 L23.1 12.1 L13.2 22 L10 18.8 Z"/><path d="M10 18.8 L13.2 22 L6.2 25.8 Z"/>`;
+
+function buildSet(S){
+  const P=S.pal,j=S.join,cp=S.cap;
+  const wrap=i=>`<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">${i}</svg>`;
+  /* silhouette: white halo -> dark outline -> color fill (max contrast on any slide) */
+  const sil=(sh,fill)=>`<g fill="${P.halo}" stroke="${P.halo}" stroke-width="4.6" stroke-linejoin="${j}" stroke-linecap="${cp}">${sh}</g><g fill="${P.ink}" stroke="${P.ink}" stroke-width="2.2" stroke-linejoin="${j}" stroke-linecap="${cp}">${sh}</g><g fill="${fill}" stroke="none">${sh}</g>`;
+  const silc=(sh,colored)=>`<g fill="${P.halo}" stroke="${P.halo}" stroke-width="4.6" stroke-linejoin="${j}" stroke-linecap="${cp}">${sh}</g><g fill="${P.ink}" stroke="${P.ink}" stroke-width="2.2" stroke-linejoin="${j}" stroke-linecap="${cp}">${sh}</g>${colored}`;
+  const XC=`<line x1="16" y1="3.4" x2="16" y2="28.6"/><line x1="3.4" y1="16" x2="28.6" y2="16"/><circle cx="16" cy="16" r="8.4"/>`;
+  const mag=sign=>wrap(`<g stroke="${P.halo}" stroke-width="5" fill="none" stroke-linecap="${cp}"><circle cx="13.4" cy="13.4" r="7.9"/><line x1="19.7" y1="19.7" x2="27.4" y2="27.4"/></g><circle cx="13.4" cy="13.4" r="7.9" fill="#ffffff" fill-opacity="0.92" stroke="${P.ink}" stroke-width="2.2"/><line x1="19.9" y1="19.9" x2="27.2" y2="27.2" stroke="${P.ink}" stroke-width="4.6" stroke-linecap="${cp}"/><line x1="20.2" y1="20.2" x2="26.9" y2="26.9" stroke="${P.b}" stroke-width="2.4" stroke-linecap="${cp}"/>${sign}`);
+
+  return {
+    default: wrap(sil(`<path d="${ARROW}"/>`,P.a)+`<circle cx="9.8" cy="9.8" r="1.7" fill="${P.acc}"/>`),
+    pointer: wrap(silc(HAND,`<g fill="${P.a}">${HAND}</g>`)+`<path d="M16.2 13.2 v4.6 M20.2 13.6 v4.2" stroke="${P.ink}" stroke-width="1.15" stroke-linecap="round" fill="none"/>`),
+    text: S.text==='block'
+      ? wrap(`<rect x="10.8" y="7.2" width="10.4" height="17.6" rx="1.6" fill="${P.halo}" stroke="${P.halo}" stroke-width="4"/><rect x="10.8" y="7.2" width="10.4" height="17.6" rx="1.6" fill="${P.acc}" stroke="${P.ink}" stroke-width="1.8"/>`)
+      : wrap(sil(`<path d="${IBEAM}"/>`,P.a)),
+    move: wrap(sil(`<path d="${MOVE}"/>`,P.a)+`<circle cx="16" cy="16" r="1.6" fill="${P.b}"/>`),
+    crosshair: wrap(`<g stroke="${P.halo}" stroke-width="4.6" fill="none" stroke-linecap="${cp}">${XC}</g><g stroke="${P.a}" stroke-width="2" fill="none" stroke-linecap="${cp}">${XC}</g><circle cx="16" cy="16" r="1.9" fill="${P.acc}" stroke="${P.ink}" stroke-width="0.8"/>`),
+    nwse: wrap(sil(`<path d="M3.4 3.4 L12.4 3.4 L3.4 12.4 Z"/><rect x="13.9" y="7.6" width="4.2" height="16.8" rx="2.1" transform="rotate(45 16 16)"/><path d="M28.6 28.6 L19.6 28.6 L28.6 19.6 Z"/>`,P.a)),
+    nesw: wrap(sil(`<path d="M28.6 3.4 L28.6 12.4 L19.6 3.4 Z"/><rect x="13.9" y="7.6" width="4.2" height="16.8" rx="2.1" transform="rotate(-45 16 16)"/><path d="M3.4 28.6 L3.4 19.6 L12.4 28.6 Z"/>`,P.a)),
+    ew: wrap(sil(`<path d="M3.2 16 L10.6 10.9 L10.6 21.1 Z"/><rect x="10" y="13.9" width="12" height="4.2" rx="2.1"/><path d="M28.8 16 L21.4 21.1 L21.4 10.9 Z"/>`,P.a)),
+    ns: wrap(sil(`<path d="M16 3.2 L21.1 10.6 L10.9 10.6 Z"/><rect x="13.9" y="10" width="4.2" height="12" rx="2.1"/><path d="M16 28.8 L10.9 21.4 L21.1 21.4 Z"/>`,P.a)),
+    busy: wrap(`<circle cx="16" cy="16" r="11.4" fill="none" stroke="${P.halo}" stroke-width="4.2"/><circle cx="16" cy="16" r="11.4" fill="none" stroke="${P.b}" stroke-width="3.2" opacity="0.32"/><path d="M16 4.6 A11.4 11.4 0 0 1 27.4 16" fill="none" stroke="${P.a}" stroke-width="3.2" stroke-linecap="${cp}"/><circle cx="16" cy="16" r="5.9" fill="${P.halo}" stroke="${P.ink}" stroke-width="1.3"/><g transform="translate(16,16) scale(0.34) translate(-16,-16)">${S.emblem(P)}</g>`),
+    notAllowed: wrap(`<circle cx="16" cy="16" r="11.2" fill="${P.halo}" stroke="${P.halo}" stroke-width="4.4"/><circle cx="16" cy="16" r="11.2" fill="#ffffff" stroke="#e11d30" stroke-width="3"/><line x1="8.9" y1="8.9" x2="23.1" y2="23.1" stroke="#ffffff" stroke-width="5"/><line x1="8.9" y1="8.9" x2="23.1" y2="23.1" stroke="#e11d30" stroke-width="2.8"/>`),
+    grab: wrap(sil(GRAB,P.a)),
+    grabbing: wrap(silc(GRABB,`<g fill="${P.a}">${GRABB}</g>`)+`<path d="M12.9 12.6 v2.6 M17.2 11.9 v2.6 M21.4 12.4 v2.4" stroke="${P.ink}" stroke-width="1.1" stroke-linecap="round" fill="none"/>`),
+    cell: wrap(sil(`<path d="${CELL}"/>`,P.a)+`<circle cx="16" cy="16" r="1.5" fill="${P.b}"/>`),
+    zoomIn: mag(`<path d="M13.4 9.9 v7 M9.9 13.4 h7" stroke="${P.a}" stroke-width="2.5" stroke-linecap="${cp}" fill="none"/>`),
+    zoomOut: mag(`<path d="M9.9 13.4 h7" stroke="${P.a}" stroke-width="2.5" stroke-linecap="${cp}" fill="none"/>`),
+    pen: wrap(silc(PENSH,`<path d="M4.6 27.4 L7 21.3 L10.7 25 Z" fill="${P.ink}"/><path d="M7 21.3 L16.9 11.4 L20.6 15.1 L10.7 25 Z" fill="${P.a}"/><path d="M16.9 11.4 L18.9 9.4 L22.6 13.1 L20.6 15.1 Z" fill="${P.b}"/>`)+`<path d="M7 21.3 L10.7 25" stroke="${P.halo}" stroke-width="0.9"/><circle cx="5.6" cy="26.4" r="0.95" fill="${P.acc}"/>`),
+    laser: wrap(`<circle cx="16" cy="16" r="10.4" fill="#ff2137" opacity="0.15"/><circle cx="16" cy="16" r="6.9" fill="#ff2137" opacity="0.32"/><circle cx="16" cy="16" r="3.8" fill="#ff2137" stroke="#ffffff" stroke-width="1.5"/><circle cx="14.8" cy="14.8" r="1.1" fill="#ffd9de"/>`),
+    eraser: wrap(silc(`<g transform="rotate(-45 16 16)"><rect x="6.8" y="11.6" width="18.4" height="10" rx="2.8"/></g>`,
+      `<g transform="rotate(-45 16 16)"><rect x="6.8" y="11.6" width="18.4" height="10" rx="2.8" fill="${P.a}"/><rect x="18.6" y="11.6" width="6.6" height="10" rx="1.6" fill="${P.b}"/><line x1="18.6" y1="12.2" x2="18.6" y2="21" stroke="${P.ink}" stroke-width="1"/></g>`)),
+    highlighter: wrap(`<line x1="4.6" y1="27.4" x2="13.8" y2="18.2" stroke="#fde047" stroke-width="6.4" opacity="0.55" stroke-linecap="round"/>`+silc(HLSH,
+      `<path d="M5.4 26.6 L8.6 20.5 L11.8 23.7 Z" fill="${P.b}"/><path d="M8.6 20.5 L17.8 11.3 L21.6 15.1 L11.8 23.7 Z" fill="${P.a}"/><path d="M17.8 11.3 L19.9 9.2 L23.7 13 L21.6 15.1 Z" fill="${P.ink}"/>`)),
+    eyedropper: wrap(silc(EYESH,`<circle cx="23.4" cy="8.6" r="3.7" fill="${P.b}"/><path d="M19.9 8.9 L23.1 12.1 L13.2 22 L10 18.8 Z" fill="${P.a}"/><path d="M10 18.8 L13.2 22 L6.2 25.8 Z" fill="${P.ink}"/>`)+`<circle cx="6.6" cy="25.4" r="1.5" fill="${P.acc}"/>`),
+    rotate: wrap(`<circle cx="16" cy="16" r="10" fill="none" stroke="${P.halo}" stroke-width="5" stroke-dasharray="44 18.8" transform="rotate(-30 16 16)"/><circle cx="16" cy="16" r="10" fill="none" stroke="${P.a}" stroke-width="2.6" stroke-dasharray="44 18.8" transform="rotate(-30 16 16)" stroke-linecap="${cp}"/><path d="M18.4 2.9 L25.6 5.9 L19 9.3 Z" fill="${P.halo}" stroke="${P.halo}" stroke-width="3.4" stroke-linejoin="${j}"/><path d="M18.4 2.9 L25.6 5.9 L19 9.3 Z" fill="${P.a}" stroke="${P.ink}" stroke-width="1.3" stroke-linejoin="${j}"/><circle cx="16" cy="16" r="1.8" fill="${P.b}"/>`),
+    help: wrap(`<circle cx="16" cy="16" r="11.8" fill="${P.halo}" stroke="${P.halo}" stroke-width="4.2"/><circle cx="16" cy="16" r="11.8" fill="${P.b}" stroke="${P.ink}" stroke-width="2"/><text x="16" y="21.8" font-size="16" font-weight="bold" text-anchor="middle" fill="${P.halo}" font-family="Arial,Helvetica,sans-serif">?</text>`)
+  };
+}
+
+/* ============ WIRING ============ */
+const dataURI=svg=>'data:image/svg+xml,'+encodeURIComponent(svg);
+let CUR={};   // state -> css cursor value for active set
+
+const chipsEl=document.getElementById('chips');
+const prevEl=document.getElementById('preview');
+const panEl=document.getElementById('pan');
+document.getElementById('stat').textContent=
+  `${SETS.length} sets × ${STATES.length} forms = ${SETS.length*STATES.length} cursors // all encoded as inline SVG`;
+
+SETS.forEach(s=>{
+  const b=document.createElement('button');
+  b.className='chip';b.type='button';b.dataset.key=s.key;
+  b.innerHTML=`<img alt=""><span><b>${s.name}</b><small>${s.tag}</small></span>`;
+  b.querySelector('img').src=dataURI(`<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="${s.chipBg}"/>${s.emblem(s.pal)}</svg>`);
+  b.addEventListener('click',()=>applySet(s.key));
+  chipsEl.appendChild(b);
+});
+
+STATES.forEach(st=>{
+  const t=document.createElement('div');
+  t.className='tile';t.dataset.tile=st.k;
+  t.innerHTML=`<img alt=""><div class="nm">${st.n}</div><div class="cp">${st.d}</div><code>fallback: ${st.fb}</code>`;
+  prevEl.appendChild(t);
+});
+
+function applySet(key){
+  const S=SETS.find(s=>s.key===key);
+  const shapes=buildSet(S);
+  CUR={};
+  STATES.forEach(st=>{
+    const [hx,hy]=st.hs;
+    CUR[st.k]=`url("${dataURI(shapes[st.k])}") ${hx} ${hy}, ${st.fb}`;
+  });
+  chipsEl.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active',c.dataset.key===key));
+  STATES.forEach(st=>{
+    const tile=prevEl.querySelector(`[data-tile="${st.k}"]`);
+    tile.querySelector('img').src=dataURI(shapes[st.k]);
+    tile.style.cursor=CUR[st.k];               // tiles preview their own cursor
+  });
+  document.querySelectorAll('[data-cursor]').forEach(el=>el.style.cursor=CUR[el.dataset.cursor]);
+  document.querySelectorAll('[data-stage]').forEach(el=>el.style.cursor=CUR.default);
+}
+
+/* grab -> grabbing while held */
+panEl.addEventListener('mousedown',()=>{panEl.style.cursor=CUR.grabbing;});
+['mouseup','mouseleave'].forEach(ev=>panEl.addEventListener(ev,()=>{panEl.style.cursor=CUR.grab;}));
+window.addEventListener('mouseup',()=>{panEl.style.cursor=CUR.grab;});
+
+applySet('circuit');
+</script>
+</body>
+</html>

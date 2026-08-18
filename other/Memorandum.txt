@@ -56,10 +56,10 @@ The Clubs.
 
 Slide 10: The Founding Nine
 Visual grid of all club logos. 
-Required files: uldc_logo.png, ulpc_logo.png, ulspc_logo.png, ulqc_logo.png, ulscc_logo.png, ulic_logo.png, ullc_logo.png, ulcc_logo.png, ulgc_logo.png.
+Required files: uldc_logo.jpeg, ulpc_logo.png, ulspc_logo.jpeg, ulqc_logo.png, ulscc_logo.png, ulic_logo.png, ullc_logo.png, ulcc_logo.png, ulgc_logo.png.
 
 Slides 11 to 14: University Laboratory Debate Club
-Slide 11: Title and Logo (Insert uldc_logo.png)
+Slide 11: Title and Logo (Insert uldc_logo.jpeg)
 Slide 12: Foundation.
 Slide 13: Current Operations and History.
 Slide 14: Future Initiatives.
@@ -71,7 +71,7 @@ Slides 17 to 19: History and Current Operations.
 Slide 20: Future Initiatives.
 
 Slides 21 to 24: University Laboratory Sports Club
-Slide 21: Title and Logo (Insert ulspc_logo.png)
+Slide 21: Title and Logo (Insert ulspc_logo.jpeg)
 Slide 22: Foundation.
 Slide 23: History and Current Operations.
 Slide 24: Future Initiatives.

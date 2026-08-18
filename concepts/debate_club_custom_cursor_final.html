@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Debate Club — Podium &amp; Mic Cursor Set</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --white:#ffffff; --paper:#fbfdfb;
+    --green:#0b8a3c; --green-strong:#076b2d; --green-faint:rgba(11,138,60,0.08);
+    --black:#0b0d0f; --gray:#58616a; --gray-soft:rgba(0,0,0,0.14);
+    --blue:#0d3b66;
+    --font-display:'Libre Baskerville',Georgia,serif;
+    --font-body:Arial,Helvetica,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--paper); color:var(--black);
+    font-family:var(--font-body); line-height:1.6; padding:36px 20px 70px;
+  }
+  .wrap{max-width:1100px;margin:0 auto}
+
+  header{border-bottom:3px solid var(--green);padding-bottom:22px;margin-bottom:30px}
+  .kicker{letter-spacing:4px;font-size:.7rem;text-transform:uppercase;color:var(--green-strong);font-weight:bold}
+  header h1{font-family:var(--font-display);font-size:2.5rem;color:var(--black);margin:6px 0 2px}
+  header h1 em{color:var(--green);font-style:normal}
+  header .motion{display:inline-block;margin-top:10px;background:var(--green-faint);
+    border-left:4px solid var(--green);padding:8px 14px;font-family:var(--font-display);
+    font-style:italic;color:var(--green-strong);font-size:.95rem;border-radius:0 6px 6px 0}
+
+  section{margin-bottom:44px}
+  section>h2{font-family:var(--font-display);font-size:1.4rem;color:var(--black);
+    display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  section>h2 .no{display:inline-flex;align-items:center;justify-content:center;
+    width:30px;height:30px;border-radius:50%;background:var(--green);color:#fff;
+    font-family:var(--font-body);font-size:.9rem;font-weight:bold}
+  section>.sub{color:var(--gray);font-size:.9rem;margin-bottom:18px}
+
+  /* signature */
+  .signature{display:flex;gap:26px;align-items:center;flex-wrap:wrap;
+    background:var(--white);border:1px solid var(--gray-soft);border-radius:14px;padding:24px}
+  .signature .big{width:120px;height:120px;background:var(--paper);
+    border:1px solid var(--gray-soft);border-radius:12px;display:flex;align-items:center;justify-content:center}
+  .signature .big img{width:96px;height:96px}
+  .signature h3{font-family:var(--font-display);font-size:1.5rem;color:var(--black)}
+  .signature p{color:var(--gray);font-size:.92rem;max-width:520px}
+  .sig-tags{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+  .sig-tags span{font-size:.7rem;letter-spacing:1px;text-transform:uppercase;
+    background:var(--green-faint);color:var(--green-strong);padding:4px 10px;border-radius:999px;font-weight:bold}
+
+  /* preview grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .tile{background:var(--white);border:1px solid var(--gray-soft);border-radius:10px;
+    padding:16px 10px;text-align:center;transition:.15s}
+  .tile:hover{border-color:var(--green);box-shadow:0 4px 14px rgba(11,138,60,.12);transform:translateY(-2px)}
+  .tile img{width:46px;height:46px;display:block;margin:0 auto 8px}
+  .tile .nm{font-size:.86rem;font-weight:bold;color:var(--black)}
+  .tile .cp{font-size:.7rem;color:var(--gray)}
+
+  /* live stage */
+  .stage{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+  .zone{background:var(--white);border:1px solid var(--gray-soft);border-radius:10px;
+    padding:16px;display:flex;flex-direction:column;gap:10px}
+  .zone .tag{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:var(--green-strong);font-weight:bold}
+  .zone p{font-size:.9rem;color:#333}
+  .btn{background:var(--green);color:#fff;border:none;padding:11px 16px;border-radius:7px;
+    font-family:var(--font-body);font-size:.92rem;font-weight:bold;transition:.15s;display:inline-block;text-align:center}
+  .btn:hover{background:var(--green-strong)}
+  .btn.ghost{background:transparent;color:var(--green-strong);border:1.5px solid var(--green)}
+  .btn.ghost:hover{background:var(--green-faint)}
+  .btn.deny{background:#e9ecef;color:#9aa2ab;cursor-not-allowed}
+  .btn.info{background:transparent;color:var(--blue);border:1.5px solid var(--blue)}
+  .btn.info:hover{background:rgba(13,59,102,.08)}
+  .btn.busy{background:var(--green-faint);color:var(--green-strong)}
+  a{color:var(--blue);font-weight:bold;text-decoration:underline}
+  input[type=text],textarea{background:#fff;border:1px solid #cfd6cf;color:var(--black);
+    padding:10px 12px;border-radius:6px;font-family:var(--font-body);font-size:.9rem;width:100%}
+  input:focus,textarea:focus{outline:2px solid var(--green)}
+  textarea{resize:vertical;min-height:60px}
+  .aimbox{height:92px;border:1px dashed #b9c4bb;border-radius:8px;display:flex;align-items:center;
+    justify-content:center;color:var(--gray);font-size:.85rem;background:var(--green-faint)}
+  .dragcard{border:1px dashed var(--green);border-radius:8px;padding:14px;text-align:center;
+    color:var(--green-strong);font-size:.88rem;background:var(--green-faint);font-weight:bold}
+
+  /* dark strip for contrast check */
+  .darkstage{background:var(--blue);border-radius:14px;padding:22px;margin-top:16px}
+  .darkstage .lbl{color:rgba(255,255,255,.7);font-size:.68rem;letter-spacing:2px;
+    text-transform:uppercase;font-weight:bold;margin-bottom:12px}
+  .darkstage .row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .darkstage p{color:#eaf1e9;font-size:.9rem;max-width:340px}
+  .darkstage input{background:#0d3b66;border:1px solid rgba(255,255,255,.35);color:#fff;width:220px}
+  .darkstage a{color:#9fd4ff}
+
+  footer{text-align:center;color:var(--gray);font-size:.8rem;border-top:1px solid var(--gray-soft);padding-top:20px}
+  footer b{color:var(--green-strong)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">Debate Club · Cursor System</div>
+    <h1>The Podium <em>&amp;</em> The Mic</h1>
+    <span class="motion">One merged signature cursor — a lectern with a live microphone — tuned to your slide palette.</span>
+  </header>
+
+  <!-- SIGNATURE -->
+  <section>
+    <h2><span class="no">1</span> The signature cursor</h2>
+    <div class="sub">Your default pointer. White lectern + green trim + black mic = high contrast on light slides.</div>
+    <div class="signature">
+      <div class="big"><img id="big" alt="Podium and microphone cursor"></div>
+      <div>
+        <h3>Podium + Microphone</h3>
+        <p>The lectern carries a gooseneck microphone and a small green seal. On the live site, this is what
+        members see as they move across the page; the mic head is the hotspot, so clicks stay precise.</p>
+        <div class="sig-tags">
+          <span>hotspot: mic head</span><span>32 × 32 svg</span><span>palette-matched</span><span>native fallback</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ALL FORMS -->
+  <section>
+    <h2><span class="no">2</span> Every form of the cursor</h2>
+    <div class="sub">All nine states, rendered for this set.</div>
+    <div class="grid" id="preview"></div>
+  </section>
+
+  <!-- LIVE TEST : LIGHT SLIDES -->
+  <section>
+    <h2><span class="no">3</span> Test on your light slides</h2>
+    <div class="sub">Hover each labelled zone — this mimics your paper/white slide background.</div>
+    <div class="stage" data-stage>
+      <div class="zone"><div class="tag">Default</div>
+        <p data-state="default"><b>Tonight's motion:</b> “This house would lower the voting age to 16.” Glide over the brief.</p></div>
+      <div class="zone"><div class="tag">Pointer</div>
+        <button class="btn" data-state="pointer">Speak For</button>
+        <button class="btn ghost" data-state="pointer">Speak Against</button>
+        <a href="#" data-state="pointer">Past debates →</a></div>
+      <div class="zone"><div class="tag">Text</div>
+        <input type="text" data-state="text" placeholder="Your name…">
+        <textarea data-state="text" placeholder="Your opening statement…"></textarea></div>
+      <div class="zone"><div class="tag">Crosshair</div>
+        <div class="aimbox" data-state="crosshair">Target your rebuttal here</div></div>
+      <div class="zone"><div class="tag">Move</div>
+        <div class="dragcard" data-state="move">☰ Drag to reorder the speaker list</div></div>
+      <div class="zone"><div class="tag">Not Allowed</div>
+        <button class="btn deny" data-state="notAllowed">Floor is closed</button></div>
+      <div class="zone"><div class="tag">Wait</div>
+        <button class="btn ghost" data-state="wait">Adjudicators deliberating…</button></div>
+      <div class="zone"><div class="tag">Help</div>
+        <button class="btn info" data-state="help">?  Point of Information</button></div>
+      <div class="zone"><div class="tag">Progress</div>
+        <button class="btn busy" data-state="progress">Tallying the ballot…</button></div>
+    </div>
+
+    <!-- contrast check on dark accent -->
+    <div class="darkstage" data-stage>
+      <div class="lbl">Contrast check — on your --blue accent</div>
+      <div class="row">
+        <p data-state="default">The same cursors stay readable over dark navy panels, footers, or title slides.</p>
+        <button class="btn" data-state="pointer">Join the club</button>
+        <input type="text" data-state="text" placeholder="Email…">
+        <a href="#" data-state="pointer">Rules of debate →</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>Inline <b>SVG data-URIs</b> encoded at runtime · white halos keep every state legible on light &amp; dark surfaces · falls back to native cursors.</footer>
+</div>
+
+<script>
+/* ---------- palette ---------- */
+const P={white:'#ffffff',paper:'#fbfdfb',green:'#0b8a3c',gs:'#076b2d',
+         black:'#0b0d0f',gray:'#58616a',blue:'#0d3b66',soft:'rgba(0,0,0,0.14)'};
+
+/* ---------- the merged Podium + Microphone icon ---------- */
+const ICON=`
+<ellipse cx="16" cy="28.7" rx="11.5" ry="1.6" fill="${P.soft}"/>
+<path d="M7.5 12.2 L24.5 12.2 L21.6 25 L10.4 25 Z" fill="${P.white}" stroke="${P.gs}" stroke-width="1.6" stroke-linejoin="round"/>
+<path d="M6 10.2 L26 10.2 L24.6 12.2 L7.4 12.2 Z" fill="${P.green}" stroke="${P.gs}" stroke-width="1.2" stroke-linejoin="round"/>
+<path d="M9.4 25 L22.6 25 L23.7 27.7 L8.3 27.7 Z" fill="${P.gs}"/>
+<circle cx="16" cy="18.4" r="3" fill="${P.paper}" stroke="${P.green}" stroke-width="1.4"/>
+<circle cx="16" cy="18.4" r="1.3" fill="${P.green}"/>
+<path d="M20.4 10.2 C20.4 6.6 17.6 5.6 15 6.1" fill="none" stroke="${P.black}" stroke-width="1.6" stroke-linecap="round"/>
+<circle cx="13.7" cy="5.7" r="2.7" fill="${P.black}" stroke="${P.white}" stroke-width="1.1"/>
+<circle cx="13" cy="5" r="0.7" fill="${P.gray}"/>`;
+
+/* ---------- helpers ---------- */
+const W=inner=>`<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">${inner}</svg>`;
+const sc=(s)=>`<g transform="translate(16,16) scale(${s}) translate(-16,-16)">${ICON}</g>`;
+const ARROW=`<path d="M16 14 L16 28 L19.3 25 L21.4 29.7 L23.6 28.7 L21.5 24.2 L26 23.9 Z"
+  fill="${P.white}" stroke="${P.black}" stroke-width="1.4" stroke-linejoin="round"/>`;
+const IBEAM=`M11.5 4 C15 5.5 17 5.5 20.5 4 L20.5 7.2 C18.2 6.6 17.2 6.8 17.2 8.4 L17.2 23.6
+  C17.2 25.2 18.2 25.4 20.5 24.8 L20.5 28 C17 26.5 15 26.5 11.5 28 L11.5 24.8
+  C13.8 25.4 14.8 25.2 14.8 23.6 L14.8 8.4 C14.8 6.8 13.8 6.6 11.5 7.2 Z`;
+
+/* ---------- the 9 states ---------- */
+function buildStates(){
+  return {
+    default: W(ICON),
+    pointer: W(sc(0.78)+ARROW),
+    text:    W(`<path d="${IBEAM}" fill="${P.white}" stroke="${P.white}" stroke-width="3.4" stroke-linejoin="round"/>
+                <path d="${IBEAM}" fill="${P.gs}"/>`),
+    crosshair:W(`<circle cx="16" cy="16" r="9" fill="none" stroke="${P.white}" stroke-width="4"/>
+                <circle cx="16" cy="16" r="9" fill="none" stroke="${P.blue}" stroke-width="2"/>
+                <line x1="16" y1="2.5" x2="16" y2="8" stroke="${P.white}" stroke-width="4" stroke-linecap="round"/>
+                <line x1="16" y1="2.5" x2="16" y2="8" stroke="${P.blue}" stroke-width="2" stroke-linecap="round"/>
+                <line x1="16" y1="24" x2="16" y2="29.5" stroke="${P.white}" stroke-width="4" stroke-linecap="round"/>
+                <line x1="16" y1="24" x2="16" y2="29.5" stroke="${P.blue}" stroke-width="2" stroke-linecap="round"/>
+                <line x1="2.5" y1="16" x2="8" y2="16" stroke="${P.white}" stroke-width="4" stroke-linecap="round"/>
+                <line x1="2.5" y1="16" x2="8" y2="16" stroke="${P.blue}" stroke-width="2" stroke-linecap="round"/>
+                <line x1="24" y1="16" x2="29.5" y2="16" stroke="${P.white}" stroke-width="4" stroke-linecap="round"/>
+                <line x1="24" y1="16" x2="29.5" y2="16" stroke="${P.blue}" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="16" cy="16" r="1.7" fill="${P.green}"/>`),
+    move:    W(`<path d="M16 2.5 L19.5 8 L12.5 8 Z" fill="${P.blue}" stroke="${P.white}" stroke-width="1.4" stroke-linejoin="round"/>
+                <path d="M16 29.5 L12.5 24 L19.5 24 Z" fill="${P.blue}" stroke="${P.white}" stroke-width="1.4" stroke-linejoin="round"/>
+                <path d="M2.5 16 L8 12.5 L8 19.5 Z" fill="${P.blue}" stroke="${P.white}" stroke-width="1.4" stroke-linejoin="round"/>
+                <path d="M29.5 16 L24 19.5 L24 12.5 Z" fill="${P.blue}" stroke="${P.white}" stroke-width="1.4" stroke-linejoin="round"/>
+                <circle cx="16" cy="16" r="2.2" fill="${P.green}" stroke="${P.white}" stroke-width="1.2"/>`),
+    notAllowed:W(`<g opacity="0.5">${ICON}</g>
+                <circle cx="16" cy="16" r="13.5" fill="none" stroke="${P.white}" stroke-width="4.4"/>
+                <circle cx="16" cy="16" r="13.5" fill="none" stroke="${P.black}" stroke-width="2.4"/>
+                <line x1="6.6" y1="6.6" x2="25.4" y2="25.4" stroke="${P.white}" stroke-width="4.4"/>
+                <line x1="6.6" y1="6.6" x2="25.4" y2="25.4" stroke="${P.black}" stroke-width="2.4"/>`),
+    wait:    W(sc(0.6)+`<circle cx="16" cy="16" r="14" fill="none" stroke="${P.white}" stroke-width="4"/>
+                <circle cx="16" cy="16" r="14" fill="none" stroke="${P.green}" stroke-width="2.6" stroke-dasharray="10 6" stroke-linecap="round"/>`),
+    help:    W(sc(0.8)+`<circle cx="24.5" cy="24.5" r="7" fill="${P.blue}" stroke="${P.white}" stroke-width="1.6"/>
+                <text x="24.5" y="28.6" font-size="11.5" font-weight="bold" text-anchor="middle" fill="${P.white}" font-family="Arial,sans-serif">?</text>`),
+    progress:W(sc(0.6)+`<circle cx="16" cy="16" r="14" fill="none" stroke="${P.white}" stroke-width="4"/>
+                <circle cx="16" cy="16" r="14" fill="none" stroke="${P.green}" stroke-width="2.6" stroke-dasharray="62 26" stroke-linecap="round" transform="rotate(-90 16 16)"/>`)
+  };
+}
+
+const FB={default:'default',pointer:'pointer',text:'text',crosshair:'crosshair',
+          move:'move',notAllowed:'not-allowed',wait:'wait',help:'help',progress:'progress'};
+const HOT={default:[13,6],pointer:[16,14]};        // mic-head & arrow-tip; others center
+const STATES=Object.keys(FB);
+const LABEL={default:'Default',pointer:'Pointer',text:'Text',crosshair:'Crosshair',
+             move:'Move',notAllowed:'Not Allowed',wait:'Wait',help:'Help',progress:'Progress'};
+const CAPTION={default:'Browsing the page',pointer:'Clickable items',text:'Typing arguments',
+               crosshair:'Target a point',move:'Reorder speakers',notAllowed:'Out of order',
+               wait:'Deliberating',help:'Point of Info',progress:'Tallying votes'};
+
+const dataURI=svg=>'data:image/svg+xml,'+encodeURIComponent(svg);
+const cursorVal=(svg,st)=>{
+  const [hx,hy]=HOT[st]||[16,16];
+  return `url("${dataURI(svg)}") ${hx} ${hy}, ${FB[st]}`;
+};
+
+/* ---------- build preview tiles ---------- */
+const preview=document.getElementById('preview');
+STATES.forEach(st=>{
+  const t=document.createElement('div');t.className='tile';
+  t.innerHTML=`<img id="pv-${st}" alt=""><div class="nm">${LABEL[st]}</div><div class="cp">${CAPTION[st]}</div>`;
+  preview.appendChild(t);
+});
+
+/* ---------- apply ---------- */
+const states=buildStates();
+document.getElementById('big').src=dataURI(states.default);
+STATES.forEach(st=>document.getElementById('pv-'+st).src=dataURI(states[st]));
+document.querySelectorAll('[data-state]').forEach(el=>{
+  el.style.cursor=cursorVal(states[el.dataset.state],el.dataset.state);
+});
+document.querySelectorAll('[data-stage]').forEach(el=>{
+  el.style.cursor=cursorVal(states.default,'default');
+});
+</script>
+</body>
+</html>

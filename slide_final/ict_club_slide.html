@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>University Laboratory ICT Club</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin>
+  <link href="https://fonts.cdnfonts.com/css/kd-william" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/kanalisirung" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/bonvenocf" rel="stylesheet">
+
+  <style>
+    :root {
+      --paper: #f5f1e8;
+      --paper-2: #ebe4d6;
+      --white: #ffffff;
+
+      --ink: #241318;
+      --ink-2: #472c33;
+      --muted: #79646a;
+      --line: rgba(36, 19, 24, 0.16);
+      --line-soft: rgba(36, 19, 24, 0.09);
+
+      --deep: #2a121c;
+      --deep-2: #3b1a25;
+      --deep-3: #1d0c11;
+
+      --ember: #c25e2a;
+      --gold: #d3a14f;
+      --ivory: #f2ede2;
+
+      --font-main: 'KD William', 'Kanalisirung', serif;
+      --font-sub: 'Kanalisirung', 'BonvenoCF', sans-serif;
+      --font-body: 'BonvenoCF', 'Kanalisirung', sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    *::-webkit-scrollbar {
+      display: none;
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+      background: var(--ember);
+      color: #fff;
+    }
+
+    button {
+      font-family: var(--font-sub);
+    }
+
+    .ui {
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    body.ui-hidden .ui,
+    body.focus-mode .ui {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+    }
+
+    .progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      z-index: 45;
+      background: rgba(36, 19, 24, 0.08);
+    }
+
+    #progressBar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--ember), var(--gold));
+    }
+
+    .deck {
+      position: fixed;
+      inset: 0;
+      background: var(--paper);
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      background:
+        radial-gradient(circle at top right, rgba(194, 94, 42, 0.08), transparent 26%),
+        radial-gradient(circle at bottom left, rgba(211, 161, 79, 0.07), transparent 22%),
+        var(--paper);
+    }
+
+    .slide.active {
+      visibility: visible;
+      z-index: 2;
+    }
+
+    .slide.dark {
+      background:
+        radial-gradient(circle at 18% 22%, rgba(194, 94, 42, 0.26), transparent 28%),
+        radial-gradient(circle at 80% 78%, rgba(211, 161, 79, 0.16), transparent 24%),
+        linear-gradient(135deg, var(--deep-3), var(--deep-2) 55%, var(--deep-3));
+      color: var(--ivory);
+    }
+
+    .frame {
+      position: relative;
+      width: min(1560px, 94vw);
+      height: 100vh;
+      height: 100dvh;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: clamp(76px, 7vw, 112px) minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr) auto;
+      column-gap: clamp(18px, 3vw, 44px);
+      padding: clamp(18px, 3vh, 36px) 0 clamp(14px, 2.4vh, 26px);
+    }
+
+    .rail {
+      grid-column: 1;
+      grid-row: 1 / 3;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-right: 1px solid var(--line);
+    }
+
+    .dark .rail {
+      border-right-color: rgba(242, 237, 226, 0.16);
+    }
+
+    .rail .chapter {
+      font-family: var(--font-main);
+      font-size: clamp(2rem, 4.2vh, 3rem);
+      line-height: 1;
+      color: var(--ember);
+    }
+
+    .rail .section-label {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-family: var(--font-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      font-size: min(1.4vh, 11px);
+      color: var(--muted);
+    }
+
+    .dark .rail .section-label {
+      color: rgba(242, 237, 226, 0.62);
+    }
+
+    .rail .slide-count {
+      font-family: var(--font-sub);
+      color: var(--muted);
+      font-size: min(1.5vh, 12px);
+      letter-spacing: 0.12em;
+    }
+
+    .dark .rail .slide-count {
+      color: rgba(242, 237, 226, 0.58);
+    }
+
+    .content {
+      grid-column: 2;
+      grid-row: 1;
+      position: relative;
+      z-index: 1;
+      min-height: 0;
+      display: grid;
+      align-content: center;
+      gap: clamp(13px, 2.6vh, 28px);
+      padding-left: clamp(10px, 2vw, 28px);
+    }
+
+    .content.center {
+      justify-items: center;
+      text-align: center;
+    }
+
+    .content.center .rule {
+      margin-inline: auto;
+      transform-origin: center;
+    }
+
+    .slide-foot {
+      grid-column: 2;
+      grid-row: 2;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-top: clamp(8px, 1.4vh, 12px);
+      padding-left: clamp(10px, 2vw, 28px);
+      border-top: 1px solid rgba(36, 19, 24, 0.12);
+      font-family: var(--font-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      font-size: min(1.4vh, 10.5px);
+    }
+
+    .dark .slide-foot {
+      border-top-color: rgba(242, 237, 226, 0.12);
+      color: rgba(242, 237, 226, 0.56);
+    }
+
+    .heading {
+      margin: 0;
+      max-width: 20ch;
+      font-family: var(--font-main);
+      font-size: min(5.2vw, 6.5vh, 4.2rem);
+      line-height: 1;
+      color: var(--deep);
+      text-wrap: balance;
+    }
+
+    .dark .heading {
+      color: var(--ivory);
+    }
+
+    .subheading {
+      margin: 0;
+      max-width: 72ch;
+      font-family: var(--font-sub);
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: min(1.9vw, 2.5vh, 1.22rem);
+    }
+
+    .dark .subheading {
+      color: rgba(242, 237, 226, 0.72);
+    }
+
+    .rule {
+      width: min(220px, 24vw);
+      height: 2px;
+      background: linear-gradient(90deg, var(--ember), var(--gold));
+      transform-origin: left center;
+    }
+
+    .anim-line {
+      transform: scaleX(0);
+    }
+
+    .mini-label {
+      font-family: var(--font-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: min(1.7vh, 12px);
+      color: var(--ember);
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: clamp(22px, 3vw, 48px);
+      align-items: start;
+    }
+
+    .stack {
+      min-width: 0;
+      display: grid;
+      gap: clamp(12px, 2vh, 18px);
+      align-content: start;
+    }
+
+    .timeline {
+      position: relative;
+      display: grid;
+      gap: clamp(10px, 1.8vh, 18px);
+      padding-left: clamp(28px, 3vw, 44px);
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 7px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: linear-gradient(180deg, var(--ember), rgba(194, 94, 42, 0.14));
+    }
+
+    .t-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: clamp(110px, 11vw, 165px) minmax(0, 1fr);
+      gap: clamp(14px, 2vw, 28px);
+      align-items: start;
+    }
+
+    .t-item::before {
+      content: "";
+      position: absolute;
+      left: calc(-1 * clamp(28px, 3vw, 44px) + 2px);
+      top: 0.42em;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--paper);
+      border: 2px solid var(--ember);
+    }
+
+    .dark .t-item::before {
+      background: var(--deep-3);
+    }
+
+    .t-date {
+      font-family: var(--font-sub);
+      color: var(--ember);
+      font-size: min(2.2vh, 1.02rem);
+      letter-spacing: 0.05em;
+    }
+
+    .t-item h3,
+    .origin-item h3,
+    .fact h3 {
+      margin: 0 0 6px;
+      font-family: var(--font-sub);
+      font-size: min(2.7vh, 1.5rem);
+      line-height: 1.15;
+      color: var(--ink);
+    }
+
+    .dark .t-item h3,
+    .dark .origin-item h3,
+    .dark .fact h3 {
+      color: var(--ivory);
+    }
+
+    .t-item p,
+    .origin-item p,
+    .fact p,
+    .recruit-copy p,
+    .ending-copy p {
+      margin: 0;
+      color: var(--muted);
+      font-family: var(--font-body);
+      line-height: 1.55;
+      font-size: min(2.1vh, 1.02rem);
+    }
+
+    .dark .t-item p,
+    .dark .origin-item p,
+    .dark .fact p,
+    .dark .recruit-copy p,
+    .dark .ending-copy p {
+      color: rgba(242, 237, 226, 0.72);
+    }
+
+    .origin-list {
+      display: grid;
+      gap: clamp(12px, 2vh, 18px);
+    }
+
+    .origin-item {
+      padding-top: clamp(12px, 2vh, 18px);
+      border-top: 2px solid rgba(36, 19, 24, 0.18);
+    }
+
+    .role {
+      margin-bottom: 8px;
+      font-family: var(--font-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: min(1.7vh, 12px);
+      color: var(--ember);
+    }
+
+    .fact-list {
+      display: grid;
+      gap: clamp(10px, 1.8vh, 16px);
+    }
+
+    .fact {
+      display: grid;
+      grid-template-columns: clamp(42px, 4vw, 58px) minmax(0, 1fr);
+      gap: clamp(12px, 1.6vw, 20px);
+      align-items: start;
+      padding: clamp(10px, 1.7vh, 15px) 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .fact:last-child {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .fact-index {
+      font-family: var(--font-sub);
+      color: var(--gold);
+      font-size: min(2.2vh, 1.02rem);
+    }
+
+    .circuit {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .trace {
+      fill: none;
+      stroke: rgba(211, 161, 79, 0.18);
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+
+    /* Recruitment */
+    .recruit-stage {
+      display: grid;
+      justify-items: center;
+      gap: clamp(18px, 3vh, 30px);
+      width: 100%;
+      max-width: 1180px;
+    }
+
+    .role-board {
+      width: min(1150px, 100%);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(10px, 1.6vw, 18px);
+    }
+
+    .role-slot {
+      position: relative;
+      min-height: clamp(84px, 12vh, 132px);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+      background: #fff;
+      border: 1px solid rgba(36, 19, 24, 0.14);
+      clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
+    }
+
+    .role-slot.open::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border: 1px dashed rgba(36, 19, 24, 0.12);
+      pointer-events: none;
+    }
+
+    .role-slot.selected {
+      background:
+        linear-gradient(135deg, rgba(194, 94, 42, 0.16), rgba(211, 161, 79, 0.22)),
+        #fff;
+      border-color: var(--ember);
+      box-shadow: inset 0 0 0 1px rgba(194, 94, 42, 0.25);
+    }
+
+    .role-slot.selected::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border: 1px solid rgba(194, 94, 42, 0.28);
+      pointer-events: none;
+    }
+
+    .slot-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .slot-index {
+      font-family: var(--font-sub);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+    }
+
+    .slot-badge {
+      font-family: var(--font-sub);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .role-slot.selected .slot-badge {
+      color: var(--ember);
+    }
+
+    .role-name {
+      font-family: var(--font-sub);
+      font-size: clamp(1.08rem, 2.3vh, 1.48rem);
+      line-height: 1.15;
+      color: var(--ink);
+    }
+
+    .slot-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-sub);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .slot-status::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border: 1px solid currentColor;
+      transform: rotate(45deg);
+    }
+
+    .role-slot.selected .slot-status {
+      color: var(--ember);
+    }
+
+    .role-slot.selected .slot-status::before {
+      background: var(--ember);
+      border-color: var(--ember);
+    }
+
+    /* Ending */
+    .slide.ending .frame {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      place-items: center;
+      padding: 0;
+    }
+
+    .slide.ending .content {
+      grid-column: 1;
+      grid-row: 1;
+      padding-left: 0;
+      width: 100%;
+    }
+
+    .ending-stage {
+      display: grid;
+      justify-items: center;
+      gap: clamp(18px, 3.6vh, 34px);
+      text-align: center;
+      max-width: 1000px;
+      margin-inline: auto;
+    }
+
+    .ending-copy {
+      display: grid;
+      gap: clamp(12px, 2.4vh, 20px);
+    }
+
+    .ending-large {
+      font-family: var(--font-sub);
+      font-size: min(3.2vw, 4.4vh, 2.4rem);
+      line-height: 1.3;
+      color: var(--ivory);
+      text-wrap: balance;
+    }
+
+    .ending-small {
+      font-family: var(--font-body);
+      font-size: min(2.1vh, 1.1rem);
+      color: rgba(242, 237, 226, 0.72);
+    }
+
+    .ending-mark {
+      font-family: var(--font-main);
+      font-size: min(9vw, 13vh, 7.5rem);
+      line-height: 1;
+      color: var(--gold);
+    }
+
+    /* Title */
+    .slide.title {
+      background:
+        radial-gradient(circle at 18% 22%, rgba(194, 94, 42, 0.28), transparent 30%),
+        radial-gradient(circle at 82% 78%, rgba(211, 161, 79, 0.18), transparent 24%),
+        linear-gradient(135deg, var(--deep-3), var(--deep-2) 55%, var(--deep-3));
+      color: var(--ivory);
+    }
+
+    .slide.title .frame {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      place-items: center;
+      padding: 0;
+      z-index: 2;
+    }
+
+    .slide.title::before,
+    .slide.title::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .slide.title::before {
+      inset: 5.5vh 3.5vw;
+      border: 1px solid rgba(211, 161, 79, 0.10);
+      border-radius: 30px;
+      z-index: 0;
+    }
+
+    .slide.title::after {
+      inset: 7.5vh 5vw;
+      border: 1px solid rgba(242, 237, 226, 0.05);
+      border-radius: 36px;
+      z-index: 0;
+    }
+
+    .title-halo {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: min(52vw, 58vh);
+      height: min(52vw, 58vh);
+      transform: translate(-50%, -52%);
+      background: radial-gradient(circle, rgba(211, 161, 79, 0.15), transparent 62%);
+      z-index: 0;
+      pointer-events: none;
+      animation: haloBreath 6s ease-in-out infinite;
+    }
+
+    @keyframes haloBreath {
+      0%, 100% {
+        opacity: 0.75;
+        transform: translate(-50%, -52%) scale(0.98);
+      }
+      50% {
+        opacity: 1;
+        transform: translate(-50%, -52%) scale(1.02);
+      }
+    }
+
+    .title-stage {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      justify-items: center;
+      gap: clamp(22px, 5vh, 46px);
+      text-align: center;
+      width: min(92vw, 1200px);
+    }
+
+    .logo-chip {
+      position: relative;
+      width: min(24vh, 22vw, 240px);
+      aspect-ratio: 1 / 1;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .logo-chip img {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .chip-corner {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      border-color: var(--gold);
+      opacity: 0.92;
+      z-index: 3;
+    }
+
+    .chip-corner.tl { top: -16px; left: -16px; border-top: 2px solid var(--gold); border-left: 2px solid var(--gold); }
+    .chip-corner.tr { top: -16px; right: -16px; border-top: 2px solid var(--gold); border-right: 2px solid var(--gold); }
+    .chip-corner.bl { bottom: -16px; left: -16px; border-bottom: 2px solid var(--gold); border-left: 2px solid var(--gold); }
+    .chip-corner.br { bottom: -16px; right: -16px; border-bottom: 2px solid var(--gold); border-right: 2px solid var(--gold); }
+
+    .chip-pins {
+      position: absolute;
+      z-index: 1;
+      opacity: 0.75;
+    }
+
+    .chip-pins.top,
+    .chip-pins.bottom {
+      left: 14%;
+      right: 14%;
+      height: 8px;
+      background: repeating-linear-gradient(90deg, rgba(211, 161, 79, 0.75) 0 2px, transparent 2px 12px);
+    }
+
+    .chip-pins.top { top: -22px; }
+    .chip-pins.bottom { bottom: -22px; }
+
+    .chip-pins.left,
+    .chip-pins.right {
+      top: 14%;
+      bottom: 14%;
+      width: 8px;
+      background: repeating-linear-gradient(180deg, rgba(211, 161, 79, 0.75) 0 2px, transparent 2px 12px);
+    }
+
+    .chip-pins.left { left: -22px; }
+    .chip-pins.right { right: -22px; }
+
+    .club-name {
+      margin: 0;
+      font-family: var(--font-main);
+      font-size: min(8vw, 9.5vh, 6.6rem);
+      line-height: 0.96;
+      color: var(--ivory);
+      text-wrap: balance;
+    }
+
+    @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+      .club-name {
+        background-image: linear-gradient(
+          105deg,
+          #ffffff 0%,
+          #f7f1e4 48%,
+          #eed9ac 74%,
+          #d3a14f 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+    }
+
+    .club-name .line {
+      display: block;
+      overflow: hidden;
+      padding-bottom: 0.06em;
+    }
+
+    .club-name .line > span {
+      display: block;
+    }
+
+    .title-line {
+      width: min(62vw, 720px);
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--ember), transparent);
+      transform-origin: center center;
+    }
+
+    /* Controls */
+    .controls {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 12px;
+      background: rgba(245, 241, 232, 0.98);
+      border-top: 3px solid var(--ember);
+    }
+
+    .controls-left,
+    .controls-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .controls button {
+      border: 1px solid rgba(36, 19, 24, 0.16);
+      background: var(--white);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 7px 11px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .controls button:hover {
+      background: var(--deep);
+      border-color: var(--deep);
+      color: #fff;
+    }
+
+    .counter {
+      min-width: 72px;
+      text-align: center;
+      font-family: var(--font-sub);
+      font-size: 12px;
+      color: var(--ink);
+    }
+
+    /* Overview */
+    .overview {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      opacity: 0;
+      pointer-events: none;
+      background: var(--paper);
+    }
+
+    .overview.open {
+      pointer-events: auto;
+    }
+
+    .overview-head {
+      height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(20px, 4vw, 54px);
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .overview-head h2 {
+      margin: 0;
+      font-family: var(--font-main);
+      font-size: min(5vw, 4vh, 2.2rem);
+      color: var(--deep);
+    }
+
+    .overview-close,
+    #pclose {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid rgba(36, 19, 24, 0.18);
+      background: var(--white);
+      color: var(--ink);
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .overview-grid {
+      width: min(1560px, 94vw);
+      height: calc(100vh - 82px);
+      height: calc(100dvh - 82px);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 14px;
+      align-content: stretch;
+      padding: clamp(16px, 3vh, 34px) 0;
+    }
+
+    .ov-item {
+      position: relative;
+      border: 0;
+      background: transparent;
+      text-align: left;
+      padding: 14px 8px;
+      border-top: 3px solid rgba(36, 19, 24, 0.14);
+      cursor: pointer;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .ov-item.active {
+      border-top-color: var(--ember);
+    }
+
+    .ov-key {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(36, 19, 24, 0.18);
+      color: var(--ember);
+      font-family: var(--font-sub);
+      font-size: 12px;
+    }
+
+    .ov-title {
+      font-family: var(--font-sub);
+      color: var(--ink);
+      font-size: min(2.2vh, 1.02rem);
+      line-height: 1.25;
+    }
+
+    .ov-section {
+      color: var(--muted);
+      font-size: min(1.8vh, 0.85rem);
+    }
+
+    .ov-item:hover .ov-title {
+      color: var(--ember);
+    }
+
+    /* Help */
+    .panel {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 70;
+      width: min(370px, calc(100vw - 20px));
+      padding: 16px;
+      background: var(--paper);
+      color: var(--ink);
+      border: 1px solid rgba(36, 19, 24, 0.14);
+      border-top: 4px solid var(--ember);
+      border-radius: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+    }
+
+    .panel.open {
+      pointer-events: auto;
+    }
+
+    .panel-h {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-family: var(--font-sub);
+      font-size: 12px;
+      letter-spacing: 0.16em;
+    }
+
+    .krow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(36, 19, 24, 0.08);
+      font-size: min(2vh, 13px);
+      color: var(--ink);
+    }
+
+    .krow:last-child {
+      border-bottom: 0;
+    }
+
+    kbd {
+      padding: 3px 6px;
+      border-radius: 7px;
+      background: #fff;
+      border: 1px solid rgba(36, 19, 24, 0.12);
+      font-family: var(--font-sub);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    #blackout {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    #blackout.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    @media (max-width: 1180px) {
+      .overview-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .frame {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto minmax(0, 1fr) auto;
+      }
+
+      .rail {
+        grid-column: 1;
+        grid-row: 1;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 10px;
+      }
+
+      .rail .section-label {
+        writing-mode: horizontal-tb;
+        transform: none;
+      }
+
+      .content {
+        grid-column: 1;
+        grid-row: 3;
+        padding-left: 0;
+      }
+
+      .slide-foot {
+        grid-column: 1;
+        grid-row: 4;
+        padding-left: 0;
+      }
+
+      .split,
+      .t-item {
+        grid-template-columns: 1fr;
+      }
+
+      .role-board {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .overview-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .controls {
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-height: 720px) {
+      .heading {
+        font-size: min(5vw, 5.8vh, 3.2rem);
+      }
+
+      .t-item p,
+      .origin-item p,
+      .fact p,
+      .subheading,
+      .recruit-copy p {
+        font-size: min(1.9vh, 0.94rem);
+      }
+
+      .timeline,
+      .origin-list,
+      .fact-list,
+      .role-board {
+        gap: 8px;
+      }
+
+      .role-slot {
+        min-height: clamp(72px, 10vh, 110px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="progress ui" aria-hidden="true">
+    <div id="progressBar"></div>
+  </div>
+
+  <main class="deck" id="deck">
+    <!-- Slide 1: Title -->
+    <section class="slide title" data-title="Title" data-section="Opening">
+        <svg class="circuit" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <path class="trace" d="M-60 640 H300 L410 530 H680" />
+            <path class="trace" d="M1500 200 H1140 L1030 310 H800" />
+            <path class="trace" d="M220 900 V710 L350 590" />
+            <path class="trace" d="M1260 900 V680 L1130 560" />
+            <path class="trace" d="M720 920 V770 L830 660" />
+            <path class="trace" d="M180 -30 V170 L320 300" />
+        </svg>
+      <div class="title-halo" aria-hidden="true"></div>
+
+      <div class="frame">
+        <div class="title-stage">
+          <div class="logo-chip anim">
+            <span class="chip-corner tl" aria-hidden="true"></span>
+            <span class="chip-corner tr" aria-hidden="true"></span>
+            <span class="chip-corner bl" aria-hidden="true"></span>
+            <span class="chip-corner br" aria-hidden="true"></span>
+
+            <span class="chip-pins top" aria-hidden="true"></span>
+            <span class="chip-pins bottom" aria-hidden="true"></span>
+            <span class="chip-pins left" aria-hidden="true"></span>
+            <span class="chip-pins right" aria-hidden="true"></span>
+
+            <img
+              src="../images/ulic_logo.png"
+              alt="University Laboratory ICT Club logo"
+              decoding="async"
+              onerror="this.style.visibility='hidden'"
+            >
+          </div>
+
+          <h1 class="club-name" aria-label="University Laboratory ICT Club">
+            <span class="line" aria-hidden="true"><span class="anim">University Laboratory</span></span>
+            <span class="line" aria-hidden="true"><span class="anim">ICT Club</span></span>
+          </h1>
+
+          <div class="title-line anim-line" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 2: Foundation -->
+    <section class="slide" data-title="Foundation — Genesis & Origin Panel" data-section="Foundation">
+      <div class="frame">
+        <aside class="rail">
+          <div class="chapter">02</div>
+          <div class="section-label">Foundation</div>
+          <div class="slide-count"></div>
+        </aside>
+
+        <div class="content">
+          <h2 class="heading anim">Our Genesis</h2>
+          <div class="rule anim-line"></div>
+          <p class="subheading anim">
+            From a foundational idea to a force of change — led by the 2024–25 Executive Panel.
+          </p>
+
+          <div class="split">
+            <div class="stack">
+              <div class="mini-label anim">Origin Timeline</div>
+
+              <div class="timeline">
+                <div class="t-item anim">
+                  <div class="t-date">October 2024</div>
+                  <div>
+                    <h3>Club Founded</h3>
+                    <p>
+                      Born as one of the nine founding clubs of University Laboratory School and College,
+                      created for tech enthusiasts and digital problem-solvers.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="t-item anim">
+                  <div class="t-date">January 2025</div>
+                  <div>
+                    <h3>UCA Initiative</h3>
+                    <p>
+                      ULIC led the formation of the United Club Association (UCA), unifying clubs and
+                      strengthening institutional collaboration.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="t-item anim">
+                  <div class="t-date">Feb — April 2025</div>
+                  <div>
+                    <h3>Incubation</h3>
+                    <p>
+                      Internal structures, prototypes, and brainstorming shaped the club’s next phase.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stack">
+              <div class="mini-label anim">Matrix: Origin · Executive Panel 2024–25</div>
+
+              <div class="origin-list">
+                <div class="origin-item anim">
+                  <div class="role">Founding Executive · President · Creative Director</div>
+                  <h3>Sazidur Rahman</h3>
+                  <p>
+                    Founder of ULIC. As Creative Director — and the person behind the engineering —
+                    he built ULIC and UCA’s online infrastructure while shaping the club’s design language,
+                    vision, and digital identity.
+                  </p>
+                </div>
+
+                <div class="origin-item anim">
+                  <div class="role">Vice President</div>
+                  <h3>Samiul Ahammad Sami</h3>
+                  <p>
+                    Key design and strategy lead, shaping ULIC’s creative direction and visual identity.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="slide-foot">
+          <div>University Laboratory ICT Club</div>
+          <div>Executive Panel · 2024–2025</div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- Slide 3: History -->
+    <section class="slide" data-title="History — Build Phase" data-section="History & Current Operations">
+      <div class="frame">
+        <aside class="rail">
+          <div class="chapter">03</div>
+          <div class="section-label">History &amp; Operations</div>
+          <div class="slide-count"></div>
+        </aside>
+
+        <div class="content">
+          <h2 class="heading anim">From Planning to Execution</h2>
+          <div class="rule anim-line"></div>
+          <p class="subheading anim">
+            The period when ULIC moved from ideas into real products and real impact.
+          </p>
+
+          <div class="timeline">
+            <div class="t-item anim">
+              <div class="t-date">May 2025</div>
+              <div>
+                <h3>Web App Development Begins</h3>
+                <p>
+                  ULIC officially began building a comprehensive Web App, marking the transition
+                  from planning to execution.
+                </p>
+              </div>
+            </div>
+
+            <div class="t-item anim">
+              <div class="t-date">July 2025</div>
+              <div>
+                <h3>Community Support</h3>
+                <p>
+                  ULIC provided website support to ULPC and ULLC for their landmark event,
+                  “Frame of Revolution: Bangladesh 2.0”.
+                </p>
+              </div>
+            </div>
+
+            <div class="t-item anim">
+              <div class="t-date">August 2025</div>
+              <div>
+                <h3>Web App Released</h3>
+                <p>
+                  The official ULIC Web App launched, transforming member interaction,
+                  project management, and resource access.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="slide-foot">
+          <div>University Laboratory ICT Club</div>
+          <div>Executive Panel · 2024–2025</div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- Slide 4: Current Operations -->
+    <section class="slide" data-title="Operations — Systems & Firsts" data-section="History & Current Operations">
+      <div class="frame">
+        <aside class="rail">
+          <div class="chapter">04</div>
+          <div class="section-label">History &amp; Operations</div>
+          <div class="slide-count"></div>
+        </aside>
+
+        <div class="content">
+          <h2 class="heading anim">Systems, Seasons &amp; Firsts</h2>
+          <div class="rule anim-line"></div>
+          <p class="subheading anim">
+            ULIC continues building infrastructure, expanding participation, and setting new benchmarks.
+          </p>
+
+          <div class="split">
+            <div class="stack">
+              <div class="mini-label anim">Current Milestones</div>
+
+              <div class="timeline">
+                <div class="t-item anim">
+                  <div class="t-date">Sept — Oct 2025</div>
+                  <div>
+                    <h3>Season System</h3>
+                    <p>
+                      A framework launched to encourage continuous learning, gamify participation,
+                      and share technical knowledge.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="t-item anim">
+                  <div class="t-date">December 2025</div>
+                  <div>
+                    <h3>Mobile Frontier</h3>
+                    <p>
+                      ULIC initiated development of dedicated Mobile App(s), bringing the ULIC
+                      experience closer to every member.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stack">
+              <div class="mini-label anim">Pioneering Accomplishments</div>
+
+              <div class="fact-list">
+                <div class="fact anim">
+                  <div class="fact-index">01</div>
+                  <div>
+                    <h3>Digital Infrastructure</h3>
+                    <p>
+                      ULIC manages the online infrastructure of the UCA, from websites to internal systems.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="fact anim">
+                  <div class="fact-index">02</div>
+                  <div>
+                    <h3>Software Firsts</h3>
+                    <p>
+                      First club to develop and launch custom web applications, desktop software, and mobile apps.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="fact anim">
+                  <div class="fact-index">03</div>
+                  <div>
+                    <h3>A Unique Identity</h3>
+                    <p>
+                      ULIC stands among the most distinctive ICT clubs in Bangladesh, known for ambitious
+                      projects and technical execution.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="slide-foot">
+          <div>University Laboratory ICT Club</div>
+          <div>Executive Panel · 2024–2025</div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- Slide 5: Recruitment -->
+    <section class="slide" data-title="Future — Executive Recruitment" data-section="Future Initiatives">
+      <div class="frame">
+        <aside class="rail">
+          <div class="chapter">05</div>
+          <div class="section-label">Future Initiatives</div>
+          <div class="slide-count"></div>
+        </aside>
+
+        <div class="content center">
+          <div class="recruit-stage">
+            <div class="mini-label anim">Open Leadership Board</div>
+
+            <h2 class="heading anim">2025–26 Executive Recruitment</h2>
+            <div class="rule anim-line"></div>
+
+            <div class="recruit-copy anim">
+              <p>
+                Currently searching for the next executive panel.
+                Selected so far: General Secretary.
+              </p>
+            </div>
+
+            <div class="role-board">
+              <div class="role-slot open anim">
+                <div class="slot-top">
+                  <span class="slot-index">01</span>
+                  <span class="slot-badge">Open Role</span>
+                </div>
+                <div class="role-name">President</div>
+                <div class="slot-status">Vacant</div>
+              </div>
+
+              <div class="role-slot open anim">
+                <div class="slot-top">
+                  <span class="slot-index">02</span>
+                  <span class="slot-badge">Open Role</span>
+                </div>
+                <div class="role-name">Vice President</div>
+                <div class="slot-status">Vacant</div>
+              </div>
+
+              <div class="role-slot selected anim">
+                <div class="slot-top">
+                  <span class="slot-index">03</span>
+                  <span class="slot-badge">Confirmed</span>
+                </div>
+                <div class="role-name">General Secretary</div>
+                <div class="slot-status">Selected</div>
+              </div>
+
+              <div class="role-slot open anim">
+                <div class="slot-top">
+                  <span class="slot-index">04</span>
+                  <span class="slot-badge">Open Role</span>
+                </div>
+                <div class="role-name">Lead Developer</div>
+                <div class="slot-status">Vacant</div>
+              </div>
+
+              <div class="role-slot open anim">
+                <div class="slot-top">
+                  <span class="slot-index">05</span>
+                  <span class="slot-badge">Open Role</span>
+                </div>
+                <div class="role-name">Lead Designer</div>
+                <div class="slot-status">Vacant</div>
+              </div>
+
+              <div class="role-slot open anim">
+                <div class="slot-top">
+                  <span class="slot-index">06</span>
+                  <span class="slot-badge">Open Role</span>
+                </div>
+                <div class="role-name">Media Manager</div>
+                <div class="slot-status">Vacant</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="slide-foot">
+          <div>University Laboratory ICT Club</div>
+          <div>The next panel begins here</div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- Slide 6: Ending -->
+    <section class="slide dark ending" data-title="Ending — Building What Comes Next" data-section="Closing">
+      <div class="frame">
+        <div class="content center">
+          <div class="ending-stage">
+            <div class="ending-mark anim">ULIC</div>
+
+            <div class="ending-copy anim">
+              <div class="ending-large">
+                Technology is our language. The world is our stage.
+              </div>
+
+              <p class="ending-small">
+                Explore. Learn. Master. Push boundaries. Build with purpose.
+                Empower the next generation of creators.
+              </p>
+            </div>
+
+            <div class="title-line anim-line"></div>
+
+            <div class="subheading anim">
+              University Laboratory ICT Club
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Controls -->
+  <div class="controls ui" id="controls" role="toolbar" aria-label="Slide controls">
+    <div class="controls-left">
+      <button data-action="prev" title="Previous slide">← Prev</button>
+      <div class="counter"><span id="currentSlide">01</span> / <span id="totalSlides">06</span></div>
+      <button data-action="next" title="Next slide">Next →</button>
+    </div>
+
+    <div class="controls-right">
+      <button data-action="overview" title="Overview (G)">Overview</button>
+      <button data-action="fullscreen" title="Fullscreen (F)">Fullscreen</button>
+      <button data-action="blackout" title="Blackout (B)">Blackout</button>
+      <button data-action="focus" title="Focus mode (H)">Focus</button>
+      <button data-action="help" title="Shortcuts (?)">?</button>
+    </div>
+  </div>
+
+  <!-- Overview -->
+  <div class="overview" id="overview" aria-hidden="true" role="dialog" aria-label="Slide overview">
+    <div class="overview-head">
+      <h2>Overview</h2>
+      <button class="overview-close" id="overviewClose" title="Close overview">×</button>
+    </div>
+
+    <div class="overview-grid" id="overviewGrid"></div>
+  </div>
+
+  <!-- Help panel -->
+  <div class="panel" id="panel" role="dialog" aria-label="Keyboard shortcuts" aria-hidden="true">
+    <div class="panel-h">CONTROLS <button id="pclose" title="Close">×</button></div>
+    <div class="krow"><kbd>→ / SPACE</kbd><span>Next slide</span></div>
+    <div class="krow"><kbd>←</kbd><span>Previous slide</span></div>
+    <div class="krow"><kbd>HOME / END</kbd><span>First / last slide</span></div>
+    <div class="krow"><kbd>G</kbd><span>Overview — all slides, click to jump</span></div>
+    <div class="krow"><kbd>1–6</kbd><span>Inside Overview, jump directly to slide</span></div>
+    <div class="krow"><kbd>F</kbd><span>Fullscreen</span></div>
+    <div class="krow"><kbd>B</kbd><span>Blackout the screen</span></div>
+    <div class="krow"><kbd>H</kbd><span>Focus mode — hide everything, slide only. Press H again to restore.</span></div>
+    <div class="krow"><kbd>?</kbd><span>This panel</span></div>
+    <div class="krow"><kbd>ESC</kbd><span>Close panels</span></div>
+  </div>
+
+  <div id="blackout" aria-hidden="true"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <script>
+    (() => {
+      gsap.defaults({ overwrite: "auto" });
+      gsap.ticker.fps(60);
+      gsap.ticker.lagSmoothing(0);
+
+      const slides = gsap.utils.toArray(".slide");
+
+      const currentSlideEl = document.getElementById("currentSlide");
+      const totalSlidesEl = document.getElementById("totalSlides");
+      const progressBar = document.getElementById("progressBar");
+
+      const overview = document.getElementById("overview");
+      const overviewGrid = document.getElementById("overviewGrid");
+      const overviewClose = document.getElementById("overviewClose");
+
+      const panel = document.getElementById("panel");
+      const pclose = document.getElementById("pclose");
+
+      const blackout = document.getElementById("blackout");
+      const deck = document.getElementById("deck");
+
+      let current = 0;
+      let isAnimating = false;
+
+      let overviewOpen = false;
+      let helpOpen = false;
+      let idleTimer = null;
+
+      function pad(n) {
+        return String(n).padStart(2, "0");
+      }
+
+      slides.forEach((slide, i) => {
+        const count = slide.querySelector(".slide-count");
+        if (count) count.textContent = `${pad(i + 1)} / ${pad(slides.length)}`;
+      });
+
+      function updateUI() {
+        currentSlideEl.textContent = pad(current + 1);
+        totalSlidesEl.textContent = pad(slides.length);
+        progressBar.style.width = `${((current + 1) / slides.length) * 100}%`;
+
+        document.querySelectorAll(".ov-item").forEach((item, i) => {
+          item.classList.toggle("active", i === current);
+        });
+      }
+
+      function animateSlideContent(slide) {
+        const items = slide.querySelectorAll(".anim");
+        const lines = slide.querySelectorAll(".anim-line");
+
+        gsap.killTweensOf(items);
+        gsap.killTweensOf(lines);
+
+        gsap.fromTo(
+          items,
+          { autoAlpha: 0, y: 24 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.55,
+            ease: "power3.out",
+            stagger: 0.045,
+            delay: 0.06
+          }
+        );
+
+        if (lines.length) {
+          gsap.fromTo(
+            lines,
+            { scaleX: 0 },
+            {
+              scaleX: 1,
+              duration: 0.65,
+              ease: "power3.out",
+              stagger: 0.06,
+              delay: 0.1
+            }
+          );
+        }
+      }
+
+      function goTo(index) {
+        index = Math.max(0, Math.min(slides.length - 1, index));
+
+        if (index === current || isAnimating) return;
+
+        isAnimating = true;
+
+        const outgoing = slides[current];
+        const incoming = slides[index];
+        const direction = index > current ? 1 : -1;
+
+        current = index;
+        updateUI();
+
+        gsap.killTweensOf([outgoing, incoming]);
+
+        gsap.timeline({
+          onComplete: () => {
+            isAnimating = false;
+          }
+        })
+          .to(outgoing, {
+            autoAlpha: 0,
+            x: -28 * direction,
+            duration: 0.32,
+            ease: "power2.in"
+          })
+          .add(() => {
+            outgoing.classList.remove("active");
+            incoming.classList.add("active");
+
+            gsap.set(outgoing, { x: 0 });
+            gsap.set(incoming, { autoAlpha: 0, x: 28 * direction });
+
+            animateSlideContent(incoming);
+          })
+          .to(incoming, {
+            autoAlpha: 1,
+            x: 0,
+            duration: 0.48,
+            ease: "power3.out"
+          }, "<0.03");
+      }
+
+      function next() {
+        goTo(current + 1);
+      }
+
+      function prev() {
+        goTo(current - 1);
+      }
+
+      function buildOverview() {
+        slides.forEach((slide, i) => {
+          const item = document.createElement("button");
+
+          item.type = "button";
+          item.className = "ov-item";
+
+          item.innerHTML = `
+            <span class="ov-key">${i + 1}</span>
+            <span class="ov-title">${slide.dataset.title || `Slide ${i + 1}`}</span>
+            <span class="ov-section">${slide.dataset.section || ""}</span>
+          `;
+
+          item.addEventListener("click", () => {
+            item.blur();
+            closeOverview();
+            goTo(i);
+          });
+
+          overviewGrid.appendChild(item);
+        });
+      }
+
+      function openOverview() {
+        if (overviewOpen) return;
+
+        closeHelp();
+
+        if (document.body.classList.contains("focus-mode")) {
+          document.body.classList.remove("focus-mode");
+        }
+
+        overviewOpen = true;
+        overview.classList.add("open");
+        overview.setAttribute("aria-hidden", "false");
+
+        gsap.killTweensOf(overview);
+
+        gsap.fromTo(
+          overview,
+          { autoAlpha: 0 },
+          { autoAlpha: 1, duration: 0.25, ease: "power2.out" }
+        );
+
+        const items = overviewGrid.querySelectorAll(".ov-item");
+
+        gsap.killTweensOf(items);
+
+        gsap.fromTo(
+          items,
+          { autoAlpha: 0, y: 16 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.4,
+            stagger: 0.02,
+            ease: "power3.out",
+            delay: 0.03
+          }
+        );
+      }
+
+      function closeOverview() {
+        if (!overviewOpen) return;
+
+        overviewOpen = false;
+
+        gsap.killTweensOf(overview);
+
+        gsap.to(overview, {
+          autoAlpha: 0,
+          duration: 0.18,
+          ease: "power2.in",
+          onComplete: () => {
+            overview.classList.remove("open");
+            overview.setAttribute("aria-hidden", "true");
+          }
+        });
+      }
+
+      function toggleOverview(force) {
+        const open = typeof force === "boolean" ? force : !overviewOpen;
+        open ? openOverview() : closeOverview();
+      }
+
+      function openHelp() {
+        if (helpOpen) return;
+
+        closeOverview();
+
+        if (document.body.classList.contains("focus-mode")) {
+          document.body.classList.remove("focus-mode");
+        }
+
+        helpOpen = true;
+        panel.classList.add("open");
+        panel.setAttribute("aria-hidden", "false");
+
+        gsap.killTweensOf(panel);
+
+        gsap.fromTo(
+          panel,
+          { autoAlpha: 0, y: 12 },
+          { autoAlpha: 1, y: 0, duration: 0.3, ease: "power3.out" }
+        );
+      }
+
+      function closeHelp() {
+        if (!helpOpen) return;
+
+        helpOpen = false;
+
+        gsap.killTweensOf(panel);
+
+        gsap.to(panel, {
+          autoAlpha: 0,
+          y: 12,
+          duration: 0.18,
+          ease: "power2.in",
+          onComplete: () => {
+            panel.classList.remove("open");
+            panel.setAttribute("aria-hidden", "true");
+          }
+        });
+      }
+
+      function toggleHelp(force) {
+        const open = typeof force === "boolean" ? force : !helpOpen;
+        open ? openHelp() : closeHelp();
+      }
+
+      function closePanels() {
+        closeOverview();
+        closeHelp();
+      }
+
+      async function toggleFullscreen() {
+        try {
+          if (document.fullscreenElement) {
+            await document.exitFullscreen();
+          } else {
+            await document.documentElement.requestFullscreen();
+          }
+        } catch (error) {
+          console.warn("Fullscreen is not available here.");
+        }
+      }
+
+      function toggleBlackout() {
+        blackout.classList.toggle("active");
+      }
+
+      function toggleFocus(force) {
+        const on = typeof force === "boolean" ? force : !document.body.classList.contains("focus-mode");
+
+        if (on) closePanels();
+
+        document.body.classList.toggle("focus-mode", on);
+      }
+
+      function showUI() {
+        document.body.classList.remove("ui-hidden");
+        clearTimeout(idleTimer);
+
+        idleTimer = setTimeout(() => {
+          if (!overviewOpen && !helpOpen && !document.body.classList.contains("focus-mode")) {
+            document.body.classList.add("ui-hidden");
+          }
+        }, 2600);
+      }
+
+      ["pointermove", "pointerdown", "keydown", "touchstart"].forEach((eventName) => {
+        window.addEventListener(eventName, showUI, { passive: true });
+      });
+
+      document.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-action]");
+        if (!button) return;
+
+        button.blur();
+
+        const action = button.dataset.action;
+
+        if (action === "prev") prev();
+        if (action === "next") next();
+        if (action === "overview") toggleOverview();
+        if (action === "fullscreen") toggleFullscreen();
+        if (action === "blackout") toggleBlackout();
+        if (action === "focus") toggleFocus();
+        if (action === "help") toggleHelp();
+      });
+
+      overviewClose.addEventListener("click", () => {
+        overviewClose.blur();
+        closeOverview();
+      });
+
+      pclose.addEventListener("click", () => {
+        pclose.blur();
+        closeHelp();
+      });
+
+      blackout.addEventListener("click", toggleBlackout);
+
+      document.addEventListener("keydown", (event) => {
+        if (event.target.closest('input, textarea, select, [contenteditable="true"]')) return;
+        if (event.ctrlKey || event.metaKey || event.altKey) return;
+
+        const key = event.key;
+
+        if (overviewOpen && /^[1-6]$/.test(key)) {
+          event.preventDefault();
+
+          const index = Number(key) - 1;
+
+          if (index < slides.length) {
+            closeOverview();
+            goTo(index);
+          }
+
+          return;
+        }
+
+        if (key === "ArrowRight" || key === " ") {
+          event.preventDefault();
+          closePanels();
+          next();
+        }
+
+        if (key === "ArrowLeft") {
+          event.preventDefault();
+          closePanels();
+          prev();
+        }
+
+        if (key === "Home") {
+          event.preventDefault();
+          closePanels();
+          goTo(0);
+        }
+
+        if (key === "End") {
+          event.preventDefault();
+          closePanels();
+          goTo(slides.length - 1);
+        }
+
+        if (key === "g" || key === "G") toggleOverview();
+        if (key === "f" || key === "F") toggleFullscreen();
+        if (key === "b" || key === "B") toggleBlackout();
+        if (key === "h" || key === "H") toggleFocus();
+        if (key === "?") toggleHelp();
+        if (key === "Escape") closePanels();
+      });
+
+      // Touch swipe
+      let touchX = null;
+      let touchY = null;
+
+      deck.addEventListener("touchstart", (event) => {
+        if (overviewOpen || helpOpen) return;
+
+        touchX = event.touches[0].clientX;
+        touchY = event.touches[0].clientY;
+      }, { passive: true });
+
+      deck.addEventListener("touchend", (event) => {
+        if (overviewOpen || helpOpen) return;
+        if (touchX === null || touchY === null) return;
+
+        const dx = event.changedTouches[0].clientX - touchX;
+        const dy = event.changedTouches[0].clientY - touchY;
+
+        if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy)) {
+          if (dx < 0) next();
+          else prev();
+        }
+
+        touchX = null;
+        touchY = null;
+      }, { passive: true });
+
+      buildOverview();
+
+      gsap.set(slides, {
+        autoAlpha: 0,
+        x: 0
+      });
+
+      slides[0].classList.add("active");
+
+      function startDeck() {
+        gsap.set(slides[0], {
+          autoAlpha: 1
+        });
+
+        animateSlideContent(slides[0]);
+        updateUI();
+        showUI();
+      }
+
+      if (document.fonts && document.fonts.ready) {
+        Promise.race([
+          document.fonts.ready,
+          new Promise((resolve) => setTimeout(resolve, 2000))
+        ]).then(() => {
+          requestAnimationFrame(startDeck);
+        });
+      } else {
+        requestAnimationFrame(startDeck);
+      }
+    })();
+  </script>
+</body>
+</html>

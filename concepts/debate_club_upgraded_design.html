@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ULDC: Handover Memorandum 2024-2025</title>
+    
+    <!-- Fonts: Satoshi (Display) & General Sans (Body) -->
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&f[]=general-sans@600,500,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#166534', // Forest Green
+                            light: '#22c55e',
+                            dark: '#14532d',
+                        },
+                        secondary: {
+                            DEFAULT: '#171717', // Black/Dark Gray
+                            light: '#404040',
+                        },
+                        tertiary: {
+                            DEFAULT: '#1e3a8a', // Deep Blue
+                            light: '#3b82f6',
+                        },
+                        surface: '#ffffff',
+                    },
+                    fontFamily: {
+                        sans: ['General Sans', 'sans-serif'],
+                        display: ['Satoshi', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent native scroll, handled by JS */
+            background-color: #ffffff;
+            color: #171717;
+        }
+
+        /* Slide Container */
+        .slides-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            transition: none; /* GSAP handles transitions */
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10;
+        }
+
+        /* Decorative Elements */
+        .bg-pattern {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(#166534 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .corner-accent {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border: 2px solid rgba(30, 58, 138, 0.1); /* Tertiary low opacity */
+            pointer-events: none;
+        }
+        .top-left { top: 40px; left: 40px; border-right: none; border-bottom: none; }
+        .bottom-right { bottom: 40px; right: 40px; border-left: none; border-top: none; }
+
+        /* Progress Bar */
+        #progress-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: #e5e7eb;
+            z-index: 100;
+        }
+        #progress-bar {
+            height: 100%;
+            background: #166534;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Navigation Controls */
+        .nav-controls {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid #171717;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        .nav-btn:hover {
+            background: #166534;
+            color: white;
+            border-color: #166534;
+        }
+
+        /* Logo Placeholder */
+        .logo-mark {
+            font-family: 'Satoshi', sans-serif;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Elements -->
+    <div class="bg-pattern"></div>
+    <div class="corner-accent top-left"></div>
+    <div class="corner-accent bottom-right"></div>
+
+    <!-- Fixed Header / Logo -->
+    <header class="fixed top-0 left-0 w-full p-8 z-50 flex justify-between items-start pointer-events-none">
+        <div class="flex items-center gap-3 pointer-events-auto">
+            <!-- Placeholder Logo -->
+            <div class="w-12 h-12 bg-primary text-white flex items-center justify-center rounded-lg shadow-lg">
+                <i data-lucide="scale" class="w-7 h-7"></i>
+            </div>
+            <div>
+                <h1 class="logo-mark text-xl text-secondary leading-none">ULDC</h1>
+                <p class="text-xs text-tertiary font-bold tracking-widest uppercase mt-1">Est. 2024</p>
+            </div>
+        </div>
+        <div class="text-right hidden md:block">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Official Handover</p>
+            <p class="text-sm font-display font-bold text-secondary">Executive Panel 2024–2025</p>
+        </div>
+    </header>
+
+    <!-- Slides Wrapper -->
+    <main class="slides-wrapper">
+        
+        <!-- SLIDE 1: Title -->
+        <section class="slide active" data-index="0">
+            <div class="max-w-5xl text-center">
+                <span class="inline-block py-1 px-3 border border-primary/30 rounded-full text-primary text-xs font-bold tracking-widest uppercase mb-6 slide-el">Memorandum</span>
+                <h1 class="text-6xl md:text-8xl font-display font-black text-secondary mb-6 leading-[0.9] slide-el">
+                    FOUNDATION,<br>
+                    <span class="text-primary">OPERATIONS</span> &<br>
+                    <span class="text-tertiary">FUTURE VISION</span>
+                </h1>
+                <p class="text-xl text-gray-500 max-w-2xl mx-auto mt-8 slide-el">
+                    Official Handover Memorandum — Executive Panel (2024–2025)<br>
+                    University Laboratory Debate Club
+                </p>
+            </div>
+        </section>
+
+        <!-- SLIDE 2: Leadership Timeline -->
+        <section class="slide" data-index="1">
+            <div class="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-4xl md:text-5xl font-display font-bold text-secondary mb-8 slide-el">Leadership<br><span class="text-primary">Transition</span></h2>
+                    <p class="text-lg text-gray-600 mb-6 slide-el">Ensuring uninterrupted continuity and organizational growth through strategic succession.</p>
+                </div>
+                
+                <div class="space-y-6 relative slide-el">
+                    <!-- Timeline Line -->
+                    <div class="absolute left-4 top-4 bottom-4 w-0.5 bg-gray-200"></div>
+
+                    <!-- Item 1 -->
+                    <div class="relative pl-12">
+                        <div class="absolute left-0 top-1 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center border-2 border-white shadow-sm z-10">
+                            <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                        </div>
+                        <h3 class="text-xl font-bold text-secondary">Mostofa Afroz Sazim</h3>
+                        <p class="text-sm text-primary font-bold uppercase tracking-wide">Founding President</p>
+                        <p class="text-gray-500 text-sm mt-1">Established the foundation. Departed early for higher education.</p>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="relative pl-12">
+                        <div class="absolute left-0 top-1 w-8 h-8 bg-tertiary/10 rounded-full flex items-center justify-center border-2 border-white shadow-sm z-10">
+                            <div class="w-2 h-2 bg-tertiary rounded-full"></div>
+                        </div>
+                        <h3 class="text-xl font-bold text-secondary">Jahid Hossan Samir</h3>
+                        <p class="text-sm text-tertiary font-bold uppercase tracking-wide">President (2024-25)</p>
+                        <p class="text-gray-500 text-sm mt-1">Guided initial operations and ensured stability during transition.</p>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="relative pl-12">
+                        <div class="absolute left-0 top-1 w-8 h-8 bg-primary rounded-full flex items-center justify-center border-2 border-white shadow-md z-10">
+                            <i data-lucide="star" class="w-4 h-4 text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-secondary">Sadiya Yasmin</h3>
+                        <p class="text-sm text-primary font-bold uppercase tracking-wide">Incoming President (25-26)</p>
+                        <p class="text-gray-500 text-sm mt-1">HSC '27 Batch. Selected to lead the next phase of growth.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 3: Mission & Objectives -->
+        <section class="slide" data-index="2">
+            <div class="max-w-4xl text-center">
+                <div class="w-20 h-20 bg-tertiary text-white rounded-2xl flex items-center justify-center mx-auto mb-8 rotate-3 shadow-xl slide-el">
+                    <i data-lucide="target" class="w-10 h-10"></i>
+                </div>
+                <h2 class="text-3xl md:text-5xl font-display font-bold text-secondary mb-8 slide-el">Core Mission</h2>
+                <blockquote class="text-2xl md:text-4xl font-display font-medium text-secondary leading-tight slide-el">
+                    "To sustain an <span class="text-primary underline decoration-2 underline-offset-4">empowering platform</span> for critical thinking, public speaking, and democratic debate at University Laboratory School & College."
+                </blockquote>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: Operational Achievements -->
+        <section class="slide" data-index="3">
+            <div class="max-w-6xl w-full">
+                <div class="mb-12 slide-el">
+                    <span class="text-primary font-bold tracking-widest uppercase text-sm">2024–2025 Review</span>
+                    <h2 class="text-4xl font-display font-bold text-secondary mt-2">Operational Milestones</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Card 1 -->
+                    <div class="bg-gray-50 p-8 rounded-xl border-t-4 border-primary slide-el hover:shadow-lg transition-shadow">
+                        <i data-lucide="mic-2" class="w-8 h-8 text-primary mb-4"></i>
+                        <h3 class="text-xl font-bold text-secondary mb-3">Masterclasses</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Exclusive training with prominent alumni. Flagship session by <strong>Mrinmoy Anjon</strong> on advanced argumentative strategy.
+                        </p>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="bg-gray-50 p-8 rounded-xl border-t-4 border-tertiary slide-el hover:shadow-lg transition-shadow">
+                        <i data-lucide="book-open" class="w-8 h-8 text-tertiary mb-4"></i>
+                        <h3 class="text-xl font-bold text-secondary mb-3">Academic Integration</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Collaboration with Bangla Department teacher <strong>Dr. Parvin Boby</strong> (Adviser ULDC), bridging language skills with parliamentary logic.
+                        </p>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="bg-gray-50 p-8 rounded-xl border-t-4 border-secondary slide-el hover:shadow-lg transition-shadow">
+                        <i data-lucide="users" class="w-8 h-8 text-secondary mb-4"></i>
+                        <h3 class="text-xl font-bold text-secondary mb-3">Expanded Reach</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Significantly increased active member engagement and established regular weekly practice routines.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 5: Future Vision -->
+        <section class="slide" data-index="4">
+            <div class="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="order-2 md:order-1 slide-el">
+                    <div class="relative bg-secondary text-white p-10 rounded-2xl overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-primary rounded-full filter blur-[60px] opacity-40"></div>
+                        <h3 class="text-2xl font-display font-bold mb-6 relative z-10">Under New Leadership</h3>
+                        <ul class="space-y-6 relative z-10">
+                            <li class="flex gap-4">
+                                <i data-lucide="check-circle-2" class="w-6 h-6 text-primary flex-shrink-0"></i>
+                                <div>
+                                    <strong class="block text-lg">Sustaining Core Ops</strong>
+                                    <span class="text-gray-400 text-sm">Weekly sessions & expert masterclasses continue.</span>
+                                </div>
+                            </li>
+                            <li class="flex gap-4">
+                                <i data-lucide="trending-up" class="w-6 h-6 text-primary flex-shrink-0"></i>
+                                <div>
+                                    <strong class="block text-lg">Curriculum Expansion</strong>
+                                    <span class="text-gray-400 text-sm">Strengthening beginner-to-advanced debate pathways.</span>
+                                </div>
+                            </li>
+                            <li class="flex gap-4">
+                                <i data-lucide="handshake" class="w-6 h-6 text-primary flex-shrink-0"></i>
+                                <div>
+                                    <strong class="block text-lg">Seamless Handover</strong>
+                                    <span class="text-gray-400 text-sm">Total administrative support to HSC '27 panel.</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="order-1 md:order-2 slide-el">
+                    <span class="text-tertiary font-bold tracking-widest uppercase text-sm">Looking Ahead</span>
+                    <h2 class="text-5xl font-display font-bold text-secondary mt-2 mb-6">Future Vision &<br>Continuity</h2>
+                    <p class="text-lg text-gray-600">
+                        President-elect Sadiya Yasmin aims to guarantee organizational growth, active engagement, and competitive success for the upcoming term.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Navigation UI -->
+    <div class="nav-controls">
+        <button id="prevBtn" class="nav-btn" aria-label="Previous Slide">
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </button>
+        <button id="nextBtn" class="nav-btn" aria-label="Next Slide">
+            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+    </div>
+
+    <!-- Progress Bar -->
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+
+    <!-- Libraries -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // State Management
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const progressBar = document.getElementById('progress-bar');
+        let isAnimating = false;
+
+        // Initialize Lenis (Smooth Scroll/Wheel Handling)
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            wheelMultiplier: 0.8, // Sensitivity
+        });
+
+        // Hook Lenis wheel event to slide navigation instead of scrolling
+        lenis.on('scroll', (e) => {
+            // We prevent default scroll behavior in CSS, 
+            // but we use the delta to trigger slides
+            if(e.deltaY > 30) nextSlide();
+            if(e.deltaY < -30) prevSlide();
+        });
+
+        // Animation Logic
+        function updateProgress() {
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function animateSlideIn(slide) {
+            const elements = slide.querySelectorAll('.slide-el');
+            gsap.fromTo(elements, 
+                { y: 50, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out", delay: 0.2 }
+            );
+        }
+
+        function goToSlide(index) {
+            if (isAnimating || index === currentSlide || index < 0 || index >= totalSlides) return;
+            isAnimating = true;
+
+            const direction = index > currentSlide ? 1 : -1;
+            const currentEl = slides[currentSlide];
+            const nextEl = slides[index];
+
+            // Exit Animation
+            gsap.to(currentEl.querySelectorAll('.slide-el'), {
+                y: -30 * direction,
+                opacity: 0,
+                duration: 0.4,
+                stagger: 0.05,
+                ease: "power2.in"
+            });
+
+            gsap.to(currentEl, {
+                opacity: 0,
+                duration: 0.5,
+                delay: 0.2,
+                onComplete: () => {
+                    currentEl.classList.remove('active');
+                    
+                    // Enter Setup
+                    nextEl.classList.add('active');
+                    currentSlide = index;
+                    updateProgress();
+                    
+                    // Enter Animation
+                    animateSlideIn(nextEl);
+                    
+                    setTimeout(() => { isAnimating = false; }, 800);
+                }
+            });
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) goToSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) goToSlide(currentSlide - 1);
+        }
+
+        // Event Listeners
+        document.getElementById('nextBtn').addEventListener('click', nextSlide);
+        document.getElementById('prevBtn').addEventListener('click', prevSlide);
+
+        // Keyboard Navigation
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // Initial Setup
+        updateProgress();
+        animateSlideIn(slides[0]);
+
+        // Keep Lenis RAF running for smoothness even if not scrolling page
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+    </script>
+</body>
+</html>

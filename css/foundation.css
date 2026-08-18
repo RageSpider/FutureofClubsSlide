@@ -1,0 +1,71 @@
+/**
+ * css/foundation.css
+ * ------------------------------------------------------------------
+ * Design system foundation — merged from: tokens.css, base.css
+ *
+ *   tokens.css  Design tokens: colors, typography, spacing
+ *   base.css    Reset, base typography, font @import (CDNFonts/Fontshare),
+ *               icon link (Lucide/Feather)
+ * ------------------------------------------------------------------
+ */
+
+/* ============================================================
+   tokens.css — Design tokens: colors, typography, spacing
+   ============================================================ */
+
+:root {
+  /* ---- Core deck chrome ---- */
+  --chrome-bg: #05090E;
+  --chrome-fg: #F2ECDF;
+  --chrome-dim: #7E94A6;
+  --chrome-line: rgba(242, 236, 223, 0.25);
+  --chrome-acc: #D5F44E;
+
+  /* ---- Motion ---- */
+  --ease: cubic-bezier(0.24, 0.62, 0.22, 1);
+  --easeO: cubic-bezier(0.16, 0.66, 0.22, 1);
+  --dur: 0.55s;
+
+  /* ---- Typography ---- */
+  --mono: 'Space Mono', ui-monospace, monospace;
+  --body: 'Instrument Sans', system-ui, sans-serif;
+  --disp: 'Fraunces', Georgia, serif;
+}
+
+/* ============================================================
+   base.css — Reset, base typography, font @import (CDNFonts/Fontshare),
+   icon link (Lucide/Feather)
+   ============================================================ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+html, body { height: 100%; }
+
+body {
+  background: var(--chrome-bg);
+  overflow: hidden;
+  font-family: var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--chrome-acc); color: #0C1723; }
+
+img { display: block; max-width: 100%; }
+
+button { font-family: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--chrome-acc);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
